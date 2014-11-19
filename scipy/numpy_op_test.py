@@ -46,6 +46,8 @@ def second_test() :
     print x.min()
     print x.max()
     
+    x = np.array([1, 2, 3, 1])
+    print x.mean() , np.median(x) , x.std()
 
 #first_test()
 second_test()
