@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-import numpy as nm
+import numpy as np
 from timeit import timeit
 
 def quicksort( array ) :
@@ -21,7 +21,7 @@ def quicksort( array ) :
 
 if __name__ == '__main__' :
     import time
-    arr = nm.random.randint(0,100,10000)
+    arr = np.random.randint(0,100,10000)
     t0 = time.clock()
     quicksort( list(arr) )
     t1 = time.clock()
