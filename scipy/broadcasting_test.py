@@ -3,6 +3,8 @@
 
 import os
 import numpy as np
+import matplotlib
+matplotlib.use( 'Agg' )
 import matplotlib.pyplot as plt
 
 def random_walk() :
@@ -20,7 +22,7 @@ def random_walk() :
     plt.plot(t, np.sqrt(mean_sq_distance), 'g.', t, np.sqrt(t), 'y-')
     plt.xlabel(r"$t$")
     plt.ylabel(r"$\sqrt{\langle (\delta x)^2 \rangle}$")
-    plt.show()
+    plt.savefig('broadcasting_test.png')
     
     return
 
