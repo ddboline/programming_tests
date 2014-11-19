@@ -26,6 +26,7 @@ def sin_plot() :
     x = np.linspace( -np.pi , np.pi , 1000 )
     y = np.sin( x )
     plt.plot( x , y )
+    plt.savefig( 'temp.png' , format='png' )
     plt.show()
 
 #one_dim_plot()
