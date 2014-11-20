@@ -53,8 +53,7 @@ def sort() :
     print 'a[0]' , a[0]
     j = np.argsort( a[0] )
     print 'j',j
-    print 'a[0][j]' , a[0][j]
-    print 'a[1][j]' , a[1][j]
+    print 'a[:,j]' , a[:,j]
 #first()
 #second()
 #third()
