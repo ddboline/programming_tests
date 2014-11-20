@@ -19,6 +19,9 @@ def pop_test() :
     
     print populations.mean(axis=0)
     print populations.std(axis=0)
+    print np.argmax( populations , axis=1 )
+    
+    np.savetxt( 'pop2.txt' , data )
     
     return
 

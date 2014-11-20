@@ -3,6 +3,9 @@
 
 import os
 import numpy as np
+import matplotlib
+matplotlib.use( 'Agg' )
+import matplotlib.pyplot as plt
 
 def first_test() :
     a = np.tile(np.arange(0, 40, 10), (3, 1)).T
@@ -12,9 +15,6 @@ def first_test() :
     print b+a
 
 def second_test() :
-    import matplotlib
-    matplotlib.use( 'Agg' )
-    import matplotlib.pyplot as plt
     x, y = np.arange(5), np.arange(5)[:, np.newaxis]
     print x,y
     distance = np.sqrt(x ** 2 + y ** 2)
@@ -29,6 +29,6 @@ def mbroadcast_test() :
     print distance_array
     return
 
-# first_test()
+first_test()
 second_test()
-# mbroadcast_test()
+mbroadcast_test()
