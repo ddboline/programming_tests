@@ -16,8 +16,6 @@ def first() :
     #z = np.linspace( 0 , 1 , 6 )
     
     x , y , z = np.ogrid[0:1:24j,0:1:12j,0:1:6j]
-
-    
     
     #w = np.sum( func_f( x , y , z ) / ( 24. * 12. * 6. ) )
     w = func_f( x , y , z).mean()
