@@ -25,8 +25,8 @@ long double integrate_f( long double a , long double b , long int N ) {
 }
 
 int main( int argc , char ** argv ) {
-    long double retval = integrate_f( 0 , 1 , 1e7 );
-    printf( "%ld %ld %ld %ld %ld %ld %ld %ld %ld %ld\n" , sizeof(long double)*8 , sizeof(double)*8 , sizeof(long int)*8 , sizeof(int)*8 , sizeof(uint64_t)*8 , sizeof(uint32_t)*8 , sizeof(uint16_t)*8 , sizeof(uint8_t)*8 , sizeof(bool) , sizeof(double complex) ) ;
+    long double retval = integrate_f( 0 , 1 , 5e7 );
+    // printf( "%ld %ld %ld %ld %ld %ld %ld %ld %ld %ld\n" , sizeof(long double)*8 , sizeof(double)*8 , sizeof(long int)*8 , sizeof(int)*8 , sizeof(uint64_t)*8 , sizeof(uint32_t)*8 , sizeof(uint16_t)*8 , sizeof(uint8_t)*8 , sizeof(bool) , sizeof(double complex) ) ;
     printf( "%.12Lf\n" , retval );
     return 0;
 }
