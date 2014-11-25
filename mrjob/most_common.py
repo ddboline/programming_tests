@@ -8,11 +8,17 @@ WORD_RE = re.compile(r"[\w']+")
 
 
 class MRMostUsedWord(MRJob):
+    words_to_exclude = ['with']
 
     def mapper_get_words(self, _, line):
         # yield each word in the line
         for word in WORD_RE.findall(line):
-            yield (word.lower(), 1)
+            try :
+                n = int(word)
+                continue
+            except :
+                if len(word) > 3 and word.lower() not in self.words_to_exclude :
+                    yield (word.lower(), 1)
 
     def combiner_count_words(self, word, counts):
         # optimization: sum the words we've seen so far
