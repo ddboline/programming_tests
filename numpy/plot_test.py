@@ -6,7 +6,6 @@ import numpy as np
 import matplotlib
 matplotlib.use( 'Agg' )
 import pylab as pl
-import numpy as np
 
 # Create a new figure of size 8x6 points, using 100 dots per inch
 pl.figure(figsize=(8, 6), dpi=100)
