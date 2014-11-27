@@ -4,14 +4,14 @@
 import os
 import numpy as np
 import matplotlib
-matplotlib.use( 'Agg' )
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-def random_walk() :
+def random_walk():
     n_stories = 1000 # number of walkers
     t_max = 200
     
-    t = np.arange( t_max )
+    t = np.arange(t_max)
     steps = 2 * np.random.random_integers(0, 1, (n_stories, t_max)) - 1
     # print np.unique(steps)
     positions = np.cumsum(steps, axis=1)

@@ -13,11 +13,11 @@ class MRMostUsedWord(MRJob):
     def mapper_get_words(self, _, line):
         # yield each word in the line
         for word in WORD_RE.findall(line):
-            try :
+            try:
                 n = int(word)
                 continue
-            except :
-                if len(word) > 3 and word.lower() not in self.words_to_exclude :
+            except:
+                if len(word) > 3 and word.lower() not in self.words_to_exclude:
                     yield (word.lower(), 1)
 
     def combiner_count_words(self, word, counts):
@@ -41,7 +41,7 @@ class MRMostUsedWord(MRJob):
                     combiner=self.combiner_count_words,
                     reducer=self.reducer_count_words),
             self.mr(reducer=self.reducer_find_max_word)
-        ]
+       ]
 
 
 if __name__ == '__main__':

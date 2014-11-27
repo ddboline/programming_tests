@@ -4,11 +4,11 @@
 import os
 import numpy as np
 import matplotlib
-matplotlib.use( 'Agg' )
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-def pop_test() :
-    data = np.loadtxt( 'populations.txt' )
+def pop_test():
+    data = np.loadtxt('populations.txt')
     year, hares, lynxes, carrots = data.T
     populations = data[:, 1:]
     
@@ -19,9 +19,9 @@ def pop_test() :
     
     print populations.mean(axis=0)
     print populations.std(axis=0)
-    print np.argmax( populations , axis=1 )
+    print np.argmax(populations, axis=1)
     
-    np.savetxt( 'pop2.txt' , data )
+    np.savetxt('pop2.txt', data)
     
     return
 
