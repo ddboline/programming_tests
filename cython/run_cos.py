@@ -8,4 +8,4 @@ import numpy as np
 
 print cos_func.cos_func(1.0)
 print cos_func.cos_func(0.)
-print cos_func.cos_func( np.pi )
+print cos_func.cos_func(np.pi)
