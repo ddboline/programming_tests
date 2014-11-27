@@ -12,12 +12,12 @@ def bayesian_blocks(t):
 
     Parameters
     ----------
-    t : ndarray, length N
+    t: ndarray, length N
         data to be histogrammed
 
     Returns
     -------
-    bins : ndarray
+    bins: ndarray
         array containing the (N+1) bin edges
 
     Notes
@@ -33,9 +33,9 @@ def bayesian_blocks(t):
 
     # create length-(N + 1) array of cell edges
     edges = np.concatenate([t[:1],
-                            0.5 * (t[1:] + t[:-1]),
+                            0.5 * (t[1:]+ t[:-1]),
                             t[-1:]])
-    block_length = t[-1] - edges
+    block_length = t[-1]- edges
 
     # arrays needed for the iteration
     nn_vec = np.ones(N)
@@ -48,7 +48,7 @@ def bayesian_blocks(t):
     for K in range(N):
         # Compute the width and count of the final bin for all possible
         # locations of the K^th changepoint
-        width = block_length[:K + 1] - block_length[K + 1]
+        width = block_length[:K + 1]- block_length[K + 1]
         count_vec = np.cumsum(nn_vec[:K + 1][::-1])[::-1]
 
         # evaluate fitness function for these possibilities
@@ -64,7 +64,7 @@ def bayesian_blocks(t):
     #-----------------------------------------------------------------
     # Recover changepoints by iteratively peeling off the last block
     #-----------------------------------------------------------------
-    change_points =  np.zeros(N, dtype=int)
+    change_points = np.zeros(N, dtype=int)
     i_cp = N
     ind = N
     while True:
@@ -77,7 +77,7 @@ def bayesian_blocks(t):
 
     return edges[change_points]
 
-def plot_test_dist() :
+def plot_test_dist():
     # Define our test distribution: a mix of Cauchy-distributed variables
     np.random.seed(0)
     x = np.concatenate([stats.cauchy(-5, 1.8).rvs(500),
@@ -90,7 +90,7 @@ def plot_test_dist() :
     x = x[(x > -15) & (x < 15)]
 
     import pylab as pl
-    #pl.hist(x, bins=100 , normed=True)
+    #pl.hist(x, bins=100, normed=True)
     
     # plot a standard histogram in the background, with alpha transparency
     H1 = pl.hist(x, bins=200, histtype='stepfilled',
@@ -101,6 +101,6 @@ def plot_test_dist() :
     
     pl.show()
     
-if __name__ == "__main__" :
+if __name__ == "__main__":
     plot_test_dist()
     

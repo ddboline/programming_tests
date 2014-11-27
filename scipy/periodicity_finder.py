@@ -9,7 +9,7 @@ years = data[:, 0]
 populations = data[:, 1:]
 
 ft_populations = np.fft.fft(populations, axis=0)
-frequencies = np.fft.fftfreq(populations.shape[0], years[1] - years[0])
+frequencies = np.fft.fftfreq(populations.shape[0], years[1]- years[0])
 periods = 1 / frequencies
 
 plt.figure()
