@@ -29,7 +29,7 @@ def first():
     print uarr
     print spec
     print vharr
-    
+
     sarr = np.diag(spec)
     svd_mat = uarr.dot(sarr).dot(vharr)
     print svd_mat
@@ -44,7 +44,7 @@ def first():
     #l, v = linalg.eig(a)
     #print 'l',l
     #print 'v',v[:,0], v[:,1]
-    
+
     #b = a.dot(a)
     #l, v = linalg.eig(b)
     #print 'l',l
@@ -54,6 +54,6 @@ def first():
     #print u
     #print s
     #print v
-    
+
 
 first()

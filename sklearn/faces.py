@@ -31,5 +31,3 @@ clf.fit(X_train_pca, y_train)
 
 print 'Score on unseen data: '
 print clf.score(X_test_pca, y_test)
-
-

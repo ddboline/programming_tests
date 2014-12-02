@@ -14,7 +14,7 @@ copyright   = ki18n ("(c) 2012 Daniel Boline")
 text        = ki18n ("none")
 homePage    = ""
 bugEmail    = "ddboline@gmail.com"
- 
+
 aboutData   = KAboutData (appName, catalog, programName, version, description,
                         license, copyright, text, homePage, bugEmail)
 

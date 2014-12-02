@@ -18,10 +18,10 @@ def sparse_model():
     print regr.fit(diabetes_X_train, diabetes_y_train)
     print regr.coef_
     print regr.score(diabetes_X_test, diabetes_y_test)
-    
+
     lin = linear_model.LinearRegression()
     print lin.fit(diabetes_X_train, diabetes_y_train)
     print lin.coef_
     print lin.score(diabetes_X_test, diabetes_y_test)
-    
+
 sparse_model()

@@ -10,9 +10,9 @@ import matplotlib.pyplot as plt
 def data_statistics():
     data = np.loadtxt('populations.txt')
     year, hares, lynxes, carrots = data.T
-    
+
     names = ('Hare', 'Lynx', 'Carrot')
-    
+
     plt.axes([0.2, 0.1, 0.5, 0.8])
     plt.plot(year, hares, year, lynxes, year, carrots)
     plt.legend(names, loc=(1.05, 0.5))
@@ -42,11 +42,11 @@ def data_statistics():
     plt.plot(year, np.gradient(hares), year, np.gradient(lynxes), year, np.gradient(carrots))
     plt.legend(names, loc=(1.05, 0.5))
     plt.savefig('data_statistics_gradient.png')
-    
+
     gh = np.gradient(hares)
     gl = np.gradient(lynxes)
     gc = np.gradient(carrots)
-    
+
     a = np.concatenate((gh[:, np.newaxis], gl[:, np.newaxis]), axis=1)
     print np.corrcoef(a.T)
     a = np.concatenate((a, gc[:, np.newaxis]), axis=1)

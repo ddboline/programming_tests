@@ -26,7 +26,7 @@ def bayesian_blocks(t):
     datasets.  Alternate fitness functions and prior forms can
     be found in the paper listed above.
     """
-    
+
     # copy and sort the array
     t = np.sort(t)
     N = t.size
@@ -91,16 +91,15 @@ def plot_test_dist():
 
     import pylab as pl
     #pl.hist(x, bins=100, normed=True)
-    
+
     # plot a standard histogram in the background, with alpha transparency
     H1 = pl.hist(x, bins=200, histtype='stepfilled',
             alpha=0.2, normed=True)
     # plot an adaptive-width histogram on top
     H2 = pl.hist(x, bins=bayesian_blocks(x), color='black',
             histtype='step', normed=True)
-    
+
     pl.show()
-    
+
 if __name__ == "__main__":
     plot_test_dist()
-    

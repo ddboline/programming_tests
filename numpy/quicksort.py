@@ -10,7 +10,7 @@ def quicksort(array):
     greater = []
     if len(array) < 2:
         return array
-    
+
     pivot = array.pop(len(array)/2)
     for x in array:
         if x <= pivot:
@@ -28,4 +28,3 @@ if __name__ == '__main__':
     sorted(list(arr))
     t2 = time.clock()
     print 'quicksort %f sorted %f' % (t1-t0, t2-t1)
-

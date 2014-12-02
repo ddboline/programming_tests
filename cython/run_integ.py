@@ -9,7 +9,7 @@ import integ0
 import integ1
 import integ2
 import time
-import os 
+import os
 
 os.system('gcc integ.c -o integ')
 

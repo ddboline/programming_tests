@@ -39,12 +39,12 @@ def second():
 
 def third():
     a = np.arange(4)
-    a.resize((8, ))
+    a.resize((8,))
     print 'a', a
     a = np.arange(4)
-    b = np.resize(a, (8, ))
+    b = np.resize(a, (8,))
     print 'b', b
-    
+
 def sort():
     a = np.array([[4, 3, 5], [1, 2, 1]])
     print 'a', a

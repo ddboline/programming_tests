@@ -12,11 +12,11 @@ def framing_lena():
     lena = misc.lena()
     plt.imshow(lena, cmap=plt.cm.gray)
     plt.savefig('lena.png')
-    
+
     crop_lena = lena[30:-30, 30:-30]
     plt.imshow(crop_lena)
     plt.savefig('crop_lena.png')
-    
+
     y, x = np.ogrid[0:512, 0:512]
     print y.shape, x.shape
     centerx, centery = (256, 256)

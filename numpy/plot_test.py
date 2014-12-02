@@ -57,7 +57,7 @@ pl.annotate(r'$sin(\frac{2\pi}{3})=\frac{\sqrt{3}}{2}$',
             arrowprops=dict(arrowstyle="->", connectionstyle="arc3,rad=.2"))
 
 pl.plot([t, t], [0, np.sin(t)], color='red', linewidth=2.5, linestyle="--")
-pl.scatter([t, ], [np.sin(t), ], 50, color='red')
+pl.scatter([t,], [np.sin(t),], 50, color='red')
 
 pl.annotate(r'$cos(\frac{2\pi}{3})=-\frac{1}{2}$',
             xy=(t, np.cos(t)), xycoords='data',

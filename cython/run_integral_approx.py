@@ -9,7 +9,7 @@ import integral_approx0
 import integral_approx1
 import integral_approx2
 import time
-import os 
+import os
 
 #Nx, Ny, Nz = 24, 12, 6
 Nx, Ny, Nz = 100, 100, 100

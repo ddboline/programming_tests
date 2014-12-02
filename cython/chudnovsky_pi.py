@@ -32,4 +32,3 @@ def calc_chudnovsky_pi(k):
         pi_inv += chudnovsky_term(k)
     pi_inv *= 12.
     return 1./pi_inv
-

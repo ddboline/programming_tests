@@ -12,7 +12,7 @@ def first():
     print p(0)
     print p.roots
     print p.order
-    
+
     x = np.linspace(0, 1, 20)
     y = np.cos(x) + 0.3*np.random.rand(20)
     pfit, cov = np.polyfit(x, y, 3, cov=True)

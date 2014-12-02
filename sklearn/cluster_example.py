@@ -28,7 +28,7 @@ def posterize():
     labels = k_means.labels_
     lena_compressed = np.choose(labels, values)
     lena_compressed.shape = lena.shape
-    
+
     pl.imshow(lena_compressed, cmap=pl.cm.gray)
     pl.savefig('lena_compressed.png')
 

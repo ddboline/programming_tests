@@ -12,7 +12,7 @@ def compute_mandelbrot(N_max, some_threshold, nx, ny):
     x = np.linspace(-2, 1, nx)
     y = np.linspace(-1.5, 1.5, ny)
 
-    c = x[:, np.newaxis]+ 1j*y[np.newaxis, :]
+    c = x[:, np.newaxis]+ 1j*y[np.newaxis,:]
 
     # Mandelbrot iteration
 

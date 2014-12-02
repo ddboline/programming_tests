@@ -9,8 +9,8 @@ from sklearn import datasets, svm, linear_model, grid_search
 
 def grid_search_test():
     digits = datasets.load_digits()
-    data = digits.images.reshape( (digits.images.shape[0], -1) )
-    
+    data = digits.images.reshape((digits.images.shape[0], -1))
+
     gammas = np.logspace(-6, -1, 10)
     svc = svm.SVC()
     clf = grid_search.GridSearchCV(estimator=svc, param_grid=dict(gamma=gammas), n_jobs=-1)
@@ -27,6 +27,6 @@ def cross_validated_estimators():
 
     # The estimator chose automatically its lambda:
     print lasso.alpha_
-    
+
 grid_search_test()
 #cross_validated_estimators()

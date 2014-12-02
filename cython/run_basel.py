@@ -28,7 +28,7 @@ def cprofile_basel0():
 
 def cprofile_basel1():
     cProfile.runctx('basel1.approx_pi()', globals(), locals(), 'Profile.prof')
-    
+
     s = pstats.Stats('Profile.prof')
     s.strip_dirs().sort_stats("time").print_stats()
 

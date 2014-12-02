@@ -41,7 +41,7 @@ class MRMostUsedWord(MRJob):
                     combiner=self.combiner_count_words,
                     reducer=self.reducer_count_words),
             self.mr(reducer=self.reducer_find_max_word)
-       ]
+     ]
 
 
 if __name__ == '__main__':

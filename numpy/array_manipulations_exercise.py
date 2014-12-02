@@ -11,7 +11,7 @@ def first():
     a = np.arange(1, 16).reshape((3, 5)).T
     print a
     print a[1::2]
-    
+
 def second():
     a = np.arange(25).reshape(5, 5)
     print a
@@ -26,7 +26,7 @@ def third():
     print j
     print a.shape, j.shape
     print a[j == 0, np.newaxis]
-    
+
 #first()
 #second()
 third()

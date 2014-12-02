@@ -12,7 +12,7 @@ def pca_example():
     pca = decomposition.PCA(n_components=2)
     print pca.fit(iris.data)
     X = pca.transform(iris.data)
-    pl.scatter( X[:, 0], X[:, 1], c=iris.target)
-    pl.savefig( 'pca_example.png' )
-    
+    pl.scatter(X[:, 0], X[:, 1], c=iris.target)
+    pl.savefig('pca_example.png')
+
 pca_example()

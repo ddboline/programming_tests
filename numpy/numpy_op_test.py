@@ -13,11 +13,11 @@ def first_test():
     print a * b
     j = np.arange(5)
     print 2**(j+1) - j
-    
+
     c = np.ones((3, 3))
     print c*c
     print c.dot(c)
-    
+
     a = np.random.rand(3)
     a = a / np.sqrt(np.sum(a**2))
     print a
@@ -35,17 +35,17 @@ def second_test():
     print x.sum()
     print x[:, 0].sum(), x[:, 1].sum()
     print x.sum(axis=1)
-    print x[0, :].sum(), x[1, :].sum()
-    
+    print x[0,:].sum(), x[1,:].sum()
+
     x = np.random.rand(2, 2, 2)
     print x.sum(axis=2)[0, 1]
-    print x[0, 1, :].sum()
-    
+    print x[0, 1,:].sum()
+
     x = np.array([1, 3, 2])
     print x
     print x.min()
     print x.max()
-    
+
     x = np.array([1, 2, 3, 1])
     print x.mean(), np.median(x), x.std()
 
