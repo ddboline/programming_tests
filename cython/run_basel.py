@@ -11,14 +11,19 @@ import math
 import pstats, cProfile
 
 def time_execution():
+    t = []
     print math.pi
-    t0 = time.clock()
-    print basel0.approx_pi(10**6)
-    t1 = time.clock()
+    t.append( time.clock() )
+    print basel0.approx_pi(10**7)
+    t.append( time.clock() )
+    print basel1.approx_pi(10**7)
+    t.append( time.clock() )
     print basel1.approx_pi(10**9)
-    t2 = time.clock()
+    t.append( time.clock() )
 
-    print t1-t0, t2-t1
+    for n in range(1, len(t)):
+        print t[n]-t[n-1],
+    print ''
 
 def cprofile_basel0():
     cProfile.runctx('basel0.approx_pi()', globals(), locals(), 'Profile.prof')
