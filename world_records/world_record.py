@@ -19,11 +19,6 @@ marathon_distance_mi = marathon_distance_m / meters_per_mile # meters
 def lin_func(x, *p):
     return p[0] + p[1] * x + p[2] * x**2
 
-def pow_func(x, *p):
-    x0 = marathon_distance_m/meters_per_mile
-    p0 = 4.6893908
-    return p0*(x/x0)**p[0]
-
 def do_fit(data, func, p0):
     datax = data[:, 0]
     datay = data[:, 1]
@@ -63,10 +58,10 @@ def do_fit(data, func, p0):
     pfit_bootstrap = mean_pfit
     perr_bootstrap = err_pfit
 
-    print 'p', p
-    print 'pb', pfit_bootstrap
-    print 'dp', dp
-    print 'dpb', perr_bootstrap
+    # print 'p', p
+    # print 'pb', pfit_bootstrap
+    # print 'dp', dp
+    # print 'dpb', perr_bootstrap
 
     return p, dp
     # return pfit_bootstrap, perr_bootstrap
@@ -96,18 +91,17 @@ def plot_paces():
     rpw = np.array(running_paces_women)
 
     plt.scatter(np.log(rpm[:, 0]), rpm[:, 1], c='b', label='Men\'s World Records')
-    #plt.scatter(np.log(rpw[:, 0]), rpw[:, 1], c='r', label='Women\'s World Records')
+    plt.scatter(np.log(rpw[:, 0]), rpw[:, 1], c='r', label='Women\'s World Records')
 
     plt.xlim(np.log(60/meters_per_mile), np.log(600e3/meters_per_mile))
     plt.ylim(2, 12)
 
     # Set x ticks
-    xtickarray = np.log(np.array([100, 200, 800, 5e3, 10e3, 42e3, 160e3, 300*meters_per_mile])/meters_per_mile)
+    xtickarray = np.log(np.array([100, 200, 800, 5e3, 10e3,marathon_distance_m/2., marathon_distance_m, 160e3, 300*meters_per_mile])/meters_per_mile)
     ytickarray = np.array([3, 4, 5, 6, 7, 8, 9, 10, 11])
 
     plt.xticks(xtickarray,
-               ['100m', '200m', '800m', '5k','10k', 'Marathon', '100mi', '300mi'])
-    #pl.xticks(np.linspace(-np.pi,  np.pi, 5, endpoint=True), ['$-\pi$', '$-\pi/2$', '', '$+\pi/2$', '$+\pi$'])
+               ['100m', '200m', '800m', '5k','10k', '', 'Marathon', '100mi', '300mi'])
 
     # Set y ticks
     plt.yticks(ytickarray, ['3:00/mi', '4:00/mi', '5:00/mi', '6:00/mi', '7:00/mi', '8:00/mi', '9:00/mi', '10:00/mi', '11:00/mi'])
@@ -121,32 +115,67 @@ def plot_paces():
         plt.plot([np.log(60/meters_per_mile), np.log(600e3/meters_per_mile)], [yt, yt], color='black', linewidth=0.5, linestyle=':')
 
     plt.title('Running Race (minutes per mile) for World Records from 100m to 48hours')
-    #pl.yticks(np.linspace(-1, 1, 3, endpoint=True), ['$-1$', '', '$+1$'])
+
+    mp0 = np.mean(rpm[np.abs(rpm[:,0]-marathon_distance_mi)<1][:,1])
+    wp0 = np.mean(rpw[np.abs(rpw[:,0]-marathon_distance_mi)<1][:,1])
+
+    print 'men\'s world record pace', print_m_s(mp0*60)
+    print 'women\'s world record pace', print_m_s(wp0*60)
+    
+    def mfunc(x, *p):
+        x0 = marathon_distance_m/meters_per_mile
+        return mp0*(x/x0)**p[0]
+
+    def wfunc(x, *p):
+        x0 = marathon_distance_m/meters_per_mile
+        return wp0*(x/x0)**p[0]
 
     rpm_low = rpm[rpm[:,0] <=marathon_distance_mi]
     rpm_high = rpm[rpm[:,0] >marathon_distance_mi]
 
-    p, dp = do_fit(rpm_low, pow_func, p0=[1])
+    p, dp = do_fit(rpm_low, mfunc, p0=[1])
     pp, pm = p+dp, p-dp
+    print 'men\'s'
     print 'p',p,'+/-',dp
 
     x = np.linspace(400, marathon_distance_m, 1000)/meters_per_mile
-    plt.plot(np.log(x), pow_func(x, *p), 'b', linewidth=2.5)
-    plt.plot(np.log(x), pow_func(x, *pp), 'b--')
-    plt.plot(np.log(x), pow_func(x, *pm), 'b--')
+    plt.plot(np.log(x), mfunc(x, *p), 'b', linewidth=2.5)
+    plt.plot(np.log(x), mfunc(x, *pp), 'b--')
+    plt.plot(np.log(x), mfunc(x, *pm), 'b--')
 
-    p, dp = do_fit(rpm_high, pow_func, p0=[1])
+    p, dp = do_fit(rpm_high, mfunc, p0=[1])
     pp, pm = p+dp, p-dp
     print 'p',p,'+/-',dp
 
     x = np.linspace(marathon_distance_m, 600e3, 1000)/meters_per_mile
-    plt.plot(np.log(x), pow_func(x, *p), 'b', linewidth=2.5)
-    plt.plot(np.log(x), pow_func(x, *pp), 'b--')
-    plt.plot(np.log(x), pow_func(x, *pm), 'b--')
+    plt.plot(np.log(x), mfunc(x, *p), 'b', linewidth=2.5)
+    plt.plot(np.log(x), mfunc(x, *pp), 'b--')
+    plt.plot(np.log(x), mfunc(x, *pm), 'b--')
 
+    rpw_low = rpw[rpw[:,0] <=marathon_distance_mi]
+    rpw_high = rpw[rpw[:,0] >marathon_distance_mi]
+
+    p, dp = do_fit(rpw_low, wfunc, p0=[1])
+    pp, pm = p+dp, p-dp
+    print 'women\'s'
+    print 'p',p,'+/-',dp
+
+    x = np.linspace(400, marathon_distance_m, 1000)/meters_per_mile
+    plt.plot(np.log(x), wfunc(x, *p), 'r', linewidth=2.5)
+    plt.plot(np.log(x), wfunc(x, *pp), 'r--')
+    plt.plot(np.log(x), wfunc(x, *pm), 'r--')
+
+    p, dp = do_fit(rpw_high, wfunc, p0=[1])
+    pp, pm = p+dp, p-dp
+    print 'p',p,'+/-',dp
+
+    x = np.linspace(marathon_distance_m, 600e3, 1000)/meters_per_mile
+    plt.plot(np.log(x), wfunc(x, *p), 'r', linewidth=2.5)
+    plt.plot(np.log(x), wfunc(x, *pp), 'r--')
+    plt.plot(np.log(x), wfunc(x, *pm), 'r--')
 
     plt.show()
-    plt.savefig('running_pace.png')
+    plt.savefig('world_record.png')
 
 if __name__ == '__main__':
     plot_paces()
