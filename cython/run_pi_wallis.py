@@ -9,7 +9,7 @@ import pi_wallis1
 import time
 import math
 
-N = 10**7
+N = 10**8
 
 print math.pi
 t0 = time.clock()
