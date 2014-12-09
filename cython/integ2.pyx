@@ -5,7 +5,7 @@ cdef double f(double x) :
 
 cpdef double integrate_f(double a, double b, long int N) :
     cdef long int i
-    cdef double s, dx
+    cdef double s = 0 , dx
     s = 0
     dx = (b - a) / N
     i = 0
