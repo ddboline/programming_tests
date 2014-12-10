@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
-import pyximport
-pyximport.install()
+# import pyximport
+# pyximport.install()
 
 import cos_func
 import numpy as np
