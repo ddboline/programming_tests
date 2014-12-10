@@ -1,12 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
+
+#define MAXIMUM_NUMBER 10000
     
 int primes( int kmax ) {
     int n = 2 , k = 0 , i;
-    int p[10000] = {};
+    int p[MAXIMUM_NUMBER] = {};
     int result = 0;
-    if( kmax > 10000 )
-        kmax = 10000;
+    if( kmax > MAXIMUM_NUMBER )
+        kmax = MAXIMUM_NUMBER;
     while( k < kmax ) {
         i = 0;
         while( i < k && n % p[i] != 0 )
