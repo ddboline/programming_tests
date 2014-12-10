@@ -21,19 +21,19 @@ def run_matmul():
     ts = []
     a = np.random.random_sample( ( x,y ) )
     b = np.random.random_sample( ( y , z ) )
-    cs = [ np.zeros((x,z)) for i in range(4) ]
+    cs = [ np.zeros((x,z)) for i in range(3) ]
 
     ts.append( time.clock() )
-    matmul0.matmul0( a , b , cs[0] )
+    cs[0] = matmul1.matmul1( a , b )
     ts.append( time.clock() )
-    cs[1] = matmul1.matmul1( a , b )
+    matmul2.matmul2( a , b , cs[1] )
     ts.append( time.clock() )
-    matmul2.matmul2( a , b , cs[2] )
+    matmul3.matmul3( a , b , cs[2] )
     ts.append( time.clock() )
-    matmul3.matmul3( a , b , cs[3] )
-    ts.append( time.clock() )
+    # matmul0.matmul0( a , b , cs[0] )
+    # ts.append( time.clock() )
 
-    for i in range(4):
+    for i in range(3):
         print np.mean(cs[i]) , ts[i+1] - ts[i]
 
     return
