@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
-import pyximport
-pyximport.install()
+# import pyximport
+# pyximport.install()
 
 import numpy as np
 
@@ -17,12 +17,12 @@ def run_matmul():
     x = int(os.sys.argv[1])
     y = int(os.sys.argv[2])
     z = int(os.sys.argv[3])
-    
+
     ts = []
     a = np.random.random_sample( ( x,y ) )
     b = np.random.random_sample( ( y , z ) )
     cs = [ np.zeros((x,z)) for i in range(4) ]
-    
+
     ts.append( time.clock() )
     matmul0.matmul0( a , b , cs[0] )
     ts.append( time.clock() )
