@@ -8,7 +8,7 @@ cimport cython
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def matmul(np.ndarray[np.float64_t, ndim=2] A, np.ndarray[np.float64_t, ndim=2] B, np.ndarray[np.float64_t, ndim=2] out):
+def matmul2(np.ndarray[np.float64_t, ndim=2] A, np.ndarray[np.float64_t, ndim=2] B, np.ndarray[np.float64_t, ndim=2] out):
     cdef int i, j, k
     cdef double s = 0
     for i in xrange(A.shape[0]):
