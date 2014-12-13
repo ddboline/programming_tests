@@ -7,7 +7,7 @@ import pylab as pl
 import numpy as np
 from sklearn import linear_model
 from sklearn import svm, neighbors , svm , grid_search
-import csv , os
+import csv , os , time
 import pandas as pd
 from sklearn.cross_validation import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -66,7 +66,7 @@ def kaggle_dsl_scoring(gauss_train_size=1000):
     clf = grid_search.GridSearchCV(estimator=svc, param_grid=dict(gamma=gammas), n_jobs=-1)
 
     classifier_dict = { 
-                'gridCV': clf,
+                #'gridCV': clf,
                 #'linear_model': linear_model.LogisticRegression(fit_intercept=False,penalty='l1'),
                 #'linSVC': svm.LinearSVC(),
                 #'kNC5': KNeighborsClassifier(),
@@ -74,12 +74,12 @@ def kaggle_dsl_scoring(gauss_train_size=1000):
                 #'SVC': SVC(kernel="linear", C=0.025),
                 #'DT': DecisionTreeClassifier(max_depth=5),
                 'RF': RandomForestClassifier(n_estimators=200),
-                'Ada': AdaBoostClassifier(),
+                #'Ada': AdaBoostClassifier(),
                 #'Gauss': GaussianNB(),
                 #'LDA': LDA(),
-                'QDA': QDA(),
+                #'QDA': QDA(),
                 #'GMM': GMM(),
-                'SVC2': SVC(),
+                #'SVC2': SVC(),
                 }
 
     classifier_list = classifier_dict.values()
@@ -117,12 +117,31 @@ def kaggle_dsl_scoring(gauss_train_size=1000):
             classifier_scores[k].append( s )
 
     ksarr = sorted( [ (ks[1] , ks[0]) for ks in classifier_scores.items() ] )
+    smarr = []
     for s , k in ksarr:
-        print np.mean(s) , k
+        #print np.max(s) c, k
+        smarr.append( np.max(s) )
     
-    print xt.shape, xtest.shape, yt.shape, ytest.shape
-    return classifier_dict[ksarr[-1][1]] , xt , yt , pca
+    return classifier_dict[ksarr[-1][1]] , xt , yt , pca , max(smarr)
     
 if __name__ == '__main__':
-    model , x , y , pca = kaggle_dsl_scoring(gauss_train_size=int(os.sys.argv[1]))
+    try:
+        N = int(os.sys.argv[1])
+    except:
+        N = 0
+    times = [ time.clock() ]
+    model , x , y , pca , sc = kaggle_dsl_scoring(gauss_train_size=N)
+    times.append( time.clock() )
+    dt = times[-1]-times[-2]
+    print N, dt, sc
     kaggle_submit( model , x , y , pca )
+    
+    #times = [ time.clock() ]
+    #with open('timing.txt','w') as timefile:
+        #for N in [ 1000 , 2000 , 3000 , 4000 , 5000 , 7000 , 10000, 15000 ]:
+            #model , x , y , pca , sc = kaggle_dsl_scoring(gauss_train_size=N)
+            #times.append( time.clock() )
+            #dt = times[-1]-times[-2]
+            #print N, dt, sc
+            #timefile.write( '%d %d %f\n' % ( N , dt , sc ) )
+            #timefile.flush()

@@ -70,7 +70,7 @@ with open('timing.txt', 'r') as tfile:
         if len(ents) < 3:
             continue
         xvals.append( int(ents[0]) )
-        tvals.append( 60*int(ents[1]) + float(ents[2]))
+        tvals.append( float(ents[1]) )
 x = np.array( xvals )
 t = np.array( tvals )
 
@@ -86,10 +86,8 @@ pl.plot(x, fit_fun(x, *p), 'r', linewidth=2.5)
 pl.plot(x, fit_fun(x, *pp), 'r--')
 pl.plot(x, fit_fun(x, *pm), 'r--')
 
-print fit_fun( 1000 , *p )/60. , fit_fun( 1000 , *pm )/60. , fit_fun( 1000 , *pp )/60.
-print fit_fun( 10000 , *p )/60. , fit_fun( 10000 , *pm )/60. , fit_fun( 10000 , *pp )/60.
-print fit_fun( 12000 , *p )/60. , fit_fun( 12000 , *pm )/60. , fit_fun( 12000 , *pp )/60.
-print fit_fun( 30000 , *p )/60. , fit_fun( 30000 , *pm )/60. , fit_fun( 30000 , *pp )/60.
+for N in [ 1000 , 10000 , 20000 , 30000 ]:
+    print N, fit_fun( N , *p )/60. , fit_fun( N , *pm )/60. , fit_fun( N , *pp )/60.
 
 pl.show()
 pl.savefig('plot_timing.png')
