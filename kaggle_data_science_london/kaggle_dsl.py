@@ -8,6 +8,7 @@ import numpy as np
 from sklearn import linear_model
 from sklearn import svm, neighbors , svm , grid_search
 import csv
+import pandas as pd
 from sklearn.cross_validation import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.datasets import make_moons, make_circles, make_classification
@@ -18,33 +19,17 @@ from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.lda import LDA
 from sklearn.qda import QDA
+from sklearn.mixture import GMM
+from sklearn.decomposition import PCA
 
-def kaggle_submit():
-    train_file = open( 'train.csv' , 'r' )
-    trainLabels_file = open( 'trainLabels.csv' , 'r' )
-    
-    xtrain = []
-    ytrain = []
-    
-    for line in csv.reader( train_file ):
-        xtrain.append( map( float , line  ) )
-
-    for line in trainLabels_file:
-        ytrain.append( int( line.strip() ) )
-    
-    xtrain = np.array( xtrain )
-    ytrain = np.array( ytrain )
-
-    model = KNeighborsClassifier()
+def kaggle_submit( model , xtrain , ytrain , pca ):
     print model.fit(xtrain,ytrain)
 
-    test_file = open( 'test.csv' , 'r' )
-    
-    xtest = []
-    for line in csv.reader( test_file ):
-        xtest.append( map( float , line ) )
-    
+    xtest = pd.read_csv('test.csv', header=None).as_matrix()
     ytest = model.predict( xtest )
+    
+    if pca:
+        xtest = pca.transform(xtest)
 
     with open('submit.csv', 'w') as outfile:
         outfile.write( 'Id,Solution\n' )
@@ -54,17 +39,18 @@ def kaggle_submit():
             ow.writerow( [ n+1 , out ] )
 
 def kaggle_dsl_scoring():
-    train_file = open( 'train.csv' , 'r' )
-    trainLabels_file = open( 'trainLabels.csv' , 'r' )
+    xt = pd.read_csv('train.csv', header=None).as_matrix()
+    yt = pd.read_csv('trainLabels.csv', header=None).as_matrix()
+    xtest = pd.read_csv('test.csv', header=None).as_matrix()
     
-    xt = []
-    yt = []
+    print np.mean(xt[yt==0], axis=0)
+    print np.cov(xt[yt==0])
+    print np.mean(xt[yt==1])
+    print np.cov(xt[yt==1])
     
-    for line in csv.reader( train_file ):
-        xt.append( map( float , line  ) )
-
-    for line in trainLabels_file:
-        yt.append( int( line.strip() ) )
+    #pca = PCA(n_components=12)
+    #pca.fit(xt)
+    #xtp = pca.transform(xt)
     
     gammas = np.logspace(-6, -1, 10)
     svc = svm.SVC()
@@ -82,21 +68,31 @@ def kaggle_dsl_scoring():
                 'Ada': AdaBoostClassifier(),
                 'Gauss': GaussianNB(),
                 'LDA': LDA(),
-                'QDA': QDA() }
+                'QDA': QDA(),
+                #'GMM': GMM()
+                }
 
     classifier_list = classifier_dict.values()
     classifier_scores = {}
     for k in classifier_dict:
         classifier_scores[k] = []
-
-    for idx in range(500):
-        randperm = np.random.permutation( np.arange( len(xt) ) )
-        xt = np.array( xt )
-        yt = np.array( yt )
-        xtrain = xt[randperm[:500]]
-        ytrain = yt[randperm[:500]]
-        xtest = xt[randperm[500:]]
-        ytest = yt[randperm[500:]]
+    
+    for idx in range(1):
+        randperm = np.random.permutation( np.arange( xt.shape[0] ) )
+        xtrain = xt[randperm[:500],:]
+        ytrain = yt[randperm[:500],0]
+        xtest = xt[randperm[500:],:]
+        ytest = yt[randperm[500:],0]
+    
+        #pca = PCA(whiten=True)
+        #pca.fit(xt)
+        #xtrain = pca.transform(xtrain)
+        #xtest = pca.transform(xtest)
+    
+        #gmm = GMM()
+        #gmm.fit(xt)
+        #xtrain = gmm.transform(xtrain)
+        #xtest = gmm.transform(xtest)
     
         def score_model( model ):
             model.fit(xtrain, ytrain)
@@ -108,9 +104,12 @@ def kaggle_dsl_scoring():
             s , m = score_model( c )
             classifier_scores[k].append( s )
 
-    for k , s in classifier_scores.items():
-        print s , k
+    ksarr = sorted( [ (ks[1] , ks[0]) for ks in classifier_scores.items() ] )
+    for s , k in ksarr:
+        print np.mean(s) , k
+    
+    return classifier_dict[ksarr[-1][1]] , xt , yt , pca
     
 if __name__ == '__main__':
-    kaggle_dsl_scoring()
-    kaggle_submit()
+    model , x , y , pca = kaggle_dsl_scoring()
+    kaggle_submit( model , x , y , pca )
