@@ -31,7 +31,6 @@ def kaggle_submit( model , xtrain , ytrain , pca=None ):
     ytest = model.predict( xtest )
 
     with open('submit.csv', 'w') as outfile:
-        outfile.write( 'Id,Solution\n' )
         ow = csv.writer( outfile )
         ow.writerow( [ 'Id' , 'Solution' ] )
         for n , out in enumerate(ytest):
