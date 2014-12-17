@@ -21,11 +21,53 @@ def digit_recognizer():
     print forest.fit(x_train, y_train)
     print forest.score(x_test, y_test)
     
-    
     knn = neighbors.KNeighborsClassifier()
     print knn.fit(x_train, y_train)
     print knn.score(x_test, y_test)
     
+    return
+    
+    gammas = np.logspace(-6, -1, 10)
+    svc = svm.SVC()
+    clf = grid_search.GridSearchCV(estimator=svc, param_grid=dict(gamma=gammas), n_jobs=-1)
+
+    classifier_dict = {
+                'gridCV': clf,
+                'linear_model': linear_model.LogisticRegression(fit_intercept=False,penalty='l1'),
+                'linSVC': svm.LinearSVC(),
+                'kNC5': KNeighborsClassifier(),
+                'kNC6': KNeighborsClassifier(6),
+                'SVC': SVC(kernel="linear", C=0.025),
+                'DT': DecisionTreeClassifier(max_depth=5),
+                'RF': RandomForestClassifier(n_estimators=200),
+                'Ada': AdaBoostClassifier(),
+                'Gauss': GaussianNB(),
+                'LDA': LDA(),
+                'QDA': QDA(),
+                'GMM': GMM(),
+                'SVC2': SVC(),
+                }
+
+    classifier_list = classifier_dict.values()
+    classifier_scores = {}
+    for k in classifier_dict:
+        classifier_scores[k] = []
+
+    def score_model( model ):
+        try:
+            model.fit(x_train, y_train)
+            #print xtest.shape, ytest.shape
+            return model.score(x_test, y_test) , model
+        except:
+            print model
+            exit(0)
+
+    for k , c in classifier_dict.iteritems():
+        s , m = score_model( c )
+        classifier_scores[k].append( s )
+
+    for k , s in classifier_scores.items():
+        print k , max(s)
     
     return
 
