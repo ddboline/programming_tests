@@ -5,10 +5,10 @@ from sqlalchemy import create_engine
 import pandas as pd
 
 def postgresql_example():
-    engine = create_engine( 'postgresql://ddboline:BQGIvkKFZPejrKvX@localhost/mydb' )
+    engine = create_engine( 'postgresql+psycopg2://ddboline:BQGIvkKFZPejrKvX@localhost/mydb' )
     con = engine.connect()
-    
-    dat = pd.read_sql( 'select * from person;' , con )
+
+    dat = pd.read_sql( 'select * from person' , con )
     
     print dat
 
