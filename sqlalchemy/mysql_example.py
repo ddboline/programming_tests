@@ -5,8 +5,8 @@ import os
 from sqlalchemy import create_engine
 import pandas as pd
 
-def mysql_example():
-    engine = create_engine( 'mysql://ddboline:BQGIvkKFZPejrKvX@localhost/world' )
+def mysql_example(database):
+    engine = create_engine( 'mysql://ddboline:BQGIvkKFZPejrKvX@localhost/%s' % database )
     con = engine.connect()
     result = con.execute('show tables;')
     tables = []
@@ -33,9 +33,10 @@ def mysql_example():
         dframes[table] = pd.DataFrame( rows , columns=fields )
 
     for t , df in dframes.items():
-        df.to_csv( '%s.csv' % t , index_label='Index' )
+        df.to_csv( '%s_%s.csv' % ( database, t ) , index_label='Index' )
 
     return dframes
 
 if __name__ == '__main__':
-    mysql_example()
+    mysql_example('world')
+    mysql_example('mydb')
