@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 
 import os
 from sqlalchemy import create_engine
@@ -30,12 +31,10 @@ def mysql_example():
         result = con.execute(query)
         rows = result.fetchall()
         dframes[table] = pd.DataFrame( rows , columns=fields )
-        # dframes[table] = pd.DataFrame( columns={ x[0]: x[1] for x in enumerate(fields)} )
-    
-    # for t , df in dframes.items():
-        # print t
-        # print df.columns
-    # print dframes['Country']['Name']
+
+    for t , df in dframes.items():
+        df.to_csv( '%s.csv' % t , index_label='Index' )
+
     return dframes
 
 if __name__ == '__main__':

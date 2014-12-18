@@ -28,14 +28,31 @@ def postgresql_example():
     for row in result:
         tables.append( row[1] )
     
+    table_dict = {}
     for table in tables:
+        fields = []
         postgresql_describe_table = ''' select column_name, data_type, character_maximum_length
         from INFORMATION_SCHEMA.COLUMNS where table_name = '%s'; ''' % table
         
         result = con.execute(postgresql_describe_table)
         for row in result:
-            # print row
-            print '%s.%s' % ( table , row[0] ) , row[1:]
+            fields.append( row[0] )
+        table_dict[table] = fields
+
+    dframes = {}
+    
+    for table , fields in table_dict.iteritems():
+        query = 'select %s from %s;' % (', '.join(fields) , table )
+        # print query
+        result = con.execute(query)
+        rows = result.fetchall()
+        dframes[table] = pd.DataFrame( rows , columns=fields )
+
+    for t , df in dframes.items():
+        df.to_csv( '%s.csv' % t , index_label='Index' )
+
+    return dframes
+
 
 if __name__ == '__main__':
     postgresql_example()
