@@ -3,7 +3,7 @@
 import pyximport
 pyximport.install()
 
-import primes
+import primes0
 import primes2
 import time , os
 
@@ -12,7 +12,7 @@ os.system('gcc primes.c -o primes')
 ts = []
 
 ts.append( time.clock() )
-print primes.primes(10000)
+print primes0.primes(10000)
 ts.append( time.clock() )
 print primes2.primes(10000)
 ts.append( time.clock() )
