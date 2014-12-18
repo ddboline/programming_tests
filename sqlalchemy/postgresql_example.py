@@ -13,4 +13,4 @@ def postgresql_example():
     print dat
 
 if __name__ == '__main__':
-    
+    postgresql_example()
