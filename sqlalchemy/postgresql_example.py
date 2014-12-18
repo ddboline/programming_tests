@@ -10,4 +10,4 @@ def postgresql_example():
     dat = pd.read_sql( 'person' )
 
 if __name__ == '__main__':
-    
+    postgresql_example()
