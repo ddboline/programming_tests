@@ -1,7 +1,3 @@
--- Insert a new row for testing purpose
-INSERT INTO person (id, firstname, lastname)  VALUES (51, 'Half man', 'Uncomplete');
-COMMIT;
- 
 -- Retrieve the row. As defined in CREATE TABLE statement the weight has a default value of integer 0.
 -- Date_of_birth and place_of_birth contain the NULL special marker.
 SELECT * FROM person WHERE  id = 51;

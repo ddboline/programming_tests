@@ -1,7 +1,3 @@
-DELETE
-FROM   person
-WHERE  id = 3; -- Lisa Hamilton
- 
 -- no hit expected
 SELECT *
 FROM   person

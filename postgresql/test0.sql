@@ -131,3 +131,40 @@ INSERT INTO person_hobby VALUES (8, 9, 8);
 INSERT INTO person_hobby VALUES (9, 9, 9);
 COMMIT;
 
+-- Store a new person with id 99.
+INSERT INTO person (id, firstname, lastname, date_of_birth,    place_of_birth, ssn,           weight)
+VALUES             (99, 'Harriet', 'Flint',  DATE'1970-10-19', 'Dallas',       '078-05-1120', 65);
+commit;
+
+-- One value list results in one new row.
+INSERT INTO person (id,  firstname,       lastname,    date_of_birth,     place_of_birth, ssn,           weight)
+VALUES             (91,  'Larry, no. 91', 'Goldstein', DATE'1970-11-20', 'Dallas',        '078-05-1120', 95);
+COMMIT;
+ 
+-- The SQL standard - but not all implementations - supports a 'row value constructor' by
+-- enumerate values inside a pair of parenthesis as show in the above green box.  
+-- Three lists of values (= row value constructors) result in three new rows. Please note the comma after all 
+-- but the last one.
+INSERT INTO person (id,  firstname,       lastname,    date_of_birth,     place_of_birth, ssn,           weight)
+VALUES             (92,  'Larry, no. 92', 'Goldstein', DATE'1970-11-20', 'Dallas',        '078-05-1120', 95),
+                   (93,  'Larry, no. 93', 'Goldstein', DATE'1970-11-20', 'Dallas',        '078-05-1120', 95),
+                   (94,  'Larry, no. 94', 'Goldstein', DATE'1970-11-20', 'Dallas',        '078-05-1120', 95);
+COMMIT;
+
+-- Insert a new row for testing purpose
+INSERT INTO person (id, firstname, lastname)  VALUES (51, 'Half man', 'Uncomplete');
+COMMIT;
+ 
+--
+-- Insert a new row for testing purpose with all columns filled with a usefull value
+INSERT INTO person (id, firstname, lastname,  date_of_birth,    place_of_birth, ssn,           weight)
+VALUES             (52, 'Lyn',     'Mutable', DATE'1951-05-13', 'Anchorage',    '078-05-1152', 69);
+COMMIT;
+SELECT * FROM person WHERE id = 52;
+ 
+-- Delete a single column value (not the complete row)
+UPDATE person SET ssn = NULL WHERE id = 52;
+COMMIT;
+SELECT * FROM person WHERE id = 52;      -- one row
+SELECT * FROM person WHERE ssn IS NULL;  -- two rows: 51 + 52
+commit;
