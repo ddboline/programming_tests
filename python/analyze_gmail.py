@@ -22,7 +22,7 @@ class mail_analysis(object):
             self.html_msg_lengths.append(len(mail_msg.msg_body[1]))
         if len(mail_msg.msg_body_chars) > 0:
             self.text_msg_lengths.append(mail_msg.msg_body_chars[0])
-        if len(mail_msg.msg_body_chars) > 0:
+        if len(mail_msg.msg_body_chars) > 1:
             self.html_msg_lengths.append(mail_msg.msg_body_chars[1])
         for k in mail_msg.msg_parts:
             if k in self.labels_with_addresses:
