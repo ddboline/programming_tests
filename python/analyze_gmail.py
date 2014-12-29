@@ -48,7 +48,6 @@ class mail_message(object):
 def analyze_gmail(fname):
     current_mail_message = None
     this_analysis = mail_analysis()
-    prev_line = ''
     body_boundary = None
     with open(fname, 'r') as infile:
         while True:
@@ -70,14 +69,9 @@ def analyze_gmail(fname):
                 try:
                     body_boundary = ents[0].replace('boundary=','').replace('"','').replace(';','')
                 except IndexError:
-                    print prev_line
                     print ents[0]
                     exit(0)
-            
-            if '---------- Forwarded message ----------' in line:
-                print prev_line
-                print body_boundary
-            
+
             if line.find('From ') == 0:
                 if current_mail_message:
                     this_analysis.analyze_message(current_mail_message)
@@ -135,13 +129,8 @@ def analyze_gmail(fname):
                 msg_part_content.append(line.strip())
             else:
                 print 'what happened?', body_boundary, line.strip()
-            prev_line = line
         this_analysis.analyze_message(current_mail_message)
 
-    # for k, it in sorted(mail_messages[0].msg_parts.items()):
-        # print '%s: %s' % (k, it)
-    # for msg in mail_messages[0].msg_body:
-        # print len(msg.split())
     for ad in sorted(this_analysis.email_addresses):
         print ad
     this_analysis.print_analysis()
