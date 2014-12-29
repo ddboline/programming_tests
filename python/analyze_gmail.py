@@ -75,13 +75,6 @@ def analyze_gmail(fname):
                     msg_part_content = []
                 msg_part_label = ents[0][:-1]
                 msg_part_content.append(' '.join(ents[1:]))
-            elif 'boundary=' in ents[0]:
-                try:
-                    body_boundary = ents[0].replace('"','').split('=')[1]
-                except IndexError:
-                    print prev_line
-                    print ents[0]
-                    exit(0)
             elif body_boundary and body_boundary in ents[0]:
                 # temp_msg_body = []
                 temp_msg_chars = 0
@@ -120,6 +113,13 @@ def analyze_gmail(fname):
                 # del temp_msg_body
             else:
                 msg_part_content.append(line.strip())
+            if 'boundary=' in ents[0]:
+                try:
+                    body_boundary = ents[0].replace('"','').split('=')[1]
+                except IndexError:
+                    print prev_line
+                    print ents[0]
+                    exit(0)
             prev_line = line
         this_analysis.analyze_message(current_mail_message)
 
