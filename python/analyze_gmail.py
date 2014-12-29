@@ -139,8 +139,9 @@ def analyze_gmail(fname):
 
         this_analysis.analyze_message(current_mail_message)
 
-    for ad in sorted(this_analysis.email_addresses):
-        print ad
+    with open('email_addresses.txt', 'w') as outf:
+        for ad in sorted(this_analysis.email_addresses):
+            write('%s\n', ad)
     this_analysis.print_analysis()
     print 'number_of_emails', this_analysis.emails_analyzed
 
