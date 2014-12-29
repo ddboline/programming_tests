@@ -9,6 +9,7 @@ def clean_email_address(inp):
     remchars = '<>"\'()[],;'
     for c in remchars:
         inp = inp.replace(c, ' ')
+    inp.replace('mailto:','')
     return inp.lower()
 
 class mail_analysis(object):
