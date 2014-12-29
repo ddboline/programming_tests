@@ -8,11 +8,13 @@ class mail_analysis(object):
     labels_with_addresses = [ 'To', 'CC', 'BCC', 'From' ]
     
     def __init__(self):
+        self.emails_analyzed = 0
         self.email_addresses = []
         self.text_msg_lengths = []
         self.html_msg_lengths = []
     
     def analyze_message(self, mail_msg):
+        self.emails_analyzed += 1
         if len(mail_msg.msg_body) > 0:
             self.text_msg_lengths.append(len(mail_msg.msg_body[0]))
         if len(mail_msg.msg_body) > 1:
@@ -31,12 +33,14 @@ class mail_message(object):
         self.msg_body = []
 
 
-def analyze_gmail():
+def analyze_gmail(fname):
     number_of_emails = 0
     current_mail_message = None
     this_analysis = mail_analysis()
-    with open('temp.mbox', 'r') as infile:
+    with open(fname, 'r') as infile:
         while True:
+            if this_analysis.emails_analyzed == 1000:
+                break
             try:
                 line = next(infile)
             except StopIteration:
@@ -59,7 +63,11 @@ def analyze_gmail():
                 msg_part_label = ents[0][:-1]
                 msg_part_content.append(' '.join(ents[1:]))
             elif 'boundary' in ents[0]:
-                body_boundary = ents[0].split('"')[1]
+                try:
+                    body_boundary = ents[0].replace('"','').split('=')[1]
+                except IndexError:
+                    print ents[0]
+                    exit(0)
             elif body_boundary and body_boundary in ents[0]:
                 temp_msg_body = []
                 while True:
@@ -88,4 +96,5 @@ def analyze_gmail():
     print 'number_of_emails', number_of_emails
 
 if __name__ == '__main__':
-    analyze_gmail()
+    #analyze_gmail('temp.mbox')
+    analyze_gmail('All mail Including Spam and Trash.mbox')
