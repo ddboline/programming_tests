@@ -75,7 +75,7 @@ def analyze_gmail(fname):
                     msg_part_content = []
                 msg_part_label = ents[0][:-1]
                 msg_part_content.append(' '.join(ents[1:]))
-            elif 'boundary' in ents[0]:
+            elif 'boundary=' in ents[0]:
                 try:
                     body_boundary = ents[0].replace('"','').split('=')[1]
                 except IndexError:
