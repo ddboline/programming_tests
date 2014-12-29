@@ -77,12 +77,6 @@ def analyze_gmail(fname):
                 body_boundary = None
             elif len(ents) == 0:
                 continue
-            elif body_boundary == None and ents[0][-1] == ':' and ents[0][0].isupper():
-                if msg_part_label != None:
-                    current_mail_message.msg_parts[msg_part_label] = ' '.join(msg_part_content)
-                    msg_part_content = []
-                msg_part_label = ents[0][:-1]
-                msg_part_content.append(' '.join(ents[1:]))
             elif body_boundary and body_boundary in ents[0]:
                 # temp_msg_body = []
                 temp_msg_chars = 0
@@ -121,6 +115,12 @@ def analyze_gmail(fname):
                         temp_msg_chars += len(line.replace('\r','').replace('\n',''))
                         temp_msg_words += len(line.replace('\r','').replace('\n','').split())
                 # del temp_msg_body
+            elif ents[0][-1] == ':' and ents[0][0].isupper():
+                if msg_part_label != None:
+                    current_mail_message.msg_parts[msg_part_label] = ' '.join(msg_part_content)
+                    msg_part_content = []
+                msg_part_label = ents[0][:-1]
+                msg_part_content.append(' '.join(ents[1:]))
             else:
                 msg_part_content.append(line.strip())
             prev_line = line
