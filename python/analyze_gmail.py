@@ -49,6 +49,7 @@ def analyze_gmail(fname):
             if line.find('From ') == 0:
                 if current_mail_message:
                     this_analysis.analyze_message(current_mail_message)
+                    del current_mail_message
                 number_of_emails += 1
                 current_mail_message = mail_message(msg_date=parser.parse(' '.join(line.split()[2:])))
                 msg_part_label = None
