@@ -61,7 +61,7 @@ def analyze_gmail(fname):
             ents = line.split()
             if len(ents) > 0 and 'boundary=' in ents[0]:
                 try:
-                    body_boundary = ents[0].replace('"','').split('=')[1]
+                    body_boundary = ents[0].replace('boundary=','').replace('"','')
                 except IndexError:
                     print prev_line
                     print ents[0]
@@ -77,7 +77,7 @@ def analyze_gmail(fname):
                 body_boundary = None
             elif len(ents) == 0:
                 continue
-            elif body_boundary and body_boundary in ents[0]:
+            elif body_boundary != None and body_boundary in ents[0]:
                 # temp_msg_body = []
                 temp_msg_chars = 0
                 temp_msg_words = 0
