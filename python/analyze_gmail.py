@@ -141,7 +141,7 @@ def analyze_gmail(fname):
 
     with open('email_addresses.txt', 'w') as outf:
         for ad in sorted(this_analysis.email_addresses):
-            write('%s\n', ad)
+            outf.write('%s\n' % ad)
     this_analysis.print_analysis()
     print 'number_of_emails', this_analysis.emails_analyzed
 
