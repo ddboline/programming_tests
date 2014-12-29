@@ -32,16 +32,8 @@ class mail_message(object):
         self.msg_parts = {}
         self.msg_body = []
 
-    def reset(self, msg_date=None):
-        self.msg_date = msg_date
-        tmp_parts = self.msg_parts
-        tmp_body = self.msg_body
-        self.msg_parts = {}
-        self.msg_body = []
-        del tmp_parts, tmp_body
-
 def analyze_gmail(fname):
-    current_mail_message = mail_message()
+    current_mail_message = None
     this_analysis = mail_analysis()
     with open(fname, 'r') as infile:
         while True:
@@ -55,7 +47,8 @@ def analyze_gmail(fname):
             if line.find('From ') == 0:
                 if current_mail_message:
                     this_analysis.analyze_message(current_mail_message)
-                current_mail_message.reset(msg_date=parser.parse(' '.join(line.split()[2:])))
+                    del current_mail_message
+                current_mail_message = mail_message(msg_date=parser.parse(' '.join(line.split()[2:])))
                 msg_part_label = None
                 msg_part_content = []
                 body_boundary = None
