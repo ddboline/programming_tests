@@ -51,7 +51,7 @@ def analyze_gmail(fname):
     prev_line = ''
     with open(fname, 'r') as infile:
         while True:
-            if this_analysis.emails_analyzed >= 40:
+            if this_analysis.emails_analyzed >= 100:
                 break
             try:
                 line = next(infile)
