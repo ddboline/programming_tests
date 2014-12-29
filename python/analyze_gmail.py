@@ -51,8 +51,6 @@ def analyze_gmail(fname):
     body_boundary = None
     with open(fname, 'r') as infile:
         while True:
-            if this_analysis.emails_analyzed >= 100:
-                break
             try:
                 line = next(infile)
             except StopIteration:
@@ -67,7 +65,7 @@ def analyze_gmail(fname):
             
             if 'boundary=' in line:
                 try:
-                    body_boundary = ents[0].replace('boundary=','').replace('"','').replace(';','')
+                    body_boundary = ents[0].replace('boundary=3D','').replace('boundary=','').replace('"','').replace(';','')
                 except IndexError:
                     print ents[0]
                     exit(0)
@@ -76,7 +74,8 @@ def analyze_gmail(fname):
                 if current_mail_message:
                     this_analysis.analyze_message(current_mail_message)
                     del current_mail_message
-                    print this_analysis.emails_analyzed
+                    if this_analysis.emails_analyzed % 1000 == 0:
+                        print this_analysis.emails_analyzed
                 current_mail_message = mail_message(msg_date=parser.parse(' '.join(line.split()[2:])))
                 msg_part_label = None
                 msg_part_content = []
@@ -96,7 +95,6 @@ def analyze_gmail(fname):
                         if current_mail_message:
                             this_analysis.analyze_message(current_mail_message)
                             del current_mail_message
-                            print this_analysis.emails_analyzed
                         current_mail_message = mail_message(msg_date=parser.parse(' '.join(line.split()[2:])))
                         msg_part_label = None
                         msg_part_content = []
