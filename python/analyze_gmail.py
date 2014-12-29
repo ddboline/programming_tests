@@ -75,6 +75,7 @@ def analyze_gmail(fname):
                     exit(0)
             
             if '---------- Forwarded message ----------' in line:
+                print prev_line
                 print body_boundary
             
             if line.find('From ') == 0:
