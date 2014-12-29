@@ -49,6 +49,7 @@ def analyze_gmail(fname):
     current_mail_message = None
     this_analysis = mail_analysis()
     prev_line = ''
+    body_boundary = None
     with open(fname, 'r') as infile:
         while True:
             if this_analysis.emails_analyzed >= 100:
@@ -101,6 +102,7 @@ def analyze_gmail(fname):
                         current_mail_message.msg_body_chars.append(temp_msg_chars)
                         current_mail_message.msg_body_words.append(temp_msg_words)
                         msg_part_content = []
+                        body_boundary = None
                         break
                     elif body_boundary in line:
                         # current_mail_message.msg_body.append('\n'.join(temp_msg_body))
