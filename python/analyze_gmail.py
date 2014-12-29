@@ -6,7 +6,7 @@ from dateutil import parser
 # from memory_profiler import profile
 
 def clean_email_address(inp):
-    remchars = '<>"\'()[]'
+    remchars = '<>"\'()[],;'
     for c in remchars:
         inp = inp.replace(c, ' ')
     return inp.lower()
