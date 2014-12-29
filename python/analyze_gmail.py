@@ -32,10 +32,13 @@ class mail_message(object):
         self.msg_parts = {}
         self.msg_body = []
 
+    def reset(self, msg_date=None):
+        self.msg_date = msg_date
+        self.parts = {}
+        self.msg_body = []
 
 def analyze_gmail(fname):
-    number_of_emails = 0
-    current_mail_message = None
+    current_mail_message = mail_message()
     this_analysis = mail_analysis()
     with open(fname, 'r') as infile:
         while True:
@@ -49,9 +52,7 @@ def analyze_gmail(fname):
             if line.find('From ') == 0:
                 if current_mail_message:
                     this_analysis.analyze_message(current_mail_message)
-                    del current_mail_message
-                number_of_emails += 1
-                current_mail_message = mail_message(msg_date=parser.parse(' '.join(line.split()[2:])))
+                current_mail_message.reset(msg_date=parser.parse(' '.join(line.split()[2:])))
                 msg_part_label = None
                 msg_part_content = []
                 body_boundary = None
@@ -94,8 +95,8 @@ def analyze_gmail(fname):
         # print len(msg.split())
     for ad in sorted(this_analysis.email_addresses):
         print ad
-    print 'number_of_emails', number_of_emails
+    print 'number_of_emails', this_analysis.emails_analyzed
 
 if __name__ == '__main__':
-    #analyze_gmail('temp.mbox')
+    # analyze_gmail('temp.mbox')
     analyze_gmail('All mail Including Spam and Trash.mbox')
