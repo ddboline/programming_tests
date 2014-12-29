@@ -34,8 +34,11 @@ class mail_message(object):
 
     def reset(self, msg_date=None):
         self.msg_date = msg_date
-        self.parts = {}
+        tmp_parts = self.msg_parts
+        tmp_body = self.msg_body
+        self.msg_parts = {}
         self.msg_body = []
+        del tmp_parts, tmp_body
 
 def analyze_gmail(fname):
     current_mail_message = mail_message()
@@ -98,5 +101,7 @@ def analyze_gmail(fname):
     print 'number_of_emails', this_analysis.emails_analyzed
 
 if __name__ == '__main__':
-    # analyze_gmail('temp.mbox')
-    analyze_gmail('All mail Including Spam and Trash.mbox')
+    if os.path.exists('temp.mbox'):
+        analyze_gmail('temp.mbox')
+    if os.path.exists('All mail Including Spam and Trash.mbox'):
+        analyze_gmail('All mail Including Spam and Trash.mbox')
