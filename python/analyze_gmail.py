@@ -116,10 +116,11 @@ def analyze_gmail(fname):
                 # del temp_msg_body
             elif ents[0][-1] == ':' and ents[0][0].isupper():
                 if msg_part_label != None:
+                    msg_part_content = ' '.join(msg_part_content)
                     if msg_part_label in this_analysis.labels_with_addresses:
-                        if any(['@' not in m for m in msg_part_content]):
+                        if any(['@' not in m for m in msg_part_content.split(',')]):
                             print msg_part_content
-                    current_mail_message.msg_parts[msg_part_label] = ' '.join(msg_part_content)
+                    current_mail_message.msg_parts[msg_part_label] = msg_part_content
                     msg_part_content = []
                 msg_part_label = ents[0][:-1]
                 msg_part_content.append(' '.join(ents[1:]))
