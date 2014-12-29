@@ -70,7 +70,7 @@ def analyze_gmail(fname):
                 body_boundary = None
             elif len(ents) == 0:
                 continue
-            elif ents[0][-1] == ':' and ents[0][0].isupper():
+            elif body_boundary == None and ents[0][-1] == ':' and ents[0][0].isupper():
                 if msg_part_label != None:
                     current_mail_message.msg_parts[msg_part_label] = ' '.join(msg_part_content)
                     msg_part_content = []
