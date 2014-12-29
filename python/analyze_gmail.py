@@ -3,6 +3,7 @@
 import os
 import numpy as np
 from dateutil import parser
+from memory_profiler import profile
 
 class mail_analysis(object):
     labels_with_addresses = [ 'To', 'CC', 'BCC', 'From' ]
@@ -32,6 +33,7 @@ class mail_message(object):
         self.msg_parts = {}
         self.msg_body = []
 
+@profile
 def analyze_gmail(fname):
     current_mail_message = None
     this_analysis = mail_analysis()
