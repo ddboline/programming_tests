@@ -3,7 +3,7 @@
 import os
 import numpy as np
 from dateutil import parser
-from memory_profiler import profile
+# from memory_profiler import profile
 
 class mail_analysis(object):
     labels_with_addresses = [ 'To', 'CC', 'BCC', 'From' ]
@@ -20,6 +20,10 @@ class mail_analysis(object):
             self.text_msg_lengths.append(len(mail_msg.msg_body[0]))
         if len(mail_msg.msg_body) > 1:
             self.html_msg_lengths.append(len(mail_msg.msg_body[1]))
+        if len(mail_msg.msg_body_chars) > 0:
+            self.text_msg_lengths.append(mail_msg.msg_body_chars[0])
+        if len(mail_msg.msg_body_chars) > 0:
+            self.html_msg_lengths.append(mail_msg.msg_body_chars[1])
         for k in mail_msg.msg_parts:
             if k in self.labels_with_addresses:
                 for em in mail_msg.msg_parts[k].split(','):
@@ -27,13 +31,20 @@ class mail_analysis(object):
                     if emad not in self.email_addresses:
                         self.email_addresses.append( emad )
 
+    def print_analysis(self):
+        print 'emails', self.emails_analyzed
+        print 'addresses', len(self.email_addresses)
+        print 'msg_lengths', float(sum(self.text_msg_lengths))/len(self.text_msg_lengths), float(sum(self.html_msg_lengths))/len(self.html_msg_lengths)
+
 class mail_message(object):
     def __init__(self, msg_date=None):
         self.msg_date = msg_date
         self.msg_parts = {}
+        self.msg_body_chars = []
+        self.msg_body_words = []
         self.msg_body = []
 
-@profile
+# @profile
 def analyze_gmail(fname):
     current_mail_message = None
     this_analysis = mail_analysis()
@@ -69,20 +80,29 @@ def analyze_gmail(fname):
                     print ents[0]
                     exit(0)
             elif body_boundary and body_boundary in ents[0]:
-                temp_msg_body = []
+                # temp_msg_body = []
+                temp_msg_chars = 0
+                temp_msg_words = 0
                 while True:
                     try:
                         line = next(infile)
                     except StopIteration:
                         break
                     if '%s--' % body_boundary in line:
-                        current_mail_message.msg_body.append('\n'.join(temp_msg_body))
+                        # current_mail_message.msg_body.append('\n'.join(temp_msg_body))
+                        current_mail_message.msg_body_chars.append(temp_msg_chars)
+                        current_mail_message.msg_body_words.append(temp_msg_words)
                         break
                     elif body_boundary in line:
-                        current_mail_message.msg_body.append('\n'.join(temp_msg_body))
-                        temp_msg_body = []
+                        # current_mail_message.msg_body.append('\n'.join(temp_msg_body))
+                        # temp_msg_body = []
+                        current_mail_message.msg_body_chars.append(temp_msg_chars)
+                        current_mail_message.msg_body_words.append(temp_msg_words)
                     else:
-                        temp_msg_body.append(line.replace('\r','').replace('\n',''))
+                        # temp_msg_body.append(line.replace('\r','').replace('\n',''))
+                        temp_msg_chars += len(line.replace('\r','').replace('\n',''))
+                        temp_msg_words += len(line.replace('\r','').replace('\n','').split())
+                # del temp_msg_body
             else:
                 msg_part_content.append(line.strip())
         this_analysis.analyze_message(current_mail_message)
@@ -93,6 +113,7 @@ def analyze_gmail(fname):
         # print len(msg.split())
     for ad in sorted(this_analysis.email_addresses):
         print ad
+    this_analysis.print_analysis()
     print 'number_of_emails', this_analysis.emails_analyzed
 
 if __name__ == '__main__':
