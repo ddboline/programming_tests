@@ -69,7 +69,7 @@ def analyze_gmail(fname):
             if len(ents) > 0 and 'boundary=' in ents[0]:
                 try:
                     body_boundary = ents[0].replace('boundary=','').replace('"','').replace(';','')
-                    print body_boundary
+                    print line.strip()
                 except IndexError:
                     print prev_line
                     print ents[0]
