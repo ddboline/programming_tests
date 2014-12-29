@@ -62,8 +62,8 @@ def analyze_gmail(fname):
     body_boundary = None
     with open(fname, 'r') as infile:
         while True:
-            if this_analysis.emails_analyzed > 10000:
-                break
+            #if this_analysis.emails_analyzed > 10000:
+            #    break
             try:
                 line = next(infile)
             except StopIteration:
