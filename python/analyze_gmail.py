@@ -59,6 +59,13 @@ def analyze_gmail(fname):
             except StopIteration:
                 break
             ents = line.split()
+            if 'boundary=' in ents[0]:
+                try:
+                    body_boundary = ents[0].replace('"','').split('=')[1]
+                except IndexError:
+                    print prev_line
+                    print ents[0]
+                    exit(0)
             if line.find('From ') == 0:
                 if current_mail_message:
                     this_analysis.analyze_message(current_mail_message)
@@ -116,13 +123,6 @@ def analyze_gmail(fname):
                 # del temp_msg_body
             else:
                 msg_part_content.append(line.strip())
-            if 'boundary=' in ents[0]:
-                try:
-                    body_boundary = ents[0].replace('"','').split('=')[1]
-                except IndexError:
-                    print prev_line
-                    print ents[0]
-                    exit(0)
             prev_line = line
         this_analysis.analyze_message(current_mail_message)
 
