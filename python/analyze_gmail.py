@@ -48,6 +48,7 @@ class mail_message(object):
 def analyze_gmail(fname):
     current_mail_message = None
     this_analysis = mail_analysis()
+    prev_line = ''
     with open(fname, 'r') as infile:
         while True:
             if this_analysis.emails_analyzed >= 40:
@@ -78,6 +79,7 @@ def analyze_gmail(fname):
                 try:
                     body_boundary = ents[0].replace('"','').split('=')[1]
                 except IndexError:
+                    print prev_line
                     print ents[0]
                     exit(0)
             elif body_boundary and body_boundary in ents[0]:
@@ -118,6 +120,7 @@ def analyze_gmail(fname):
                 # del temp_msg_body
             else:
                 msg_part_content.append(line.strip())
+            prev_line = line
         this_analysis.analyze_message(current_mail_message)
 
     # for k, it in sorted(mail_messages[0].msg_parts.items()):
