@@ -62,13 +62,6 @@ def analyze_gmail(fname):
             ents = line.split()
             if len(ents) == 0:
                 continue
-            
-            if 'boundary=' in line:
-                try:
-                    body_boundary = line.split()[-1].replace('boundary=3D','').replace('boundary=','').replace('"','').replace(';','')
-                except IndexError:
-                    print ents[0]
-                    exit(0)
 
             if line.find('From ') == 0:
                 if current_mail_message:
@@ -127,6 +120,14 @@ def analyze_gmail(fname):
                 msg_part_content.append(line.strip())
             else:
                 print 'what happened?', body_boundary, line.strip()
+
+            if 'boundary=' in line:
+                try:
+                    body_boundary = line.split()[-1].replace('boundary=3D','').replace('boundary=','').replace('"','').replace(';','')
+                except IndexError:
+                    print ents[0]
+                    exit(0)
+
         this_analysis.analyze_message(current_mail_message)
 
     for ad in sorted(this_analysis.email_addresses):
