@@ -58,7 +58,14 @@ def analyze_gmail(fname):
                 line = next(infile)
             except StopIteration:
                 break
+            
+            if len(line.strip()) == 0:
+                continue
+            
             ents = line.split()
+            if len(ents) == 0:
+                continue
+            
             if len(ents) > 0 and 'boundary=' in ents[0]:
                 try:
                     body_boundary = ents[0].replace('boundary=','').replace('"','').replace(';','')
@@ -66,6 +73,7 @@ def analyze_gmail(fname):
                     print prev_line
                     print ents[0]
                     exit(0)
+            
             if line.find('From ') == 0:
                 if current_mail_message:
                     this_analysis.analyze_message(current_mail_message)
@@ -75,9 +83,8 @@ def analyze_gmail(fname):
                 msg_part_label = None
                 msg_part_content = []
                 body_boundary = None
-            elif len(ents) == 0:
-                continue
             elif body_boundary != None and body_boundary in ents[0]:
+                print body_boundary
                 # temp_msg_body = []
                 temp_msg_chars = 0
                 temp_msg_words = 0
