@@ -35,6 +35,8 @@ class mail_analysis(object):
                 for em in clean_email_address(mail_msg.msg_parts[k]).split():
                     if '@' not in em:
                         continue
+                    elif em == '@':
+                        print mail_msg.msg_parts
                     else:
                         if em not in self.email_addresses:
                             self.email_addresses.append( em )
