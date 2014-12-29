@@ -5,6 +5,12 @@ import numpy as np
 from dateutil import parser
 # from memory_profiler import profile
 
+def clean_email_address(inp):
+    remchars = '<>"\'()[]'
+    for c in remchars:
+        inp = inp.replace(c, ' ')
+    return inp.lower()
+
 class mail_analysis(object):
     labels_with_addresses = [ 'To', 'CC', 'BCC', 'From' ]
     
@@ -26,7 +32,7 @@ class mail_analysis(object):
             self.html_msg_lengths.append(mail_msg.msg_body_chars[1])
         for k in mail_msg.msg_parts:
             if k in self.labels_with_addresses:
-                for em in mail_msg.msg_parts[k].replace('<',' ').replace('>',' ').split():
+                for em in clean_email_address(mail_msg.msg_parts[k]).split():
                     if '@' not in em:
                         continue
                     else:
