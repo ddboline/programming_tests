@@ -90,6 +90,8 @@ def analyze_gmail(fname):
                     except StopIteration:
                         break
                     if line.find('From ') == 0:
+                        current_mail_message.msg_body_chars.append(temp_msg_chars)
+                        current_mail_message.msg_body_words.append(temp_msg_words)
                         if current_mail_message:
                             this_analysis.analyze_message(current_mail_message)
                             del current_mail_message
