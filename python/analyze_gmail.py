@@ -37,7 +37,7 @@ def analyze_gmail(fname):
     this_analysis = mail_analysis()
     with open(fname, 'r') as infile:
         while True:
-            if this_analysis.emails_analyzed == 1000:
+            if this_analysis.emails_analyzed >= 20:
                 break
             try:
                 line = next(infile)
