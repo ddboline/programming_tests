@@ -26,12 +26,12 @@ class mail_analysis(object):
             self.html_msg_lengths.append(mail_msg.msg_body_chars[1])
         for k in mail_msg.msg_parts:
             if k in self.labels_with_addresses:
-                for em in mail_msg.msg_parts[k].split(','):
-                    emad = em.strip().replace('"','').replace("'",'')
-                    if '@' not in emad:
-                        print 'no email...', emad
-                    if emad not in self.email_addresses:
-                        self.email_addresses.append( emad )
+                for em in mail_msg.msg_parts[k].replace('<',' ').replace('>',' ').split():
+                    if '@' not in em:
+                        continue
+                    else:
+                        if em not in self.email_addresses:
+                            self.email_addresses.append( em )
 
     def print_analysis(self):
         print 'emails', self.emails_analyzed
@@ -117,9 +117,6 @@ def analyze_gmail(fname):
             elif ents[0][-1] == ':' and ents[0][0].isupper():
                 if msg_part_label != None:
                     msg_part_content = ' '.join(msg_part_content)
-                    if msg_part_label in this_analysis.labels_with_addresses:
-                        if any(['@' not in m for m in msg_part_content.split(',')]):
-                            print msg_part_content
                     current_mail_message.msg_parts[msg_part_label] = msg_part_content
                     msg_part_content = []
                 msg_part_label = ents[0][:-1]
