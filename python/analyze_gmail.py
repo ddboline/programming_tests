@@ -100,6 +100,7 @@ def analyze_gmail(fname):
                         # current_mail_message.msg_body.append('\n'.join(temp_msg_body))
                         current_mail_message.msg_body_chars.append(temp_msg_chars)
                         current_mail_message.msg_body_words.append(temp_msg_words)
+                        msg_part_content = []
                         break
                     elif body_boundary in line:
                         # current_mail_message.msg_body.append('\n'.join(temp_msg_body))
