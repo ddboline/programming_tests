@@ -28,6 +28,8 @@ class mail_analysis(object):
             if k in self.labels_with_addresses:
                 for em in mail_msg.msg_parts[k].split(','):
                     emad = em.strip().replace('"','').replace("'",'')
+                    if '@' not in emad:
+                        print 'no email...', emad
                     if emad not in self.email_addresses:
                         self.email_addresses.append( emad )
 
