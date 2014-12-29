@@ -65,7 +65,7 @@ def analyze_gmail(fname):
             
             if 'boundary=' in line:
                 try:
-                    body_boundary = ents[0].replace('boundary=3D','').replace('boundary=','').replace('"','').replace(';','')
+                    body_boundary = line.split()[-1].replace('boundary=3D','').replace('boundary=','').replace('"','').replace(';','')
                 except IndexError:
                     print ents[0]
                     exit(0)
@@ -117,7 +117,7 @@ def analyze_gmail(fname):
                         temp_msg_chars += len(line.replace('\r','').replace('\n',''))
                         temp_msg_words += len(line.replace('\r','').replace('\n','').split())
                 # del temp_msg_body
-            elif body_boundary == None and ents[0][-1] == ':' and ents[0][0].isupper():
+            elif ents[0][-1] == ':' and ents[0][0].isupper():
                 if msg_part_label != None:
                     current_mail_message.msg_parts[msg_part_label] = ' '.join(msg_part_content)
                     msg_part_content = []
