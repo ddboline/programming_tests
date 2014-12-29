@@ -121,8 +121,10 @@ def analyze_gmail(fname):
                     msg_part_content = []
                 msg_part_label = ents[0][:-1]
                 msg_part_content.append(' '.join(ents[1:]))
-            else:
+            elif body_boundary == None:
                 msg_part_content.append(line.strip())
+            else:
+                print body_boundary, line.strip()
             prev_line = line
         this_analysis.analyze_message(current_mail_message)
 
