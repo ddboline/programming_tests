@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sudo apt-get install -y libboost-python-dev
+sudo apt-get install -y make libboost-python-dev
