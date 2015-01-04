@@ -65,24 +65,24 @@ def getAvgFeatureVecs(reviews, model, num_features):
     #
     # Loop through the reviews
     for review in reviews:
-       #
-       # Print a status message every 1000th review
-       if counter%1000. == 0.:
-           print "Review %d of %d" % (counter, len(reviews))
-       #
-       # Call the function (defined above) that makes average feature vectors
-       reviewFeatureVecs[counter] = makeFeatureVec(review, model, \
-           num_features)
-       #
-       # Increment the counter
-       counter = counter + 1.
+        #
+        # Print a status message every 1000th review
+        if counter%1000. == 0.:
+            print "Review %d of %d" % (counter, len(reviews))
+        #
+        # Call the function (defined above) that makes average feature vectors
+        reviewFeatureVecs[counter] = makeFeatureVec(review, model, \
+            num_features)
+        #
+        # Increment the counter
+        counter = counter + 1.
     return reviewFeatureVecs
 
 
 def getCleanReviews(reviews):
     clean_reviews = []
     for review in reviews["review"]:
-        clean_reviews.append( KaggleWord2VecUtility.review_to_wordlist( review, remove_stopwords=True ))
+        clean_reviews.append(KaggleWord2VecUtility.review_to_wordlist(review, remove_stopwords=True))
     return clean_reviews
 
 
@@ -90,14 +90,14 @@ def getCleanReviews(reviews):
 if __name__ == '__main__':
 
     # Read data from files
-    train = pd.read_csv( os.path.join(os.path.dirname(__file__), 'data', 'labeledTrainData.tsv'), header=0, delimiter="\t", quoting=3 )
-    test = pd.read_csv(os.path.join(os.path.dirname(__file__), 'data', 'testData.tsv'), header=0, delimiter="\t", quoting=3 )
-    unlabeled_train = pd.read_csv( os.path.join(os.path.dirname(__file__), 'data', "unlabeledTrainData.tsv"), header=0,  delimiter="\t", quoting=3 )
+    train = pd.read_csv(os.path.join(os.path.dirname(__file__), 'data', 'labeledTrainData.tsv'), header=0, delimiter="\t", quoting=3)
+    test = pd.read_csv(os.path.join(os.path.dirname(__file__), 'data', 'testData.tsv'), header=0, delimiter="\t", quoting=3)
+    unlabeled_train = pd.read_csv(os.path.join(os.path.dirname(__file__), 'data', "unlabeledTrainData.tsv"), header=0,  delimiter="\t", quoting=3)
 
     # Verify the number of reviews that were read (100,000 in total)
     print "Read %d labeled train reviews, %d labeled test reviews, " \
      "and %d unlabeled reviews\n" % (train["review"].size,
-     test["review"].size, unlabeled_train["review"].size )
+     test["review"].size, unlabeled_train["review"].size)
 
 
 
@@ -122,7 +122,7 @@ if __name__ == '__main__':
     #
     # Import the built-in logging module and configure it so that Word2Vec
     # creates nice output messages
-    logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s',\
+    logging.basicConfig(format='%(asctime)s: %(levelname)s: %(message)s',\
         level=logging.INFO)
 
     # Set values for various parameters
@@ -160,25 +160,25 @@ if __name__ == '__main__':
     #
     print "Creating average feature vecs for training reviews"
 
-    trainDataVecs = getAvgFeatureVecs( getCleanReviews(train), model, num_features )
+    trainDataVecs = getAvgFeatureVecs(getCleanReviews(train), model, num_features)
 
     print "Creating average feature vecs for test reviews"
 
-    testDataVecs = getAvgFeatureVecs( getCleanReviews(test), model, num_features )
+    testDataVecs = getAvgFeatureVecs(getCleanReviews(test), model, num_features)
 
 
     # ****** Fit a random forest to the training set, then make predictions
     #
     # Fit a random forest to the training data, using 100 trees
-    forest = RandomForestClassifier( n_estimators = 100 )
+    forest = RandomForestClassifier(n_estimators = 100)
 
     print "Fitting a random forest to labeled training data..."
-    forest = forest.fit( trainDataVecs, train["sentiment"] )
+    forest = forest.fit(trainDataVecs, train["sentiment"])
 
     # Test & extract results
-    result = forest.predict( testDataVecs )
+    result = forest.predict(testDataVecs)
 
     # Write the test results
-    output = pd.DataFrame( data={"id":test["id"], "sentiment":result} )
-    output.to_csv( "Word2Vec_AverageVectors.csv", index=False, quoting=3 )
+    output = pd.DataFrame(data={"id":test["id"], "sentiment":result})
+    output.to_csv("Word2Vec_AverageVectors.csv", index=False, quoting=3)
     print "Wrote Word2Vec_AverageVectors.csv"

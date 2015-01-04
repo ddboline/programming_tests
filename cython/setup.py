@@ -11,7 +11,7 @@ extensions = [
         libraries = ['gslcblas'],
         library_dirs = ['/usr/lib']),
     Extension('cos_func', ['cos_func.pyx'],
-                 libraries = ['m'] )
+                 libraries = ['m'])
 ]
 setup(
     ext_modules = cythonize(extensions),

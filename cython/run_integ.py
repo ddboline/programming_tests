@@ -14,15 +14,15 @@ import os
 os.system('gcc integ.c -o integ')
 
 t = []
-t.append( time.clock() )
+t.append(time.clock())
 print integ0.integrate_f(0., 1., 5e7)
-t.append( time.clock() )
+t.append(time.clock())
 print integ1.integrate_f(0., 1., 5e7)
-t.append( time.clock() )
+t.append(time.clock())
 print integ2.integrate_f(0., 1., 5e7)
-t.append( time.clock() )
+t.append(time.clock())
 os.system('./integ')
-t.append( time.clock() )
+t.append(time.clock())
 
 for n in range(1, len(t)):
     print t[n]-t[n-1],

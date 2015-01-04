@@ -121,7 +121,7 @@ def plot_paces():
 
     print 'men\'s world record pace', print_m_s(mp0*60)
     print 'women\'s world record pace', print_m_s(wp0*60)
-    
+
     def mfunc(x, *p):
         x0 = marathon_distance_m/meters_per_mile
         return mp0*(x/x0)**p[0]

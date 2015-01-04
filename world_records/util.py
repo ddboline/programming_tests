@@ -152,7 +152,7 @@ oops_messages = [
 
 def check_dmesg_for_ooops():
     for l in os.popen('dmesg').readlines():
-        if any(mes in l for mes in oops_messages) :
+        if any(mes in l for mes in oops_messages):
             return True
     return False
 

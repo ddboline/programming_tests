@@ -20,7 +20,7 @@ if __name__ == '__main__':
     train = pd.read_csv(os.path.join(os.path.dirname(__file__), 'labeledTrainData.tsv'), header=0, \
                     delimiter="\t", quoting=3)
     test = pd.read_csv(os.path.join(os.path.dirname(__file__), 'testData.tsv'), header=0, delimiter="\t", \
-                   quoting=3 )
+                   quoting=3)
 
     print 'The first review is:'
     print train["review"][0]
@@ -38,7 +38,7 @@ if __name__ == '__main__':
     # of the movie review list
 
     print "Cleaning and parsing the training set movie reviews...\n"
-    for i in xrange( 0, len(train["review"])):
+    for i in xrange(0, len(train["review"])):
         clean_train_reviews.append(" ".join(KaggleWord2VecUtility.review_to_wordlist(train["review"][i], True)))
 
 
@@ -77,7 +77,7 @@ if __name__ == '__main__':
     # features and the sentiment labels as the response variable
     #
     # This may take a few minutes to run
-    forest = forest.fit( train_data_features, train["sentiment"] )
+    forest = forest.fit(train_data_features, train["sentiment"])
 
 
 
@@ -98,10 +98,8 @@ if __name__ == '__main__':
 
     # Copy the results to a pandas dataframe with an "id" column and
     # a "sentiment" column
-    output = pd.DataFrame( data={"id":test["id"], "sentiment":result} )
+    output = pd.DataFrame(data={"id":test["id"], "sentiment":result})
 
     # Use pandas to write the comma-separated output file
     output.to_csv(os.path.join(os.path.dirname(__file__), 'Bag_of_Words_model.csv'), index=False, quoting=3)
     print "Wrote results to Bag_of_Words_model.csv"
-
-

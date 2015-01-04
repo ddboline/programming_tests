@@ -13,14 +13,14 @@ def clean_email_address(inp):
     return inp.lower()
 
 class mail_analysis(object):
-    labels_with_addresses = [ 'To', 'CC', 'BCC', 'From' ]
-    
+    labels_with_addresses = ['To', 'CC', 'BCC', 'From']
+
     def __init__(self):
         self.emails_analyzed = 0
         self.email_addresses = []
         self.text_msg_lengths = []
         self.html_msg_lengths = []
-    
+
     def analyze_message(self, mail_msg):
         self.emails_analyzed += 1
         if len(mail_msg.msg_body) > 0:
@@ -40,7 +40,7 @@ class mail_analysis(object):
                         continue
                     else:
                         if em not in self.email_addresses:
-                            self.email_addresses.append( em )
+                            self.email_addresses.append(em)
 
     def print_analysis(self):
         print 'emails', self.emails_analyzed
@@ -68,10 +68,10 @@ def analyze_gmail(fname):
                 line = next(infile)
             except StopIteration:
                 break
-            
+
             if len(line.strip()) == 0:
                 continue
-            
+
             ents = line.split()
             if len(ents) == 0:
                 continue

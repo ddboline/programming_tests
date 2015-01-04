@@ -13,7 +13,7 @@ def lin_func(x, *p):
     return p[0] + p[1] * x + p[2] * x**2
 
 def exp_func(x, *p):
-    return p[0] + p[1] * np.exp( p[2]*x )
+    return p[0] + p[1] * np.exp(p[2]*x)
 
 def do_fit(datax, datay, func, p0):
     #datax = data[:, 0]
@@ -63,31 +63,31 @@ def do_fit(datax, datay, func, p0):
     # return pfit_bootstrap, perr_bootstrap
 
 
-xvals , tvals = [] , []
+xvals, tvals = [], []
 with open('timing.txt', 'r') as tfile:
     for line in tfile:
         ents = line.split()
         if len(ents) < 3:
             continue
-        xvals.append( int(ents[0]) )
-        tvals.append( float(ents[1]) )
-x = np.array( xvals )
-t = np.array( tvals )
+        xvals.append(int(ents[0]))
+        tvals.append(float(ents[1]))
+x = np.array(xvals)
+t = np.array(tvals)
 
-pl.plot( x, t )
+pl.plot(x, t)
 
 #fit_fun = exp_func
 fit_fun = lin_func
 
-p , dp = do_fit(x, t, fit_fun, p0=(0,0,0))
+p, dp = do_fit(x, t, fit_fun, p0=(0,0,0))
 
 pp, pm = p+dp, p-dp
 pl.plot(x, fit_fun(x, *p), 'r', linewidth=2.5)
 pl.plot(x, fit_fun(x, *pp), 'r--')
 pl.plot(x, fit_fun(x, *pm), 'r--')
 
-for N in [ 1000 , 10000 , 20000 , 30000 ]:
-    print N, fit_fun( N , *p )/60. , fit_fun( N , *pm )/60. , fit_fun( N , *pp )/60.
+for N in [1000, 10000, 20000, 30000]:
+    print N, fit_fun(N, *p)/60., fit_fun(N, *pm)/60., fit_fun(N, *pp)/60.
 
 pl.show()
 pl.savefig('plot_timing.png')

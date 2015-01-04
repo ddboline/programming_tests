@@ -1,9 +1,9 @@
 from scipy import optimize
 
-def line( x, p):
+def line(x, p):
     return p[0]*x + p[1]
 
-def linef( x, p0, p1):
+def linef(x, p0, p1):
     return p0*x + p1
 
 
@@ -17,14 +17,14 @@ def fit_function(p0, datax, datay, function, **kwargs):
 
     # If using optimize.leastsq, the covariance returned is the
     # reduced covariance or fractional covariance, as explained
-    # here :
+    # here:
     # http://stackoverflow.com/questions/14854339/in-scipy-how-and-why-does-curve-fit-calculate-the-covariance-of-the-parameter-es
     # One can multiply it by the reduced chi squared, s_sq, as
     # it is done in the more recenly implemented scipy.curve_fit
     # The errors in the parameters are then the square root of the
     # diagonal elements.
     pfit, pcov, infodict, errmsg, success = \
-        optimize.leastsq( errfunc, p0, args=(datax, datay), \
+        optimize.leastsq(errfunc, p0, args=(datax, datay), \
                           full_output=1)
 
     if (len(datay) > len(p0)) and pcov is not None:
@@ -36,9 +36,9 @@ def fit_function(p0, datax, datay, function, **kwargs):
     error = []
     for i in range(len(pfit)):
         try:
-          error.append( numpy.absolute(pcov[i][i])**0.5)
+            error.append(numpy.absolute(pcov[i][i])**0.5)
         except:
-          error.append( 0.00 )
+            error.append(0.00)
     pfit_leastsq = pfit
     perr_leastsq = numpy.array(error)
 
@@ -61,9 +61,9 @@ def fit_function(p0, datax, datay, function, **kwargs):
     error = []
     for i in range(len(pfit)):
         try:
-          error.append( numpy.absolute(pcov[i][i])**0.5)
+            error.append(numpy.absolute(pcov[i][i])**0.5)
         except:
-          error.append( 0.00 )
+            error.append(0.00)
     pfit_curvefit = pfit
     perr_curvefit = numpy.array(error)
 
@@ -95,23 +95,23 @@ def fit_function(p0, datax, datay, function, **kwargs):
     # Estimate the confidence interval of the fitted parameter using
     # the bootstrap Monte-Carlo method
     # http://phe.rockefeller.edu/LogletLab/whitepaper/node17.html
-    residuals = errfunc( pfit, datax, datay)
+    residuals = errfunc(pfit, datax, datay)
     s_res = numpy.std(residuals)
     ps = []
     # 100 random data sets are generated and fitted
     for i in range(100):
-      if datayerrors is None:
-          randomDelta = numpy.random.normal(0., s_res, len(datay))
-          randomdataY = datay + randomDelta
-      else:
-          randomDelta =  numpy.array( [ \
-                             numpy.random.normal(0., derr,1)[0] \
-                             for derr in datayerrors ] )
-          randomdataY = datay + randomDelta
-      randomfit, randomcov = \
-          optimize.leastsq( errfunc, p0, args=(datax, randomdataY),\
-                            full_output=0)
-      ps.append( randomfit )
+        if datayerrors is None:
+            randomDelta = numpy.random.normal(0., s_res, len(datay))
+            randomdataY = datay + randomDelta
+        else:
+            randomDelta =  numpy.array([\
+                               numpy.random.normal(0., derr,1)[0] \
+                               for derr in datayerrors])
+            randomdataY = datay + randomDelta
+        randomfit, randomcov = \
+            optimize.leastsq(errfunc, p0, args=(datax, randomdataY),\
+                              full_output=0)
+        ps.append(randomfit)
 
     ps = numpy.array(ps)
     mean_pfit = numpy.mean(ps,0)
@@ -125,12 +125,12 @@ def fit_function(p0, datax, datay, function, **kwargs):
 
 
     # Print results
-    print "\nlestsq method :"
+    print "\nlestsq method:"
     print "pfit = ", pfit_leastsq
     print "perr = ", perr_leastsq
-    print "\ncurvefit method :"
+    print "\ncurvefit method:"
     print "pfit = ", pfit_curvefit
     print "perr = ", perr_curvefit
-    print "\nbootstrap method :"
+    print "\nbootstrap method:"
     print "pfit = ", pfit_bootstrap
     print "perr = ", perr_bootstrap

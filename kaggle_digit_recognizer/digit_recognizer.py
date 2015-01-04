@@ -11,22 +11,22 @@ from sklearn import ensemble, neighbors
 def digit_recognizer():
     train_samp = pd.read_csv('train.csv', header=0)
 
-    indicies = np.random.permutation( np.arange(train_samp.shape[0]) )
+    indicies = np.random.permutation(np.arange(train_samp.shape[0]))
     x_train = train_samp.iloc[indicies[:21000],1:]
     y_train = train_samp.iloc[indicies[:21000],0]
     x_test = train_samp.iloc[indicies[21000:],1:]
     y_test = train_samp.iloc[indicies[21000:],0]
-    
+
     forest = ensemble.RandomForestClassifier()
     print forest.fit(x_train, y_train)
     print forest.score(x_test, y_test)
-    
+
     knn = neighbors.KNeighborsClassifier()
     print knn.fit(x_train, y_train)
     print knn.score(x_test, y_test)
-    
+
     return
-    
+
     gammas = np.logspace(-6, -1, 10)
     svc = svm.SVC()
     clf = grid_search.GridSearchCV(estimator=svc, param_grid=dict(gamma=gammas), n_jobs=-1)
@@ -46,29 +46,29 @@ def digit_recognizer():
                 'QDA': QDA(),
                 'GMM': GMM(),
                 'SVC2': SVC(),
-                }
+               }
 
     classifier_list = classifier_dict.values()
     classifier_scores = {}
     for k in classifier_dict:
         classifier_scores[k] = []
 
-    def score_model( model ):
+    def score_model(model):
         try:
             model.fit(x_train, y_train)
             #print xtest.shape, ytest.shape
-            return model.score(x_test, y_test) , model
+            return model.score(x_test, y_test), model
         except:
             print model
             exit(0)
 
-    for k , c in classifier_dict.iteritems():
-        s , m = score_model( c )
-        classifier_scores[k].append( s )
+    for k, c in classifier_dict.iteritems():
+        s, m = score_model(c)
+        classifier_scores[k].append(s)
 
-    for k , s in classifier_scores.items():
-        print k , max(s)
-    
+    for k, s in classifier_scores.items():
+        print k, max(s)
+
     return
 
 if __name__ == '__main__':

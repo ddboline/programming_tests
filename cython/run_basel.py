@@ -13,13 +13,13 @@ import pstats, cProfile
 def time_execution():
     t = []
     print math.pi
-    t.append( time.clock() )
+    t.append(time.clock())
     print basel0.approx_pi(10**7)
-    t.append( time.clock() )
+    t.append(time.clock())
     print basel1.approx_pi(10**7)
-    t.append( time.clock() )
+    t.append(time.clock())
     print basel1.approx_pi(10**9)
-    t.append( time.clock() )
+    t.append(time.clock())
 
     for n in range(1, len(t)):
         print t[n]-t[n-1],
