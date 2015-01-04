@@ -17,4 +17,3 @@ def matmul2(np.ndarray[np.float64_t, ndim=2] A, np.ndarray[np.float64_t, ndim=2]
             for k in xrange(A.shape[1]):
                 s += A[i,k] * B[k,j]
             out[i,j] = s
-

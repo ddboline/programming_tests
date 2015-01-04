@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
-cdef extern from 'rectangle.h' namespace 'shapes' :
-    cdef cppclass rectangle :
+cdef extern from 'rectangle.h' namespace 'shapes':
+    cdef cppclass rectangle:
         rectangle(int, int, int, int) except +
         int x0, y0, x1, y1
         int getLength()
@@ -9,7 +9,7 @@ cdef extern from 'rectangle.h' namespace 'shapes' :
         int getArea()
         void move(int, int)
 
-def create_rectange() :        
+def create_rectange():
     cdef rectangle *rec = new rectangle(1, 2, 3, 4)
     try:
         recLength = rec.getLength()

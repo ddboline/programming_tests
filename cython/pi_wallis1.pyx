@@ -2,7 +2,7 @@
 
 import os
 
-cpdef pi_wallis(int n = 10) :
+cpdef pi_wallis(int n = 10):
     cdef double val = 2.
     cdef int i = 1
     for i in xrange(1,n):

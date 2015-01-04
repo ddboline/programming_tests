@@ -22,5 +22,5 @@ def matmul3(np.ndarray[np.float64_t, ndim=2] A, np.ndarray[np.float64_t, ndim=2]
             for k in xrange(B.shape[0]):
                 B_col[k] = B[k,j]
             #B_col = B[:,j]
-            out[i,j] = ddot( A_row.shape[0], <np.float64_t*> A_row.data, A_row.strides[0] // sizeof(np.float64_t),
-                                             <np.float64_t*> B_col.data, B_col.strides[0] // sizeof(np.float64_t) )
+            out[i,j] = ddot(A_row.shape[0], <np.float64_t*> A_row.data, A_row.strides[0] // sizeof(np.float64_t),
+                                             <np.float64_t*> B_col.data, B_col.strides[0] // sizeof(np.float64_t))

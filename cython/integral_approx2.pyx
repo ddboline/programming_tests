@@ -1,9 +1,9 @@
 #!/usr/bin/python
 
-cdef double func_f(double a, double b, double c) :
+cdef double func_f(double a, double b, double c):
     return a**b - c
 
-cpdef double integrate_f(int Nx, int Ny, int Nz) :
+cpdef double integrate_f(int Nx, int Ny, int Nz):
     cdef double s = 0
     cdef double x, y, z
     cdef double dx = 1. / (Nx - 1)
@@ -11,11 +11,11 @@ cpdef double integrate_f(int Nx, int Ny, int Nz) :
     cdef double dz = 1. / (Nz - 1)
     cdef int i, j, k
     x = 0
-    while x < 1. :
+    while x < 1.:
         y = 0.
-        while y < 1. :
+        while y < 1.:
             z = 0.
-            while z < 1. :
+            while z < 1.:
                 s += func_f(x, y, z)
                 z += dz
             y += dy

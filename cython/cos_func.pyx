@@ -4,7 +4,7 @@
 # from libc.math cimport cos
 
 cdef extern from "math.h":
-    double cos( double x )
+    double cos(double x)
 
-cpdef double cos_func(double arg) :
+cpdef double cos_func(double arg):
     return cos(arg)
