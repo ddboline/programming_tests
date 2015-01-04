@@ -21,6 +21,7 @@ def time_execution():
     print basel1.approx_pi(10**9)
     t.append(time.clock())
 
+    print 'timing:',
     for n in range(1, len(t)):
         print t[n]-t[n-1],
     print ''

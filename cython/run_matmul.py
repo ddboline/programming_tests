@@ -34,7 +34,7 @@ def run_matmul():
     # ts.append(time.clock())
 
     for i in range(3):
-        print np.mean(cs[i]), ts[i+1] - ts[i]
+        print 'timing:', np.mean(cs[i]), ts[i+1] - ts[i]
 
     return
 

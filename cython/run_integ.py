@@ -24,6 +24,7 @@ t.append(time.clock())
 os.system('./integ')
 t.append(time.clock())
 
+print 'timing:',
 for n in range(1, len(t)):
     print t[n]-t[n-1],
 print ''

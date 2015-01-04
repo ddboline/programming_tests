@@ -24,4 +24,4 @@ t3 = time.clock()
 #os.system('/home/ddboline/temp/cython/integ')
 # t4 = time.clock()
 
-print t3-t2, t2-t1, t1-t0
+print 'timing:', t3-t2, t2-t1, t1-t0

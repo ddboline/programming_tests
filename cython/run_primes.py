@@ -20,4 +20,4 @@ os.system('./primes 10000')
 ts.append(time.clock())
 
 for i in range(0,len(ts)-1):
-    print ts[i+1] - ts[i]
+    print 'timing:', ts[i+1] - ts[i]
