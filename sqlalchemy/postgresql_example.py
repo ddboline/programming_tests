@@ -4,6 +4,8 @@ import os
 from sqlalchemy import create_engine
 import pandas as pd
 
+USER = os.getenv('USER')
+
 postgresql_list_tables = '''
 SELECT n.nspname as "Schema",
   c.relname as "Name",
@@ -20,7 +22,7 @@ ORDER BY 1,2;
 '''
 
 def postgresql_example():
-    engine = create_engine('postgresql://ddboline:BQGIvkKFZPejrKvX@localhost/mydb')
+    engine = create_engine('postgresql://%s:BQGIvkKFZPejrKvX@localhost/mydb' % USER)
     con = engine.connect()
 
     result = con.execute(postgresql_list_tables)
@@ -54,7 +56,7 @@ def postgresql_example():
     return dframes
 
 def postgresql_example_test():
-    engine = create_engine('postgresql://ddboline:BQGIvkKFZPejrKvX@localhost/mydb')
+    engine = create_engine('postgresql://%s:BQGIvkKFZPejrKvX@localhost/mydb' % USER)
     con = engine.connect()
 
     result = con.execute(postgresql_list_tables)
