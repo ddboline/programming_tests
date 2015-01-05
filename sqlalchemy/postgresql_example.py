@@ -53,6 +53,18 @@ def postgresql_example():
 
     return dframes
 
+def postgresql_example_test():
+    engine = create_engine('postgresql://ddboline:BQGIvkKFZPejrKvX@localhost/mydb')
+    con = engine.connect()
+
+    result = con.execute(postgresql_list_tables)
+    tables = []
+    for row in result:
+        tables.append(row[1])
+
+    for table in tables:
+        df = pd.read_sql("SELECT * from %s" % table, engine)
+        df.to_csv('%s.csv' % (table), index_label='Index')
 
 if __name__ == '__main__':
-    postgresql_example()
+    postgresql_example_test()

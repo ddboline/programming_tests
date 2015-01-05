@@ -37,6 +37,20 @@ def mysql_example(database):
 
     return dframes
 
+def mysql_example_test(database):
+    engine = create_engine('mysql://ddboline:BQGIvkKFZPejrKvX@localhost/%s' % database)
+    con = engine.connect()
+
+    result = con.execute('show tables;')
+    tables = []
+    for row in result:
+        tables.append(row[0])
+
+    table_dict = {}
+    for table in tables:
+        df = pd.read_sql("SELECT * from %s" % table, engine)
+        df.to_csv('%s_%s.csv' % (database, table), index_label='Index')
+
 if __name__ == '__main__':
-    mysql_example('world')
-    mysql_example('mydb')
+    mysql_example_test('world')
+    mysql_example_test('mydb')
