@@ -7,7 +7,7 @@ import jsonpickle
 class Tree(collections.defaultdict):
     def __init__(self):
         self.default_factory = Tree
-    
+
     def __repr__(self):
         return repr(dict(self))
 

@@ -79,7 +79,7 @@ def kaggle_dsl_scoring(gauss_train_size=1000):
                 #'QDA': QDA(),
                 #'GMM': GMM(),
                 #'SVC2': SVC(),
-               }
+              }
 
     classifier_list = classifier_dict.values()
     classifier_scores = {}

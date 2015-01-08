@@ -46,7 +46,7 @@ def digit_recognizer():
                 'QDA': QDA(),
                 'GMM': GMM(),
                 'SVC2': SVC(),
-               }
+              }
 
     classifier_list = classifier_dict.values()
     classifier_scores = {}
