@@ -22,7 +22,7 @@ def parse_quoted_email_string(inpstr):
     em_list = []
     for word in outstr.split():
         if '@' in word:
-            em_list.append(word)
+            em_list.append(''.join(x[0] for x in email.header.decode_header(word)))
     return em_list
 
 def analyze_gmail(fname):
