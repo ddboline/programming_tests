@@ -15,7 +15,7 @@ def parse_quoted_email_string(inpstr):
         return inpstr
     
     outstr = inpstr.strip()
-    for repl in r'<>()[]':
+    for repl in r'<>()[],':
         outstr = outstr.replace(repl, ' ')
     for repl in r'"\\\'':
         outstr = outstr.replace(repl, '')
