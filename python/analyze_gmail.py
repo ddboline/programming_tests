@@ -13,6 +13,9 @@ EMAIL_LABELS = ['from', 'to', 'cc']
 def parse_quoted_email_string(inpstr):
     if type(inpstr) != str:
         return inpstr
+
+    print inpstr
+    raw_input()
     output = []
     outstr = []
     namestr = ''
