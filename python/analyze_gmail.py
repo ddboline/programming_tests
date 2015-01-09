@@ -29,7 +29,7 @@ def parse_quoted_email_string(inpstr):
             if not in_quotes:
                 outchar = ''
         elif char == '\n':
-            outchar = ''
+            outchar = ' '
         elif char == '<':
             if not in_quotes:
                 namestr = (''.join(outstr)).strip()
@@ -37,8 +37,9 @@ def parse_quoted_email_string(inpstr):
                 outchar = ''
         elif char == '>':
             if not in_quotes:
-                emstr = (''.join(outstr)).strip()
-                output.append( [namestr, emstr] )
+                emstr = (''.join(outstr)).replace('"', '').replace("'", '').strip().strip('()')
+                if '@' in emstr:
+                    output.append( [namestr, emstr] )
                 namestr = ''
                 emstr = ''
                 outstr = []
@@ -54,17 +55,19 @@ def analyze_gmail(fname):
         for line in infile:
             #if number_emails >= 10000:
                 #break
-            if number_emails % 10000 == 0:
-                print 'N emails:', number_emails
             if line.find('From ') == 0:
                 if current_message_stack:
                     msg = email.message_from_string(''.join(current_message_stack))
                     for k, v in msg.items():
                         if k.lower() in EMAIL_LABELS:
-                            for nstr, estr in parse_quoted_email_string(v):
+                            #print ''.join(x[0] for x in email.header.decode_header(v))
+                            #raw_input()
+                            for nstr, estr in parse_quoted_email_string(''.join(x[0] for x in email.header.decode_header(v))):
                                 em = estr.lower()
                                 if '@' not in em:
                                     print 'bad email?:', em
+                                    print  email.header.decode_header(v)
+                                    exit(0)
                                 nm = email.header.decode_header(nstr)[0][0]
                                 nm = nm.replace('"','').replace("'",'').strip()
                                 if em not in email_addresses:
@@ -97,6 +100,8 @@ def analyze_gmail(fname):
                         #print msg.get_payload()
                     #raw_input()
                 number_emails += 1
+                if number_emails % 10000 == 0:
+                    print 'N emails:', number_emails
                 current_message_stack = []
             current_message_stack.append(line)
     #print any('|' in l for l in email_addresses.values())
