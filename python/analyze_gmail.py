@@ -15,8 +15,10 @@ def parse_quoted_email_string(inpstr):
         return inpstr
     
     outstr = inpstr.strip()
-    for repl in ['<','>']:
+    for repl in r'<>()[]':
         outstr = outstr.replace(repl, ' ')
+    for repl in r'"\\\'':
+        outstr = outstr.replace(repl, '')
     em_list = []
     for word in outstr.split():
         if '@' in word:
@@ -39,6 +41,7 @@ def analyze_gmail(fname):
                             #print ''.join(x[0] for x in email.header.decode_header(v))
                             #raw_input()
                             for estr in parse_quoted_email_string(''.join(x[0] for x in email.header.decode_header(v))):
+                                # print estr
                                 em = estr.lower()
                                 if '@' not in em:
                                     print 'bad email?:', em
@@ -52,7 +55,6 @@ def analyze_gmail(fname):
                     print 'N emails:', number_emails
                 current_message_stack = []
             current_message_stack.append(line)
-    #print any('|' in l for l in email_addresses.values())
     with open('email_addresses.txt', 'w') as f:
         f.write('EmailAddress,Count\n')
         for k, n in sorted(email_addresses.items()):
