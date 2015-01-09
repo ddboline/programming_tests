@@ -13,7 +13,10 @@ EMAIL_LABELS = ['from', 'to', 'cc']
 def parse_quoted_email_string(inpstr):
     if type(inpstr) != str:
         return inpstr
+    output = []
     outstr = []
+    namestr = ''
+    emstr = ''
     in_quotes = False
     for char in inpstr:
         outchar = char
@@ -24,17 +27,24 @@ def parse_quoted_email_string(inpstr):
                 in_quotes = True
         elif char == ',':
             if not in_quotes:
-                outchar = '\n'
+                outchar = ''
         elif char == '\n':
             outchar = ''
-        #elif char == '<':
-            #if not in_quotes:
-                #outchar = '|'
-        #elif char == '>':
-            #if not in_quotes:
-                #outchar = ''
+        elif char == '<':
+            if not in_quotes:
+                namestr = (''.join(outstr)).strip()
+                outstr = []
+                outchar = ''
+        elif char == '>':
+            if not in_quotes:
+                emstr = (''.join(outstr)).strip()
+                output.append( [namestr, emstr] )
+                namestr = ''
+                emstr = ''
+                outstr = []
+                outchar = ''
         outstr.append(outchar)
-    return ''.join(outstr)
+    return output
 
 def analyze_gmail(fname):
     email_addresses = {}
@@ -42,32 +52,25 @@ def analyze_gmail(fname):
     with open(fname, 'r') as infile:
         current_message_stack = []
         for line in infile:
-            if number_emails >= 100:
-                break
+            #if number_emails >= 10000:
+                #break
+            if number_emails % 10000 == 0:
+                print 'N emails:', number_emails
             if line.find('From ') == 0:
                 if current_message_stack:
                     msg = email.message_from_string(''.join(current_message_stack))
                     for k, v in msg.items():
                         if k.lower() in EMAIL_LABELS:
-                            #print email.header.decode_header(v)
-                            for ent in parse_quoted_email_string(v).split('\n'):
-                                print parse_quoted_email_string(ent)
-                                #if '|' in ent:
-                                    #name, em = ent.split('|')[:2]
-                                    #if '@' not in em:
-                                        #print email.header.decode_header(v)
-                                    #em = em.lower()
-                                    #name = name.replace('"','').replace("'",'').strip()
-                                    #if em not in email_addresses:
-                                        #email_addresses[em] = []
-                                    #if name not in email_addresses[em]:
-                                        #email_addresses[em].append(name)
-                                #elif len(ent.strip()) > 0:
-                                    #em = ent.lower()
-                                    #if em not in email_addresses:
-                                        #email_addresses[em] = []
-                                #else:
-                                    #continue
+                            for nstr, estr in parse_quoted_email_string(v):
+                                em = estr.lower()
+                                if '@' not in em:
+                                    print 'bad email?:', em
+                                nm = email.header.decode_header(nstr)[0][0]
+                                nm = nm.replace('"','').replace("'",'').strip()
+                                if em not in email_addresses:
+                                    email_addresses[em] = []
+                                if nm not in email_addresses[em]:
+                                    email_addresses[em].append(nm)
                     #if msg.is_multipart():
                         #for p in msg.walk():
                             #if p.get_content_maintype() == 'multipart':
@@ -100,6 +103,11 @@ def analyze_gmail(fname):
     with open('email_addresses.txt', 'w') as f:
         for k in sorted(email_addresses):
             f.write('%s\n' % k)
+    with open('email_contacts.csv', 'w') as f:
+        f.write('Name,Email\n')
+        for k in sorted(email_addresses):
+            for nm in email_addresses[k]:
+                f.write('%s,"%s"\n' % (k, nm))
 
 if __name__ == '__main__':
     if os.path.exists('temp.mbox'):
