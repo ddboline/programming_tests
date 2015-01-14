@@ -8,8 +8,9 @@ import numpy as np
 import pandas as pd
 from sklearn import ensemble, neighbors
 
-def digit_recognizer():
+def compare_rf_knn():
     train_samp = pd.read_csv('train.csv', header=0)
+    test_samp = pd.read_csv('test.csv', header=0)
 
     indicies = np.random.permutation(np.arange(train_samp.shape[0]))
     x_train = train_samp.iloc[indicies[:21000],1:]
@@ -25,7 +26,31 @@ def digit_recognizer():
     print knn.fit(x_train, y_train)
     print knn.score(x_test, y_test)
 
+def digit_recognizer_submission():
+    train_samp = pd.read_csv('train.csv', header=0)
+    test_samp = pd.read_csv('test.csv', header=0)
+
+    x_train = train_samp.iloc[:,1:]
+    y_train = train_samp.iloc[:,0]
+    
+    knn = neighbors.KNeighborsClassifier()
+    print knn.fit(x_train, y_train)
+    print knn.score(x_test, y_test)
+    
+    x_test = test_samp
+    y_test = knn.predict(x_test)
+
     return
+
+def compare_algos():
+    train_samp = pd.read_csv('train.csv', header=0)
+    test_samp = pd.read_csv('test.csv', header=0)
+
+    indicies = np.random.permutation(np.arange(train_samp.shape[0]))
+    x_train = train_samp.iloc[indicies[:21000],1:]
+    y_train = train_samp.iloc[indicies[:21000],0]
+    x_test = train_samp.iloc[indicies[21000:],1:]
+    y_test = train_samp.iloc[indicies[21000:],0]
 
     gammas = np.logspace(-6, -1, 10)
     svc = svm.SVC()
@@ -72,4 +97,4 @@ def digit_recognizer():
     return
 
 if __name__ == '__main__':
-    digit_recognizer()
+    digit_recognizer_submission()
