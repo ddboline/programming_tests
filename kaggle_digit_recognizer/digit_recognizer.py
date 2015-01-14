@@ -35,8 +35,7 @@ def digit_recognizer_submission():
     
     knn = neighbors.KNeighborsClassifier()
     print knn.fit(x_train, y_train)
-    print knn.score(x_test, y_test)
-    
+
     x_test = test_samp
     y_test = knn.predict(x_test)
 
