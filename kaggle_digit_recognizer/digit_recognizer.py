@@ -40,6 +40,11 @@ def digit_recognizer_submission():
     x_test = test_samp
     y_test = knn.predict(x_test)
 
+    with open('submit.csv', 'w') as outfile:
+        outfile.write('ImageId,Label\n')
+        for n, v in enumerate(y_test):
+            outfile.write('%d,%d\n' % (n+1, v))
+
     return
 
 def compare_algos():
