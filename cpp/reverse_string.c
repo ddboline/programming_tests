@@ -5,7 +5,6 @@
 char * reverse_string( const char * inp_str ){
     int inp_str_len = strlen( inp_str );
     char * newstr = malloc( (inp_str_len+1)*sizeof(char) );
-    memset( newstr , 0 , inp_str_len+1 );
     int idx = 0;
     for( idx = 0 ; idx < inp_str_len ; idx++ ) {
         newstr[idx] = inp_str[inp_str_len-1-idx];
