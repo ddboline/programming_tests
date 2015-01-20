@@ -1,6 +1,7 @@
 CXX = gcc
+CPP = g++
 
-all: reverse_string atoi_impl ternary_conditional prbs7
+all: reverse_string atoi_impl ternary_conditional prbs7 selection_sort
 
 reverse_string:
 	$(CXX) ./reverse_string.c -o ./reverse_string
@@ -16,3 +17,6 @@ prbs7:
 
 clean:
 	rm ./reverse_string ./atoi_impl ./ternary_conditional ./prbs7
+
+selection_sort:
+	$(CPP) -g3 ./selection_sort.cpp -o ./selection_sort
