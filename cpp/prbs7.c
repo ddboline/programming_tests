@@ -5,7 +5,7 @@
 int main(int argc, char** argv) {
     uint8_t start = 0x02;
     if(argc>1){
-        start = atoi(argv[1]) & 0xFF;
+        start = atoi(argv[1]) & 0x7F;
         printf("%s %x\n", argv[1], start);
     }
     uint8_t a = start;
