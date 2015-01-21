@@ -8,17 +8,17 @@
 using namespace std;
 
 int selection_sort_vector(const vector<int> & inpvec, vector<int> & outvec) {
-    int lowindex, lowkey, temp, n = inpvec.size();
+    int lowindex=0, lowkey=0, temp=0, n = inpvec.size();
 
     if(inpvec.size() != outvec.size())
         return -1;
     for(int idx = 0; idx < n; idx++)
         outvec[idx] = inpvec[idx];
 
-    for(int idx = 0; idx <= n-1; idx++) {
+    for(int idx = 0; idx < n; idx++) {
         lowindex = idx;
         lowkey = outvec[idx];
-        for(int jdx = idx+1; jdx <= n; jdx++) {
+        for(int jdx = idx+1; jdx < n; jdx++) {
             if(outvec[jdx] < lowkey) {
                 lowkey = outvec[jdx];
                 lowindex = jdx;
@@ -32,9 +32,19 @@ int selection_sort_vector(const vector<int> & inpvec, vector<int> & outvec) {
     return 0;
 }
 
-// int selection_sort_array(int arrsize, int inparray[], int outarray[]){
-//     cout << "size " << arrsize << " " << sizeof(inparray) << " " << sizeof(outarray) << endl;
-// }
+void print_array(int size, int arr[]){
+    for(int i=0; i<size; i++){
+        cout << " " << arr[i];
+    }
+    cout << endl;
+}
+
+void print_vector(vector<int> & vec){
+    for(vector<int>::iterator it=vec.begin(); it!=vec.end(); it++){
+        cout << " " << (*it);
+    }
+    cout << endl;
+}
 
 int main(int argc, char ** argv) {
     int seed = 8675309;
@@ -51,35 +61,24 @@ int main(int argc, char ** argv) {
     }
     
     cout << "Input array             :";
-    for(vector<int>::iterator it = input_vector.begin(); it != input_vector.end(); it++){
-        cout << " " << *it;
-    }
-    cout << endl;
-    
+    print_vector(input_vector);
+
     int retval = selection_sort_vector(input_vector, output_vector);
 
     cout << "Selection Sorted array 1:";
-    for(vector<int>::iterator it = output_vector.begin(); it != output_vector.end(); it++){
-        cout << " " << *it;
-    }
-    cout << endl;
-    
-    int lowindex,lowkey,temp,n=vector_size;
+    print_vector(output_vector);
+
+    int lowindex=0, lowkey=0, temp=0, n=vector_size;
     int a[n];
 
     for (int i = 0; i < n; i++) {
         a[i] = input_vector[i];
     }
-    cout << "Selection Sorted array 1:";
-    for (int k = 0; k < n; k++) {
-        cout << " " << a[k];
-    }
-    cout << endl;
-    
-    for (int i = 0; i <= n - 1; i++) {
+
+    for (int i = 0; i < n; i++) {
         lowindex = i;
         lowkey = a[i];
-        for (int j = i + 1; j <= n; j++) {
+        for (int j = i + 1; j < n; j++) {
             if (a[j] < lowkey) {
                 lowkey = a[j];
                 lowindex = j;
@@ -90,8 +89,5 @@ int main(int argc, char ** argv) {
         a[lowindex] = temp;
     }
     cout << "Selection Sorted array 2:";
-    for (int k = 0; k < n; k++) {
-        cout << " " << a[k];
-    }
-    cout << endl;
+    print_array(n, a);
 }
