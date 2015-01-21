@@ -16,7 +16,7 @@ prbs7:
 	$(CXX) ./prbs7.c -o ./prbs7
 
 clean:
-	rm ./reverse_string ./atoi_impl ./ternary_conditional ./prbs7
+	rm ./reverse_string ./atoi_impl ./ternary_conditional ./prbs7 ./selection_sort
 
 selection_sort:
 	$(CPP) -g3 ./selection_sort.cpp -o ./selection_sort
