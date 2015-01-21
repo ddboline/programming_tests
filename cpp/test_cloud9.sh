@@ -3,9 +3,13 @@
 make clean
 make
 NUMBER=`head -c1000 /dev/urandom | tr -dc [:digit:] | head -c8`
-echo $NUMBER
+echo atoi_impl $NUMBER
 ./atoi_impl $NUMBER
-./prbs7
+echo prbs7 $NUMBER
+./prbs7 $NUMBER
+echo reverse_string HelloWorld
 ./reverse_string HelloWorld
-./selection_sort
+echo selection_sort $NUMBER
+./selection_sort $NUMBER
+echo ternary_conditional
 ./ternary_conditional
