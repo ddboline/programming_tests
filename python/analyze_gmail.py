@@ -24,7 +24,6 @@ class email_stats(object):
         self.current_message_stack = []
 
 def parse_quoted_email_string(inpstr):
-    print('parse_quoted_email_string', inpstr, type(inpstr))
     if type(inpstr) != str and type(inpstr) != unicode:
         return inpstr
 
@@ -38,7 +37,6 @@ def parse_quoted_email_string(inpstr):
         if '@' in word:
             em_list.append(''.join(x[0] for x
                                    in email.header.decode_header(word)))
-    print('parse_quoted_email_string em_list', em_list)
     return em_list
 
 def process_line(line, em_stats_obj=None):
@@ -61,7 +59,6 @@ def process_line(line, em_stats_obj=None):
                 if k.lower() in EMAIL_LABELS:
                     qstr = ''.join(x[0] for x
                                    in email.header.decode_header(v))
-                    print('qstr', qstr)
                     for estr in parse_quoted_email_string(qstr):
                         em = estr.lower()
                         if '@' not in em:
@@ -80,10 +77,11 @@ def analyze_gmail(fname):
     em_stats = email_stats()
     with io.open(fname, 'r') as infile:
         for line in infile:
+            line =line.encode(encoding='ascii', errors='replace')
             process_line(line, em_stats)
     with io.open('email_addresses.txt', 'w') as f:
         f.write('EmailAddress,Count\n')
-        for k, n in sorted(email_addresses.items()):
+        for k, n in sorted(em_stats.email_addresses.items()):
             f.write('%s,%d\n' % (k, n))
 
 if __name__ == '__main__':
