@@ -29,4 +29,4 @@ def cross_validated_estimators():
     print lasso.alpha_
 
 grid_search_test()
-#cross_validated_estimators()
+cross_validated_estimators()

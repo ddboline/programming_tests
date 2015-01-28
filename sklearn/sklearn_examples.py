@@ -44,4 +44,5 @@ def digits_example():
         print svc.score(data[perm][int(N*0.9):], digits.target[perm][int(N*0.9):])
         del svc
 
+iris_example()
 digits_example()

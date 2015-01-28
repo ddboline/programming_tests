@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 """
 Stripped-down version of the face recognition example by Olivier Grisel
 

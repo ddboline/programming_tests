@@ -33,5 +33,5 @@ def posterize():
     pl.savefig('lena_compressed.png')
 
 
-#kmeans()
+kmeans()
 posterize()

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for DIR in scipy python numpy cython boost_python sqlalchemy scipy;
+for DIR in scipy python numpy cython boost_python sqlalchemy scipy sklearn;
 do
     cd $DIR
     sh setup_cloud9.sh
