@@ -1,16 +1,11 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-#from __future__ import absolute_import
-#from __future__ import division
-#from __future__ import print_function
-#from __future__ import unicode_literals
 
 import os, io
 import email
 import email.header
 import base64
 import collections
-# from memory_profiler import profile
 
 EMAIL_LABELS = ['from', 'to', 'cc']
 
@@ -73,17 +68,21 @@ def process_line(line, em_stats_obj=None):
 
 def analyze_gmail(fname):
     em_stats = email_stats()
-    with io.open(fname, 'r') as infile:
+    with open(fname, 'r', encoding='utf-8') as infile:
         for line in infile:
-            #line =line.encode(encoding='ascii', errors='replace')
             process_line(line, em_stats)
-    with io.open('email_addresses.txt', 'w') as f:
+    with open('email_addresses.txt', 'w') as f:
         f.write('EmailAddress,Count\n')
         for k, n in sorted(em_stats.email_addresses.items()):
             f.write('%s,%d\n' % (k, n))
 
 if __name__ == '__main__':
-    if os.path.exists('temp.mbox'):
-        analyze_gmail('temp.mbox')
-    if os.path.exists('All mail Including Spam and Trash.mbox'):
-        analyze_gmail('All mail Including Spam and Trash.mbox')
+    fn = ''
+    if len(os.sys.argv)>1 and os.path.exists(os.sys.argv[1]):
+        fn = os.sys.argv[1]
+    elif os.path.exists('temp.mbox'):
+        fn = 'temp.mbox'
+    elif os.path.exists('All mail Including Spam and Trash.mbox'):
+        fn = 'All mail Including Spam and Trash.mbox'
+    if fn:
+        analyze_gmail(fn)
