@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import socket
 import os
 
@@ -21,4 +24,10 @@ def main():
     s.close()
     return 0
 
-main()
+if __name__ == '__main__':
+    try:
+        pn = int(os.sys.argv[1])
+    except ValueError:
+        print './server.py <port number>'
+        exit(0)
+    main()
