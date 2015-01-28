@@ -7,7 +7,7 @@
 ./data_statistics.py
 ./exceptions.py
 ./fib_func.py
-./fibonacci.py
+./fibonacci.py 20
 ./integral_approximations_exercise.py
 ./mandelbrot_exercise.py
 ./markov_chain_exercise.py
