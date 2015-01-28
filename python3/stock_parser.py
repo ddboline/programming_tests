@@ -3,11 +3,11 @@
 
 import multiprocessing
 from bs4 import BeautifulSoup
-from urllib2 import urlopen
+from urllib.request import urlopen
 
 def read_stock_url(symbol):
     for line in urlopen("http://finance.yahoo.com/q?s=" + symbol.lower() + "&ql=0"):
-        line = unicode(line, errors='ignore')
+        line = str(line)
         if 'yfs_l84_%s' % symbol.lower() in line:
             price = float(line.split('yfs_l84_%s\">' % symbol.lower())[1].split('</')[0].replace(',',''))
             return symbol.upper(), price
@@ -18,7 +18,10 @@ def write_output_file(price_q):
         outfile.write('Stock,Price\n')
         while True:
             while not price_q.empty():
-                s, p = price_q.get()
+                try:
+                    s, p = price_q.get()
+                except TypeError:
+                    return
                 outfile.write('%s,%s\n' % (s, p))
             outfile.flush()
 
@@ -37,7 +40,7 @@ def run_stock_parser():
     
     for symbol, price in pool.imap_unordered(read_stock_url, stock_symbols):
         price_q.put([symbol, price])
-    price.put(None)
+    price_q.put(None)
     output.join()
 
 if __name__ == '__main__':
