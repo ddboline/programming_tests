@@ -6,7 +6,6 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import collections
-import jsonpickle
 
 class Tree(collections.defaultdict):
     def __init__(self):
@@ -18,4 +17,4 @@ class Tree(collections.defaultdict):
 a = Tree()
 a['tree']['thing']['orother'] = 'Hello'
 
-print a
+print(a)

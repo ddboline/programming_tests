@@ -23,7 +23,7 @@ class FileInfo(object):
         self.filestat = fs
     
     def __repr__(self):
-        return '<FileInfo(fn=%s, hs=%s, md5=%s, size=%s>' % (self.fullfilename, 
+        return '<FileInfo(fn=%s, hs=%s, md5=%s, size=%s>' % (self.fullfilename,
                                                              self.hostname, self.md5sum, self.filestat.st_size)
 
 def get_md5_full(fname):
@@ -54,13 +54,14 @@ def file_sync():
     return
 
 if __name__ == '__main__':
-    testfname = '/home/ddboline/watch_file.py'
+    testfname = '%s/setup_files/build/programming_tests/python/file_sync.py' % os.getenv('HOME')
     #file_sync()
     print(get_md5_full(testfname))
     print(testfname)
     print(os.stat(testfname), '\n')
     
     testdir = '/home/ddboline/Documents/mp3'
+    testdir = '%s/setup_files/build/programming_tests' % os.getenv('HOME')
     fileinfo_dict = {}
     recursive_read(testdir, fileinfo_dict)
-    
+
