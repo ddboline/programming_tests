@@ -75,9 +75,9 @@ def process_line(line, em_stats_obj=None):
 
 def analyze_gmail(fname):
     em_stats = email_stats()
-    with io.open(fname, 'r') as infile:
+    with open(fname, 'r') as infile:
         for line in infile:
-            line =line.encode(encoding='ascii', errors='replace')
+            line = unicode(line, errors='ignore')
             process_line(line, em_stats)
     with io.open('email_addresses.txt', 'w') as f:
         f.write('EmailAddress,Count\n')
@@ -85,7 +85,12 @@ def analyze_gmail(fname):
             f.write('%s,%d\n' % (k, n))
 
 if __name__ == '__main__':
-    if os.path.exists('temp.mbox'):
-        analyze_gmail('temp.mbox')
-    if os.path.exists('All mail Including Spam and Trash.mbox'):
-        analyze_gmail('All mail Including Spam and Trash.mbox')
+    fn = ''
+    if len(os.sys.argv)>1 and os.path.exists(os.sys.argv[1]):
+        fn = os.sys.argv[1]
+    elif os.path.exists('temp.mbox'):
+        fn = 'temp.mbox'
+    elif os.path.exists('All mail Including Spam and Trash.mbox'):
+        fn = 'All mail Including Spam and Trash.mbox'
+    if fn:
+        analyze_gmail(fn)
