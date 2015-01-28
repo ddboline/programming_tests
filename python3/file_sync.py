@@ -56,7 +56,7 @@ if __name__ == '__main__':
     print(os.stat(testfname), '\n')
     
     testdir = '/home/ddboline/Documents/mp3'
-    testdir = '%s/setup_files/build/programming_tests' % os.getenv('HOME')
+    testdir = '%s/setup_files/build/programming_tests/python' % os.getenv('HOME')
     fileinfo_dict = {}
     recursive_read(testdir, fileinfo_dict)
 
