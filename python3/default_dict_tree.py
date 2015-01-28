@@ -1,8 +1,7 @@
-#!/usr/bin/python3.4
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 import collections
-import jsonpickle
 
 class Tree(collections.defaultdict):
     def __init__(self):
@@ -14,4 +13,4 @@ class Tree(collections.defaultdict):
 a = Tree()
 a['tree']['thing']['orother'] = 'Hello'
 
-print a
+print(a)
