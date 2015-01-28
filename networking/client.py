@@ -1,10 +1,10 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import socket
 import os
 
 def main():
-    if len(os.sys.argv) < 3:
-        print "usage %s hostname port\n" % os.sys.argv[0]
-        exit(1)
     s = socket.socket()
     err = s.connect_ex((os.sys.argv[1], int(os.sys.argv[2])))
     if err:
@@ -15,4 +15,8 @@ def main():
     s.close()
     return 0
 
-main()
+if __name__ == '__main__':
+    if len(os.sys.argv) < 3:
+        print "usage %s hostname port\n" % os.sys.argv[0]
+        exit(1)
+    main()
