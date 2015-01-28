@@ -5,7 +5,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <netdb.h> 
+#include <netdb.h>
 
 void error(const char *msg)
 {
@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
     }
     portno = atoi(argv[2]);
     sockfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-    if (sockfd < 0) 
+    if (sockfd < 0)
         error("ERROR opening socket");
     server = gethostbyname(argv[1]);
     if (server == NULL) {
@@ -35,11 +35,11 @@ int main(int argc, char *argv[])
     }
     memset((char*)&serv_addr,0,sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
-    bcopy((char *)server->h_addr, 
+    bcopy((char *)server->h_addr,
          (char *)&serv_addr.sin_addr.s_addr,
          server->h_length);
     serv_addr.sin_port = htons(portno);
-//     if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0) 
+//     if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0)
 //         error("ERROR connecting");
 //     printf("Please enter the message: ");
     int idx = 0;
@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
         sprintf( buffer , "heartbeat %d" , idx++ );
         n = sendto( sockfd , buffer , strlen(buffer) , 0 , (struct sockaddr *) &serv_addr , sizeof(serv_addr) );
         if (n < 0) error("ERROR writing to socket");
-        sleep(10);
+        sleep(1);
     }
 
     close(sockfd);
