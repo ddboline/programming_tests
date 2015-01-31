@@ -100,7 +100,7 @@ class FileList(object):
     
 def read_config_file():
     conf_obj = []
-    if os.path.exists('%s/.file_sync_config.json'):
+    if os.path.exists('%s/.file_sync_config.json' % os.getenv('HOME')):
         with open('%s/.file_sync_config.json' % os.getenv('HOME')) as confile:
             return json.load(confile)
     else:
