@@ -99,8 +99,12 @@ class FileList(object):
         return
     
 def read_config_file():
-    with open('%s/.file_sync_config.json' % os.getenv('HOME')) as confile:
-        return json.load(confile)
+    conf_obj = []
+    if os.path.exists('%s/.file_sync_config.json'):
+        with open('%s/.file_sync_config.json' % os.getenv('HOME')) as confile:
+            return json.load(confile)
+    else:
+        return conf_obj
 
 def file_sync():
     return
