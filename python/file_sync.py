@@ -106,14 +106,15 @@ def file_sync():
     return
 
 def run_tests():
-    testfname = '%s/setup_files/build/programming_tests/python/file_sync.py' % os.getenv('HOME')
+    script_path = '/'.join(os.path.abspath(os.sys.argv[0]).split('/')[:-1])
+    testfname = '%s/file_sync.py' % script_path
     finfo = FileInfo(testfname)
     print(finfo.md5sum)
     print(testfname)
     print(os.stat(testfname), '\n')
     
     testdir = '/home/ddboline/Documents/mp3'
-    testdir = '%s/setup_files/build/programming_tests/python' % os.getenv('HOME')
+    testdir = '%s' % script_path
     flist = FileList(basepath=testdir)
     flist.read_persistence_file()
     flist.recursive_read()
