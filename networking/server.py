@@ -21,6 +21,7 @@ def main():
         print "Here is the message: %s" % d
         c.send(d)
         c.close()
+    s.shutdown(socket.SHUT_RDWR)
     s.close()
     return 0
 
