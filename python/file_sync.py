@@ -80,7 +80,6 @@ class FileList(object):
             return
         with gzip.open(self.pfilename, 'wb') as pfile:
             pickle.dump(self.filelist_dict, pfile, pickle.HIGHEST_PROTOCOL)
-    
 
     def recursive_read(self):
         def parse_dir(arg, path, filelist):
