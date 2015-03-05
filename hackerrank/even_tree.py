@@ -30,26 +30,6 @@ def even_tree(N, edges):
     
     return list_of_trees
 
-#def even_tree(N, edges):
-    #edge_count = {n: 0 for n in range(1,N+1)}
-    #vertex_list = {n: [] for n in range(1,N+1)}
-    #for n in range(1,N+1):
-        #for e0, e1 in edges:
-            #if e0 == n:
-                #edge_count[n] += 1
-                #vertex_list[n].append(e1)
-            #elif e1 == n:
-                #edge_count[n] += 1
-                #vertex_list[n].append(e0)
-    #count = {n: 0 for n in edge_count.values()}
-    #for n in range(1,N+1):
-        #count[edge_count[n]] += 1
-    #print count
-    
-    #in_trees = []
-    #for n in range(1,N+1):
-        ##if len(vertex_list[n]) == 1:
-        #print n, len(vertex_list[n]), edge_count[vertex_list[n][0]]
     
 N, M = 10, 9
 edges = [(2, 1), (3, 1), (4, 3), (5, 2), 
