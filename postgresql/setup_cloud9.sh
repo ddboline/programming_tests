@@ -12,4 +12,3 @@ for N in `seq 0 20`;
 do 
     psql mydb $USER < test${N}.sql ; 
 done
-
