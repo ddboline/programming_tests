@@ -18,8 +18,8 @@ as (
         , sum(ab) ab
         , sum(r) r
         , sum(h) h
-        , sum(2b) 2b
-        , sum(3b) 3b
+        , sum("2B") _2b
+        , sum("3B") _3b
         , sum(hr) hr
         , sum(rbi) rbi
         , sum(sb) sb
@@ -74,8 +74,8 @@ as (
         , sum(rbi) / sum(pa) lgRBI
         , sum(r) / sum(pa) lgR
         , sum(h) / sum(pa) lgH
-        , sum(2b) / sum(pa) lg2B
-        , sum(3b) / sum(pa) lg3B
+        , sum(_2b) / sum(pa) lg2B
+        , sum(_3b) / sum(pa) lg3B
         , sum(hr) / sum(pa) lgHR
         , sum(sb) / sum(pa) lgSB
         , sum(cs) / sum(pa) lgCS
