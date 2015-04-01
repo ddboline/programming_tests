@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import sys
 from PyQt4 import QtCore, QtGui
 from form import Ui_Dialog
