@@ -6,6 +6,7 @@
     This is python, so implementation is a transcription of the pseudocode,
     with slight modification required for c-style indicies [0,n-1] vs [1,n]
 """
+from time import clock
 from random import random, randint
 
 class VoseAliasMethod(object):
@@ -49,15 +50,20 @@ class VoseAliasMethod(object):
             return self.alias[i]
 
 if __name__ == '__main__':
+    runs = [10, 100, 1000, int(1e4), int(1e5), int(1e6), int(1e7)]
+    t = [('begin', clock())]
     n = 6
     p = [random() for _ in range(n)]
     p = [x/sum(p) for x in p]
     print ['%.2f' % x for x in p]
     
     v = VoseAliasMethod(p)
-    hist = n*[0]
-    for _ in range(int(1e6)):
-        r = v.generate()
-        hist[r] += 1
-    print hist
-    print ['%.2f' % (x/float(sum(hist))) for x in hist]
+    t.append(('init', clock()))
+    for run in runs:
+        hist = n*[0]
+        for _ in range(run):
+            r = v.generate()
+            hist[r] += 1
+        print ['%.2f' % (x/float(sum(hist))) for x in hist]
+        t.append(('run%d' % run, clock()))
+    print '\n'.join(['%s %s' % (x, y) for x,y in t])
