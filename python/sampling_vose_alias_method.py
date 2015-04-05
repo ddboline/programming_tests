@@ -2,6 +2,9 @@
 """
     quick implementation of Vose Alias Sampling method taken from:
     http://www.keithschwarz.com/darts-dice-coins/
+    
+    This is python, so implementation is a transcription of the pseudocode,
+    with slight modification required for c-style indicies [0,n-1] vs [1,n]
 """
 from random import random, randint
 
@@ -36,7 +39,7 @@ class VoseAliasMethod(object):
         while len(small) > 0:
             l = small.pop(0)
             self.prob[l] = 1
-            
+
     def generate(self):
         i = randint(0, self.num-1)
         r = random()
