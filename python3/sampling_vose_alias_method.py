@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """
     quick implementation of Vose Alias Sampling method taken from:
     http://www.keithschwarz.com/darts-dice-coins/
@@ -6,11 +6,6 @@
     This is python, so implementation is a transcription of the pseudocode,
     with slight modification required for c-style indicies [0,n-1] vs [1,n]
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
-
 from time import clock
 from random import random, randint
 
