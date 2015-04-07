@@ -46,6 +46,8 @@ def run_stock_parser():
         price_q.put([symbol, price])
     price_q.put(None)
     output.join()
+    pool.close()
+    pool.join()
 
 if __name__ == '__main__':
     run_stock_parser()
