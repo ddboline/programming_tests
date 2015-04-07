@@ -64,6 +64,6 @@ if __name__ == '__main__':
         for _ in range(run):
             r = v.generate()
             hist[r] += 1
-        print ['%.2f' % (x/float(sum(hist))) for x in hist]
+        print 'run%d' % run, ['%.2f' % (x/float(sum(hist))) for x in hist]
         t.append(('run%d' % run, clock()))
     print '\n'.join(['%s %s' % (x, y) for x,y in t])
