@@ -34,7 +34,12 @@ def run_stock_parser():
             sym = line.strip()
             if sym:
                 stock_symbols.append(sym)
-    pool = multiprocessing.Pool(5)
+
+    ncpu = len(filter(lambda x: x.find('processor')==0, 
+                      open('/proc/cpuinfo')
+                      .read().split('\n')))
+
+    pool = multiprocessing.Pool(ncpu*2)
     output = multiprocessing.Process(target=write_output_file, args=(price_q,))
     output.start()
     

@@ -12,8 +12,7 @@ from random import random, randint
 class VoseAliasMethod(object):
     
     def __init__(self, p):
-        self.pval = p
-        self.num = len(self.pval)
+        self.num = len(p)
         self.alias = self.num*[0]
         self.prob = self.num*[0]
         small = []
