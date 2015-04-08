@@ -12,7 +12,7 @@ def read_stock_url(symbol_q, price_q):
             if symbol == 'EMPTY':
                 return True
             for line in urlopen("http://finance.yahoo.com/q?s=" + symbol.lower() + "&ql=0"):
-                line = unicode(line, errors='ignore')
+                line = str(line)
                 if 'yfs_l84_%s' % symbol.lower() in line:
                     price = float(line.split('yfs_l84_%s\">' % symbol.lower())[1].split('</')[0].replace(',',''))
                     price_q.put((symbol.upper(), price))
