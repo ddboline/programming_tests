@@ -40,8 +40,8 @@ def run_stock_parser():
             if sym:
                 stock_symbols.append(sym)
 
-    ncpu = len([x.find('processor') == 0 for x in open('/proc/cpuinfo')\
-                                                   .read().split('\n')])
+    ncpu = len([x for x in open('/proc/cpuinfo').read().split('\n')\
+                if x.find('processor') == 0])
 
     pool = [multiprocessing.Process(target=read_stock_url, args=(symbol_q, price_q,)) for _ in range(ncpu*2)]
     for p in pool:
