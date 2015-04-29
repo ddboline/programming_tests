@@ -9,10 +9,11 @@ class Point(xc: Int, yc:Int) {
     }
 }
 
-object Test {
+object Test10 {
     def main(args: Array[String]) {
         val pt = new Point(10,20)
         
+        pt.move(10,10)
         pt.move(10,10)
     }
 }
