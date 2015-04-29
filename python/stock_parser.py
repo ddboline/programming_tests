@@ -6,7 +6,6 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import multiprocessing
-from bs4 import BeautifulSoup
 from urllib2 import urlopen
 
 def read_stock_url(symbol_q, price_q):
@@ -15,10 +14,14 @@ def read_stock_url(symbol_q, price_q):
             symbol = symbol_q.get()
             if symbol == 'EMPTY':
                 return True
-            for line in urlopen("http://finance.yahoo.com/q?s=" + symbol.lower() + "&ql=0"):
+            for line in urlopen("http://finance.yahoo.com/q?s=" +
+                                symbol.lower() + "&ql=0"):
                 line = unicode(line, errors='ignore')
                 if 'yfs_l84_%s' % symbol.lower() in line:
-                    price = float(line.split('yfs_l84_%s\">' % symbol.lower())[1].split('</')[0].replace(',',''))
+                    price = float(line.split('yfs_l84_%s\">'
+                                             % symbol.lower())[1]\
+                                                 .split('</')[0]\
+                                                 .replace(',',''))
                     price_q.put((symbol.upper(), price))
 
 def write_output_file(price_q):
