@@ -2,8 +2,12 @@
 
 for F in *.scala;
 do
-    BASENAME=`echo $F | sed 's:.scala::g'`
-    echo $F $BASENAME
+    echo $F
     scalac $F
-    scala $BASENAME
+done
+
+for F in `ls *.scala | sed 's:.scala::g'`;
+do
+    echo $F
+    scala $F
 done
