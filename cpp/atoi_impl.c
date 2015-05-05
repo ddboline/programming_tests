@@ -29,7 +29,7 @@ int main( int argc , char ** argv ) {
     int idx = 0;
     for( idx = 1 ; idx < argc ; idx++ ) {
         printf( "%s\n" , argv[idx] );
-        printf( "%lld\n" , atoi_impl( argv[idx] ) );
+        printf( "%ld\n" , atoi_impl( argv[idx] ) );
     }
     return 0;
 }

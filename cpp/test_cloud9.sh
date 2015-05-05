@@ -13,3 +13,7 @@ echo selection_sort $NUMBER
 ./selection_sort $NUMBER
 echo ternary_conditional
 ./ternary_conditional
+echo sampling_vose_alias_method
+./sampling_vose_alias_method
+echo primes
+./primes 1000
