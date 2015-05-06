@@ -7,7 +7,7 @@ class AdditionApplication {
     }
 }
 
-object Test18 {
+object TestApp {
     def main(args: Array[String]) {
         val app = new AdditionApplication()
         val server = new GatewayServer(app)
