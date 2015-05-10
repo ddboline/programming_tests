@@ -2,35 +2,38 @@
 #include <deque>
 #include <random>
 #include <iostream>
+#include <time.h>
 
 using namespace std;
 
 class VoseAliasMethod{
     public:
         int prob_length;
-        vector<double> alias_arr;
-        vector<double> prob_arr;
+        vector<double> alias_arr, prob_arr;
         default_random_engine generator;
+        uniform_int_distribution<int> int_distribution;
+        uniform_real_distribution<double> real_distribution;
 
         VoseAliasMethod(vector<double> & p){
             prob_length = p.size();
+            int_distribution = uniform_int_distribution<int>(0, prob_length-1);
+            real_distribution = uniform_real_distribution<double>(0.0, 1.0);
             alias_arr.resize(prob_length);
             prob_arr.resize(prob_length);
             deque<int> small, large;
-            vector<double> scaled_p(prob_length);
-            for(int i=0; i<p.size(); i++){
-                scaled_p[i] = p[i]*prob_length;
-            }
-            for(int idx=0; idx<scaled_p.size(); idx++){
+            auto scaled_p = p;
+            for(auto it=scaled_p.begin(); it!=scaled_p.end(); ++it)
+                (*it) *= prob_length;
+            for(auto idx=0; idx<scaled_p.size(); idx++){
                 if(scaled_p[idx]<1)
                     small.push_back(idx);
                 else
                     large.push_back(idx);
             }
             while(small.size()>0 && large.size()>0){
-                int l = small[0];
+                auto l = small.front();
                 small.pop_front();
-                int g = large[0];
+                auto g = large.front();
                 large.pop_front();
                 prob_arr[l] = scaled_p[l];
                 alias_arr[l] = g;
@@ -41,22 +44,20 @@ class VoseAliasMethod{
                     large.push_back(g);
             }
             while(large.size()>0){
-                int g = large[0];
+                auto g = large.front();
                 large.pop_front();
                 prob_arr[g] = 1;
             }
             while(small.size()>0){
-                int l = small[0];
+                auto l = small.front();
                 small.pop_front();
                 prob_arr[l] = 1;
             }
         };
         
         int generate(){
-            uniform_int_distribution<int> int_distribution(0, prob_length-1);
-            uniform_real_distribution<double> real_distribution(0.0,1.0);
-            int i = int_distribution(generator);
-            double r = real_distribution(generator);
+            auto i = int_distribution(generator);
+            auto r = real_distribution(generator);
             if(r<prob_arr[i])
                 return i;
             else
@@ -65,38 +66,46 @@ class VoseAliasMethod{
 };
 
 int main(int argc, char ** argv){
-    int number = 6;
+    auto number = 6;
     vector<double> prob_array(number);
     default_random_engine generator;
     uniform_real_distribution<double> real_distribution(0.0,1.0);
-    for(int idx=0; idx<number; idx++){
+    for(auto idx=0; idx<number; idx++){
         prob_array[idx] = real_distribution(generator);
     }
-    double sum = 0;
-    for(int idx=0; idx<number; idx++)
+    auto sum = 0.0;
+    for(auto idx=0; idx<number; idx++)
         sum += prob_array[idx];
-    for(int idx=0; idx<number; idx++)
+    for(auto idx=0; idx<number; idx++)
         prob_array[idx] /= sum;
     
-    for(int idx=0; idx<number; idx++)
+    for(auto idx=0; idx<number; idx++)
         cout << prob_array[idx] << " ";
     cout << endl;
     
     VoseAliasMethod v(prob_array);
-    int runs[7] = {10, 100, 1000, 10000, 100000, 1000000, 10000000};
-    for(int idx=0; idx<7; idx++){
+    vector<int> runs{10, 10, 10,
+                     100, 100, 100, 
+                     1000, 1000, 1000,
+                     10000, 10000, 10000, 
+                     100000, 100000, 100000, 
+                     1000000, 1000000, 1000000, 
+                     10000000, 10000000, 10000000,};
+    auto t = clock();
+    for(auto idx=0; idx<runs.size(); idx++){
         vector<double> hist(number);
-        for(int jdx=0; jdx<runs[idx]; jdx++){
+        for(auto jdx=0; jdx<runs[idx]; jdx++){
             int r = v.generate();
             hist[r] += 1;
         }
         sum = 0;
-        for(int jdx=0; jdx<number; jdx++)
+        for(auto jdx=0; jdx<number; jdx++)
             sum += hist[jdx];
-        for(int jdx=0; jdx<number; jdx++)
+        for(auto jdx=0; jdx<number; jdx++)
             hist[jdx] /= sum;
-        cout << "run" << idx << " ";
-        for(int jdx=0; jdx<number; jdx++)
+        t = clock() - t;
+        cout << "run" << idx << " " << runs[idx] << " " << t/1e6 << " ";
+        for(auto jdx=0; jdx<number; jdx++)
             cout << hist[jdx] << " ";
         cout << endl;
     }
