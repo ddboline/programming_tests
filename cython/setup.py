@@ -11,7 +11,10 @@ extensions = [
         libraries = ['gslcblas'],
         library_dirs = ['/usr/lib']),
     Extension('cos_func', ['cos_func.pyx'],
-                 libraries = ['m'])
+                 libraries = ['m']),
+    Extension('sampling_vose_alias_method1',
+              ['sampling_vose_alias_method1.pyx'],
+              language="c++",)
 ]
 setup(
     ext_modules = cythonize(extensions),
