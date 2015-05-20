@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
- 
+
 int main(int argc, char** argv) {
     uint8_t start = 0x02;
     if(argc>1){
