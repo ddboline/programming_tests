@@ -3,6 +3,7 @@
 #include <random>
 #include <iostream>
 #include <time.h>
+#include <chrono>
 
 using namespace std;
 
@@ -22,8 +23,8 @@ class VoseAliasMethod{
             prob_arr.resize(prob_length);
             deque<int> small, large;
             auto scaled_p = p;
-            for(auto it=scaled_p.begin(); it!=scaled_p.end(); ++it)
-                (*it) *= prob_length;
+            for(auto & it : scaled_p)
+                it *= prob_length;
             for(auto idx=0; idx<scaled_p.size(); idx++){
                 if(scaled_p[idx]<1)
                     small.push_back(idx);
@@ -68,19 +69,18 @@ class VoseAliasMethod{
 int main(int argc, char ** argv){
     auto number = 6;
     vector<double> prob_array(number);
-    default_random_engine generator;
+    auto seed = chrono::system_clock::now().time_since_epoch().count();
+    default_random_engine generator(seed);
     uniform_real_distribution<double> real_distribution(0.0,1.0);
-    for(auto idx=0; idx<number; idx++){
-        prob_array[idx] = real_distribution(generator);
-    }
+    for(auto & it : prob_array)
+        it = real_distribution(generator);
     auto sum = 0.0;
-    for(auto idx=0; idx<number; idx++)
-        sum += prob_array[idx];
-    for(auto idx=0; idx<number; idx++)
-        prob_array[idx] /= sum;
-    
-    for(auto idx=0; idx<number; idx++)
-        cout << prob_array[idx] << " ";
+    for(auto it : prob_array)
+        sum += it;
+    for(auto & it : prob_array)
+        it /= sum;
+    for(auto it : prob_array)
+        cout << it << " ";
     cout << endl;
     
     VoseAliasMethod v(prob_array);
@@ -94,10 +94,8 @@ int main(int argc, char ** argv){
     auto t = clock();
     for(auto idx=0; idx<runs.size(); idx++){
         vector<double> hist(number);
-        for(auto jdx=0; jdx<runs[idx]; jdx++){
-            int r = v.generate();
-            hist[r] += 1;
-        }
+        for(auto jdx=0; jdx<runs[idx]; jdx++)
+            hist[v.generate()] += 1;
         sum = 0;
         for(auto jdx=0; jdx<number; jdx++)
             sum += hist[jdx];
