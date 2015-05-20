@@ -1,7 +1,7 @@
 CXX = gcc
 CPP = g++
 
-all: reverse_string atoi_impl ternary_conditional prbs7 selection_sort sampling_vose_alias_method primes
+all: reverse_string atoi_impl ternary_conditional prbs7 selection_sort sampling_vose_alias_method primes pthread_hello thread_hello
 
 reverse_string:
 	$(CXX) -O3 ./reverse_string.c -o ./reverse_string
@@ -24,5 +24,11 @@ sampling_vose_alias_method:
 primes:
 	$(CPP) -O3 ./primes.cpp -o ./primes
 
+pthread_hello:
+	$(CPP) -O3 pthread_hello.c -o pthread_hello -lpthread 
+
+thread_hello:
+	$(CPP) -Wall -pthread -std=c++11 -O3 thread_hello.cpp -o thread_hello
+
 clean:
-	rm ./reverse_string ./atoi_impl ./ternary_conditional ./prbs7 ./selection_sort ./sampling_vose_alias_method ./primes
+	rm reverse_string atoi_impl ternary_conditional prbs7 selection_sort sampling_vose_alias_method primes pthread_hello thread_hello
