@@ -5,7 +5,7 @@
 
 using namespace std;
 
-int primes( int pmax ) {
+int primes( const int pmax ) {
     int n = 3 , k = 0 , i;
     vector<int> p;
     p.push_back(2);
@@ -21,9 +21,8 @@ int primes( int pmax ) {
         }
         n++;
     }
-    for(vector<int>::iterator it=p.begin(); it!=p.end(); it++){
-        cout << (*it) << " ";
-    }
+    for(auto it: p)
+        cout << it << " ";
     cout << endl;
     return p.size();
 }
@@ -31,8 +30,7 @@ int primes( int pmax ) {
 int main(int argc, char **argv)
 {
     cout << argc << endl;
-    if(argc > 1) {
+    if(argc > 1)
         cout << primes(atoi(argv[1])) << endl;
-    }
     return 0;
 }
