@@ -7,11 +7,10 @@
 #include <ctime>
 using namespace std;
 
-int selection_sort_vector(const vector<int> & inpvec, vector<int> & outvec) {
+vector<int> selection_sort_vector(const vector<int> & inpvec) {
     int lowindex=0, lowkey=0, temp=0, n = inpvec.size();
+    vector<int> outvec(n);
 
-    if(inpvec.size() != outvec.size())
-        return -1;
     for(int idx = 0; idx < n; idx++)
         outvec[idx] = inpvec[idx];
 
@@ -29,7 +28,7 @@ int selection_sort_vector(const vector<int> & inpvec, vector<int> & outvec) {
         outvec[lowindex] = temp;
     }
 
-    return 0;
+    return outvec;
 }
 
 void print_array(int size, int arr[]){
@@ -39,10 +38,9 @@ void print_array(int size, int arr[]){
     cout << endl;
 }
 
-void print_vector(vector<int> & vec){
-    for(vector<int>::iterator it=vec.begin(); it!=vec.end(); it++){
-        cout << " " << (*it);
-    }
+void print_vector(const vector<int> & vec){
+    for(auto & it: vec)
+        cout << " " << it;
     cout << endl;
 }
 
@@ -55,15 +53,14 @@ int main(int argc, char ** argv) {
     srand(seed);
     
     int vector_size = 10;
-    vector<int> input_vector(vector_size), output_vector(vector_size);
-    for(vector<int>::iterator it = input_vector.begin(); it != input_vector.end(); it++){
-        *it = rand() % 100;
-    }
+    vector<int> input_vector(vector_size);
+    for(auto & it: input_vector)
+        it = rand() % 100;
     
     cout << "Input array             :";
     print_vector(input_vector);
 
-    int retval = selection_sort_vector(input_vector, output_vector);
+    auto output_vector = selection_sort_vector(input_vector);
 
     cout << "Selection Sorted array 1:";
     print_vector(output_vector);
