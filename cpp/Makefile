@@ -16,13 +16,13 @@ prbs7:
 	$(CXX) -O3 ./prbs7.c -o ./prbs7
 
 selection_sort:
-	$(CPP) -O3 ./selection_sort.cpp -o ./selection_sort
+	$(CPP) -std=c++11 -O3 ./selection_sort.cpp -o ./selection_sort
 
 sampling_vose_alias_method:
 	$(CPP) -std=c++11 -O3 ./sampling_vose_alias_method.cpp -o ./sampling_vose_alias_method
 
 primes:
-	$(CPP) -O3 ./primes.cpp -o ./primes
+	$(CPP) -std=c++11 -O3 ./primes.cpp -o ./primes
 
 pthread_hello:
 	$(CPP) -O3 pthread_hello.c -o pthread_hello -lpthread 
