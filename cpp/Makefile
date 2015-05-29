@@ -13,7 +13,7 @@ ternary_conditional:
 	$(CXX) -O3 ./ternary_conditional.c -o ./ternary_conditional
 
 prbs7:
-	$(CXX) -O3 ./prbs7.c -o ./prbs7
+	$(CPP) -std=c++11 -O3 ./prbs7.cpp -o ./prbs7
 
 selection_sort:
 	$(CPP) -std=c++11 -O3 ./selection_sort.cpp -o ./selection_sort

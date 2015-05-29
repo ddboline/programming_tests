@@ -8,7 +8,6 @@ int64_t atoi_impl( const char * inpstr ){
     int idx = 0, ascii_code;
     int inpstr_len = strlen( inpstr );
     char ascii_offset = '0';
-    char current_char = *inpstr;
     for( idx = inpstr_len-1 ; idx >= 0 ; idx-- ){
         ascii_code = inpstr[idx];
         if(ascii_code == '+')
