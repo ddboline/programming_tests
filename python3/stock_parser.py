@@ -2,20 +2,31 @@
 # -*- coding: utf-8 -*-
 
 import multiprocessing
-from bs4 import BeautifulSoup
-from urllib.request import urlopen
+from contextlib import closing
+import requests
 
-def read_stock_url(symbol_q, price_q):
+def read_stock_url(symbol):
+    urlname = 'http://finance.yahoo.com/q?s=' + symbol.lower() + \
+              '&ql=0'
+    with closing(requests.get(urlname, stream=True)) as url_:
+        for line in url_.iter_lines():
+            line = line.decode()
+            if 'yfs_l84_%s' % symbol.lower() in line:
+                price = float(line.split('yfs_l84_%s\">' % symbol.lower())[1]\
+                                  .split('</')[0].replace(',',''))
+                return price
+    return -1
+
+def read_stock_worker(symbol_q, price_q):
     while True:
         while not symbol_q.empty():
             symbol = symbol_q.get()
             if symbol == 'EMPTY':
                 return True
-            for line in urlopen("http://finance.yahoo.com/q?s=" + symbol.lower() + "&ql=0"):
-                line = str(line)
-                if 'yfs_l84_%s' % symbol.lower() in line:
-                    price = float(line.split('yfs_l84_%s\">' % symbol.lower())[1].split('</')[0].replace(',',''))
-                    price_q.put((symbol.upper(), price))
+            price = read_stock_url(symbol)
+            if price >= 0:
+                price_q.put((symbol.upper(), price))
+    return
 
 def write_output_file(price_q):
     with open('stock_prices.csv', 'w') as outfile:
@@ -43,7 +54,7 @@ def run_stock_parser():
     ncpu = len([x for x in open('/proc/cpuinfo').read().split('\n')\
                 if x.find('processor') == 0])
 
-    pool = [multiprocessing.Process(target=read_stock_url, args=(symbol_q, price_q,)) for _ in range(ncpu*2)]
+    pool = [multiprocessing.Process(target=read_stock_worker, args=(symbol_q, price_q,)) for _ in range(ncpu*2)]
     for p in pool:
         p.start()
     output = multiprocessing.Process(target=write_output_file, args=(price_q,))

@@ -6,23 +6,32 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import multiprocessing
-from urllib2 import urlopen
+from contextlib import closing
+import requests
+requests.packages.urllib3.disable_warnings()
 
-def read_stock_url(symbol_q, price_q):
+def read_stock_url(symbol):
+    urlname = 'http://finance.yahoo.com/q?s=' + symbol.lower() + \
+              '&ql=0'
+    with closing(requests.get(urlname, stream=True)) as url_:
+        for line in url_.iter_lines():
+            line = line.decode(errors='ignore')
+            if 'yfs_l84_%s' % symbol.lower() in line:
+                price = float(line.split('yfs_l84_%s\">' % symbol.lower())[1]\
+                                  .split('</')[0].replace(',',''))
+                return price
+    return -1
+
+def read_stock_worker(symbol_q, price_q):
     while True:
         while not symbol_q.empty():
             symbol = symbol_q.get()
             if symbol == 'EMPTY':
                 return True
-            for line in urlopen("http://finance.yahoo.com/q?s=" +
-                                symbol.lower() + "&ql=0"):
-                line = unicode(line, errors='ignore')
-                if 'yfs_l84_%s' % symbol.lower() in line:
-                    price = float(line.split('yfs_l84_%s\">'
-                                             % symbol.lower())[1]\
-                                                 .split('</')[0]\
-                                                 .replace(',',''))
-                    price_q.put((symbol.upper(), price))
+            price = read_stock_url(symbol)
+            if price >= 0:
+                price_q.put((symbol.upper(), price))
+    return
 
 def write_output_file(price_q):
     with open('stock_prices.csv', 'w') as outfile:
@@ -34,7 +43,7 @@ def write_output_file(price_q):
                     return True
                 s, p = vals
                 outfile.write('%s,%s\n' % (s, p))
-            outfile.flush()
+                outfile.flush()
 
 def run_stock_parser():
     symbol_q = multiprocessing.Queue()
@@ -51,7 +60,9 @@ def run_stock_parser():
                       open('/proc/cpuinfo')
                       .read().split('\n')))
 
-    pool = [multiprocessing.Process(target=read_stock_url, args=(symbol_q, price_q,)) for _ in range(ncpu*2)]
+    pool = [multiprocessing.Process(target=read_stock_worker,
+                                    args=(symbol_q, price_q,))
+                                    for _ in range(ncpu*2)]
     for p in pool:
         p.start()
     output = multiprocessing.Process(target=write_output_file, args=(price_q,))
