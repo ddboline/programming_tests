@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import sys
 from PyKDE4.kdecore import ki18n, KAboutData, KCmdLineArgs
@@ -21,4 +21,4 @@ aboutData   = KAboutData (appName, catalog, programName, version, description,
 KCmdLineArgs.init (sys.argv, aboutData)
 
 app = KApplication ()
-print dir(app)
+print(dir(app))

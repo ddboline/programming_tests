@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 import sys
@@ -14,7 +14,7 @@ class MyDialog(QtGui.QDialog):
         self.ui.pushButton.clicked.connect(self.OK)
 
     def OK(self):
-        print 'OK pressed'
+        print('OK pressed')
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pyuic4 form.ui -o form.py
+pyuic4 -w form.ui -o form.py
 
 ./gui.py
 
