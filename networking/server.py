@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 import socket
@@ -15,11 +15,11 @@ def main():
     s.listen(1)
     while 1:
         c, a = s.accept()
-        d = c.recv(1024)
+        d = str(c.recv(1024))
         if not d or d.find('q') >= 0:
             break
-        print "Here is the message: %s" % d
-        c.send(d)
+        print("Here is the message: %s" % d)
+        c.send(d.encode())
         c.close()
     s.shutdown(socket.SHUT_RDWR)
     s.close()
@@ -29,6 +29,6 @@ if __name__ == '__main__':
     try:
         pn = int(os.sys.argv[1])
     except ValueError:
-        print './server.py <port number>'
+        print('./server.py <port number>')
         exit(0)
     main()
