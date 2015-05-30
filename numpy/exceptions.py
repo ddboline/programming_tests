@@ -41,9 +41,9 @@ def filter_name(name):
     return name
 
 def run_filter():
-    filter_name('Gaël')
+    filter_name(u'Gaël')
 
-    filter_name('Stéfan')
+    filter_name(u'Stéfan')
 
 def achilles_arrow(x):
     if abs(x - 1) < 1e-3:

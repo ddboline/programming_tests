@@ -8,7 +8,10 @@ from __future__ import unicode_literals
 import multiprocessing
 from contextlib import closing
 import requests
-requests.packages.urllib3.disable_warnings()
+try:
+    requests.packages.urllib3.disable_warnings()
+except AttributeError:
+    pass
 
 def read_stock_url(symbol):
     urlname = 'http://finance.yahoo.com/q?s=' + symbol.lower() + \
