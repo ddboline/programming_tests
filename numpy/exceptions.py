@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 import os
@@ -7,11 +7,12 @@ import numpy as np
 def exception_example():
     while True:
         try:
-            x = int(raw_input('Please enter a number: '))
+            x = int(input('Please enter a number: '))
             break
         except ValueError:
-            print 'enter a number...'
-        except:
+            print('enter a number...')
+        except Exception as e:
+            print('EXCEPTION %s' % e)
             pass
         finally:
             pass
@@ -21,7 +22,7 @@ def print_sorted(collection):
         collection.sort()
     except AttributeError:
         pass
-    print collection
+    print(collection)
 
 def run_print_sorted():
     print_sorted(list(np.random.uniform(0., 1., 100)))
@@ -29,13 +30,14 @@ def run_print_sorted():
     print_sorted([a for a in 'powqeoposdj'])
 
 def filter_name(name):
-    try:
-        name = name.encode('ascii')
-    except UnicodeError, e:
-        if name == 'Gaël':
-            print 'OK, Gaël'
-        else:
-            raise e
+    print(name)
+    #try:
+        #name = name.encode('ascii')
+    #except UnicodeError as e:
+        #if name == 'Gaël':
+            #print('OK, Gaël')
+        #else:
+            #raise e
     return name
 
 def run_filter():
@@ -57,4 +59,7 @@ while True:
     except StopIteration:
         break
 
-print x
+print(x)
+exception_example()
+run_filter()
+run_print_sorted()

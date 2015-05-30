@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 import os
@@ -6,19 +6,19 @@ import numpy as np
 
 def examples():
     c = np.array([[[1], [2]], [[3], [4]]])
-    print c
+    print(c)
 
     a = np.ones((3, 3))
-    print a
+    print(a)
 
     c = np.eye(3)
-    print c
+    print(c)
 
     d = np.diag(np.array([1, 2, 3, 4]))
-    print d
+    print(d)
 
     a = np.random.rand(4)
-    print a
+    print(a)
 
 def prime_number_sieve():
     is_prime = np.ones((100,), dtype=bool)
@@ -27,8 +27,8 @@ def prime_number_sieve():
     for j in range(2, N_max):
         is_prime[2*j::j] = False
     a = list(np.nonzero(is_prime)[0])
-    print a, type(a)
+    print(a, type(a))
     b = [N for N, a in filter(lambda a: a[1], enumerate(is_prime))]
-    print b, type(b)
+    print(b, type(b))
 
 prime_number_sieve()

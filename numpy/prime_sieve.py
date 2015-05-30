@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 import os
@@ -27,5 +27,5 @@ def prime_number_sieve1(N=100):
     a = list(np.nonzero(is_prime)[0])
     return a
 
-print prime_number_sieve0(100)
-#prime_number_sieve1(1000)
+print(prime_number_sieve0(100))
+print(prime_number_sieve1(1000))

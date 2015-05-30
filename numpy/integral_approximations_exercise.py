@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 import os
@@ -20,6 +20,6 @@ def first():
     #w = np.sum(func_f(x, y, z) / (24. * 12. * 6.))
     w = func_f(x, y, z).mean()
     ww = np.log(2) - 0.5
-    print ww, w, (ww-w)/ww
+    print(ww, w, (ww-w)/ww)
 
 first()

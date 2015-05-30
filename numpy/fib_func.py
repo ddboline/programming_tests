@@ -1,7 +1,5 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-
-import os
 
 def fib_func(n):
     if type(n) != int or n < 0:
@@ -15,4 +13,4 @@ def fib_func(n):
 
 if __name__ == '__main__':
     for n in range(0, 20):
-        print n, fib_func(n)
+        print(n, fib_func(n))

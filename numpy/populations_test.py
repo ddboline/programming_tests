@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 import os
@@ -17,9 +17,9 @@ def pop_test():
     plt.legend(('Hare', 'Lynx', 'Carrot'), loc=(1.05, 0.5))
     plt.savefig('populations_test.png')
 
-    print populations.mean(axis=0)
-    print populations.std(axis=0)
-    print np.argmax(populations, axis=1)
+    print(populations.mean(axis=0))
+    print(populations.std(axis=0))
+    print(np.argmax(populations, axis=1))
 
     np.savetxt('pop2.txt', data)
 

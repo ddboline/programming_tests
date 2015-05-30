@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 import os
@@ -11,7 +11,7 @@ def quicksort(array):
     if len(array) < 2:
         return array
 
-    pivot = array.pop(len(array)/2)
+    pivot = array.pop(len(array)//2)
     for x in array:
         if x <= pivot:
             less.append(x)
@@ -27,4 +27,4 @@ if __name__ == '__main__':
     t1 = time.clock()
     sorted(list(arr))
     t2 = time.clock()
-    print 'quicksort %f sorted %f' % (t1-t0, t2-t1)
+    print('quicksort %f sorted %f' % (t1-t0, t2-t1))
