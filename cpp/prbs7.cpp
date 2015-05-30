@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include <sstream>
 #include <memory>
 #include <vector>
 #include <stdio.h>
@@ -7,8 +8,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <boost/archive/iterators/base64_from_binary.hpp>
+#include <boost/archive/iterators/insert_linebreaks.hpp>
+#include <boost/archive/iterators/transform_width.hpp>
+#include <boost/archive/iterators/ostream_iterator.hpp>
 
 using namespace std;
+using namespace boost::archive::iterators;
 
 int prbs7(uint8_t start, vector<uint8_t> & output){
     uint8_t a = start;
@@ -23,52 +29,6 @@ int prbs7(uint8_t start, vector<uint8_t> & output){
     return 0;
 }
 
-unsigned char base64_char(uint8_t ch){
-    uint8_t tmp;
-    if(ch >= 0 && ch < 26)
-        tmp = ch + 65;
-    else if(ch >= 26 && ch < 52)
-        tmp = ch + 97;
-    else if(ch >= 52 && ch < 62)
-        tmp = ch + 48;
-    else if(ch == 62)
-        tmp = 43;
-    else if(ch == 63)
-        tmp = 47;
-    else
-        tmp = 61;
-    return tmp;
-}
-
-int base64_convert(const vector<uint8_t> & input, string & output){
-    auto in_it = input.begin();
-    while(true){
-        int triplet = *in_it;
-        ++in_it;
-        if(in_it != input.end()) {
-            triplet |= (*in_it) << 8;
-            ++in_it;
-            if(in_it != input.end()) {
-                triplet |= (*in_it) << 8;
-            }
-            else
-                break;
-        }
-        else
-            break;
-        cout << triplet << endl;
-        char * tstr = (char*)malloc(5 * sizeof(char));
-        
-        for(int i = 0 ; i < 4 ; i++ ){
-            uint8_t tmp = ((triplet >> (i*3)) & 0x3F);
-            tstr[i] = base64_char(tmp) & 0x7F;
-//             cout << i << " " << tmp << " " << tchar << endl;
-        }
-        tstr[4] = 0x0;
-        printf("%s\n", tstr);
-    }
-}
-
 int main(int argc, char** argv) {
     time_t timer;
     time(&timer);
@@ -81,10 +41,21 @@ int main(int argc, char** argv) {
     uint8_t a = start;
     vector<uint8_t> output;
     int period = prbs7(start, output);
-    for(auto a: output)
+    unique_ptr<char> b(new char(output.size()));
+    stringstream os;
+    for(auto a: output) {
         printf("%02x", a);
+        char b = a;
+        os << b;
+    }
     cout << endl;
     cout << "\nrepetition period is " << period << "\n";
-    string result;
-    base64_convert(output, result);
+    
+    string s = os.str();
+    stringstream ss;
+    typedef insert_linebreaks<base64_from_binary<transform_width<const char *, 6, 8> >, 4096> base64_enc;
+    
+    std::copy(base64_enc(s.c_str()), base64_enc(s.c_str() + s.size()), std::ostream_iterator<char>(ss));
+    
+    cout << ss.str() << endl;
 }
