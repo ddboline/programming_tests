@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 #from integ0 import integrate_f
 
@@ -15,16 +15,16 @@ os.system('gcc integ.c -o integ')
 
 t = []
 t.append(time.clock())
-print integ0.integrate_f(0., 1., 5e7)
+print(integ0.integrate_f(0., 1., 5e7))
 t.append(time.clock())
-print integ1.integrate_f(0., 1., 5e7)
+print(integ1.integrate_f(0., 1., 5e7))
 t.append(time.clock())
-print integ2.integrate_f(0., 1., 5e7)
+print(integ2.integrate_f(0., 1., 5e7))
 t.append(time.clock())
 os.system('./integ')
 t.append(time.clock())
 
-print 'timing:',
+print('timing:',)
 for n in range(1, len(t)):
-    print t[n]-t[n-1],
-print ''
+    print(t[n]-t[n-1],)
+print('')

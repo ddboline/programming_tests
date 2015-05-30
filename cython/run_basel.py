@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import pyximport
 pyximport.install()
@@ -12,19 +12,19 @@ import pstats, cProfile
 
 def time_execution():
     t = []
-    print math.pi
+    print(math.pi)
     t.append(time.clock())
-    print basel0.approx_pi(10**7)
+    print(basel0.approx_pi(10**7))
     t.append(time.clock())
-    print basel1.approx_pi(10**7)
+    print(basel1.approx_pi(10**7))
     t.append(time.clock())
-    print basel1.approx_pi(10**9)
+    print(basel1.approx_pi(10**9))
     t.append(time.clock())
 
-    print 'timing:',
+    print('timing:',)
     for n in range(1, len(t)):
-        print t[n]-t[n-1],
-    print ''
+        print(t[n]-t[n-1],)
+    print('')
 
 def cprofile_basel0():
     cProfile.runctx('basel0.approx_pi()', globals(), locals(), 'Profile.prof')

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 def fact(n):
     if n == 0:
@@ -7,7 +7,7 @@ def fact(n):
         return 1
     else:
         f = 1
-        for idx in xrange(1, n+1):
+        for idx in range(1, n+1):
             f *= idx
         return f
 
@@ -28,7 +28,7 @@ def chudnovsky_term(k):
 
 def calc_chudnovsky_pi(k):
     pi_inv = 0.
-    for idx in xrange(0, k+1):
+    for idx in range(0, k+1):
         pi_inv += chudnovsky_term(k)
     pi_inv *= 12.
     return 1./pi_inv

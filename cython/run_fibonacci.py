@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import pyximport
 pyximport.install()
@@ -19,7 +19,7 @@ for n in range(0, 20):
     n1 = fibonacci1.fibonacci(n)
     t2 = time.clock()
 
-    print 'timing:', n, t1-t0, t2-t1
+    print('timing:', n, t1-t0, t2-t1)
     results.append([n, t1-t0, t2-t1])
 
 t0 = time.clock()
@@ -28,10 +28,10 @@ for n, f in fibonacci0.next_fibonacci():
         break
     t1 = time.clock()
 
-    print n, t1-t0
+    print(n, t1-t0)
     results[n].append(t1-t0)
     t0 = time.clock()
 
 
 for n, t0, t1, t2 in results:
-    print 'timing:', n, t0, t1, t2
+    print('timing:', n, t0, t1, t2)

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # # # cython: profile=True
 
 cpdef int fact(int n):
@@ -9,7 +9,7 @@ cpdef int fact(int n):
     elif n == 1:
         return 1
     else:
-        for idx in xrange(1, n+1):
+        for idx in range(1, n+1):
             f *= idx
         return f
 
@@ -31,7 +31,7 @@ cpdef double chudnovsky_term(int k):
 cpdef double calc_chudnovsky_pi(int k):
     cdef double pi_inv = 0.
     cdef int idx = 0
-    for idx in xrange(0, k+1):
+    for idx in range(0, k+1):
         pi_inv += chudnovsky_term(k)
     pi_inv *= 12.
     return 1./pi_inv

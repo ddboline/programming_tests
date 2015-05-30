@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 #from integ0 import integrate_f
 
@@ -15,13 +15,13 @@ import os
 Nx, Ny, Nz = 100, 100, 100
 
 t0 = time.clock()
-print integral_approx0.integrate_f(Nx, Ny, Nz)
+print(integral_approx0.integrate_f(Nx, Ny, Nz))
 t1 = time.clock()
-print integral_approx1.integrate_f(Nx, Ny, Nz)
+print(integral_approx1.integrate_f(Nx, Ny, Nz))
 t2 = time.clock()
-print integral_approx2.integrate_f(Nx, Ny, Nz)
+print(integral_approx2.integrate_f(Nx, Ny, Nz))
 t3 = time.clock()
 #os.system('/home/ddboline/temp/cython/integ')
 # t4 = time.clock()
 
-print 'timing:', t3-t2, t2-t1, t1-t0
+print('timing:', t3-t2, t2-t1, t1-t0)

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import pyximport
 pyximport.install()
@@ -23,7 +23,7 @@ for N in (4, 22, 27, 28, 58, 59, 85, 94, 121, 4937775, 2050918644):
     n2 = _cmd.read().strip()
     ts2 = time.clock()
     ts.append((ts_, n0, ts0, n1, ts1, n2, ts2))
-    print n0, n2, n2
+    print(n0, n2, n2)
 
 for ts_, n0, ts0, n1, ts1, n2, ts2 in ts:
-    print 'timing:', ts0-ts_, ts1-ts0, ts2-ts1
+    print('timing:', ts0-ts_, ts1-ts0, ts2-ts1)

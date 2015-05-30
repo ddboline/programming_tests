@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 #import pyximport
 #pyximport.install()
@@ -23,4 +23,4 @@ for N in (5, 10, 20):
     ts.append((ts_, ts0, ts1, ts2))
 
 for ts_, ts0, ts1, ts2 in ts:
-    print 'timing:', ts0-ts_, ts1-ts0, ts2-ts1
+    print('timing:', ts0-ts_, ts1-ts0, ts2-ts1)

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 cdef double func_f(double a, double b, double c):
     return a**b - c

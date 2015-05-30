@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 def primes(kmax):  # The argument will be converted to int or raise a TypeError.
     #cdef int n, k, i  # These variables are declared with C types.

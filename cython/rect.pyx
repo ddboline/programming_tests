@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 cdef extern from 'rectangle.h' namespace 'shapes':
     cdef cppclass rectangle:
