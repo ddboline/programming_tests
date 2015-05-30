@@ -60,6 +60,6 @@ while True:
         break
 
 print(x)
-exception_example()
+#exception_example()
 run_filter()
 run_print_sorted()
