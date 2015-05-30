@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 import os
@@ -18,7 +18,7 @@ def framing_lena():
     plt.savefig('crop_lena.png')
 
     y, x = np.ogrid[0:512, 0:512]
-    print y.shape, x.shape
+    print(y.shape, x.shape)
     centerx, centery = (256, 256)
     mask = (((y - centery)/1.)**2 + ((x - centerx)/0.8)**2) > 230**2
     lena[mask] = 0

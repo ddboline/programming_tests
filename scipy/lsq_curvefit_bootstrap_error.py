@@ -1,6 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
-
+import numpy as np
 from scipy import optimize
 
 def line(x, p):
@@ -39,11 +39,11 @@ def fit_function(p0, datax, datay, function, **kwargs):
     error = []
     for i in range(len(pfit)):
         try:
-            error.append(numpy.absolute(pcov[i][i])**0.5)
+            error.append(np.absolute(pcov[i][i])**0.5)
         except:
             error.append(0.00)
     pfit_leastsq = pfit
-    perr_leastsq = numpy.array(error)
+    perr_leastsq = np.array(error)
 
 
     ###################################################
@@ -64,11 +64,11 @@ def fit_function(p0, datax, datay, function, **kwargs):
     error = []
     for i in range(len(pfit)):
         try:
-            error.append(numpy.absolute(pcov[i][i])**0.5)
+            error.append(np.absolute(pcov[i][i])**0.5)
         except:
             error.append(0.00)
     pfit_curvefit = pfit
-    perr_curvefit = numpy.array(error)
+    perr_curvefit = np.array(error)
 
 
     ####################################################
@@ -99,16 +99,16 @@ def fit_function(p0, datax, datay, function, **kwargs):
     # the bootstrap Monte-Carlo method
     # http://phe.rockefeller.edu/LogletLab/whitepaper/node17.html
     residuals = errfunc(pfit, datax, datay)
-    s_res = numpy.std(residuals)
+    s_res = np.std(residuals)
     ps = []
     # 100 random data sets are generated and fitted
     for i in range(100):
         if datayerrors is None:
-            randomDelta = numpy.random.normal(0., s_res, len(datay))
+            randomDelta = np.random.normal(0., s_res, len(datay))
             randomdataY = datay + randomDelta
         else:
-            randomDelta =  numpy.array([\
-                               numpy.random.normal(0., derr,1)[0] \
+            randomDelta =  np.array([\
+                               np.random.normal(0., derr,1)[0] \
                                for derr in datayerrors])
             randomdataY = datay + randomDelta
         randomfit, randomcov = \
@@ -116,24 +116,31 @@ def fit_function(p0, datax, datay, function, **kwargs):
                               full_output=0)
         ps.append(randomfit)
 
-    ps = numpy.array(ps)
-    mean_pfit = numpy.mean(ps,0)
+    ps = np.array(ps)
+    mean_pfit = np.mean(ps,0)
     Nsigma = 1. # 1sigma gets approximately the same as methods above
                 # 1sigma corresponds to 68.3% confidence interval
                 # 2sigma corresponds to 95.44% confidence interval
-    err_pfit = Nsigma * numpy.std(ps,0)
+    err_pfit = Nsigma * np.std(ps,0)
 
     pfit_bootstrap = mean_pfit
     perr_bootstrap = err_pfit
 
 
     # Print results
-    print "\nlestsq method:"
-    print "pfit = ", pfit_leastsq
-    print "perr = ", perr_leastsq
-    print "\ncurvefit method:"
-    print "pfit = ", pfit_curvefit
-    print "perr = ", perr_curvefit
-    print "\nbootstrap method:"
-    print "pfit = ", pfit_bootstrap
-    print "perr = ", perr_bootstrap
+    print("\nlestsq method:")
+    print("pfit = ", pfit_leastsq)
+    print("perr = ", perr_leastsq)
+    print("\ncurvefit method:")
+    print("pfit = ", pfit_curvefit)
+    print("perr = ", perr_curvefit)
+    print("\nbootstrap method:")
+    print("pfit = ", pfit_bootstrap)
+    print("perr = ", perr_bootstrap)
+
+if __name__ == '__main__':
+    p0 = [0,0]
+    datax = np.linspace(0,10,1000)
+    datay = datax + np.random.random()
+    function = line
+    fit_function(p0, datax, datay, function)

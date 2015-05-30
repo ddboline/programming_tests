@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 """
@@ -15,20 +15,20 @@ def analyze_audio(prefix):
     rate, data = wavfile.read('%s.wav' % prefix)
     dt = 1./rate
     T = dt * data.shape[0]
-    print dt, T
+    print(dt, T)
 
-    #print np.linspace(0, tottime, data.shape[0])
+    #print(np.linspace(0, tottime, data.shape[0]))
     tvec = np.arange(0, T, dt)
     sig0 = data[:,0]
     sig1 = data[:,1]
 
-    print np.sum(sig0), np.sum(sig1)
+    print(np.sum(sig0), np.sum(sig1))
 
     plt.clf()
     plt.plot(tvec, sig0)
     plt.plot(tvec, sig1)
     xtickarray = range(0, 12, 2)
-    plt.xticks(xtickarray, map(lambda x: '%d s' % x, xtickarray))
+    plt.xticks(xtickarray, ['%d s' % x for x in xtickarray])
     plt.savefig('%s_time.png' % prefix)
 
     plt.clf()

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 import numpy as np
@@ -101,7 +101,7 @@ def plot_test_dist():
     H2 = pl.hist(x, bins=bayesian_blocks(x), color='black',
             histtype='step', normed=True)
 
-    pl.show()
+    pl.savefig('bayesian_blocks.png')
 
 if __name__ == "__main__":
     plot_test_dist()

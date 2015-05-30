@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 """
@@ -35,7 +35,7 @@ img2 = np.clip(img2, 0, 1)
 
 # plot output
 plt.imshow(img2)
-plt.show()
+plt.savefig('image_blur')
 
 # Further exercise (only if you are familiar with this stuff):
 #
