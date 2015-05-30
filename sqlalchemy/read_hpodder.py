@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import os
 from sqlalchemy import create_engine
@@ -10,17 +10,17 @@ def read_hpodder():
 
     for line in con.execute("select * from sqlite_master where type='table';"):
         if 'CREATE TABLE' in line[4]:
-                print line[4].replace(',', ',\n')
+                print(line[4].replace(',', ',\n'))
     
     for line in con.execute("select name from sqlite_master where type='table';"):
-        print line
+        print(line)
     
     for line in con.execute("select feedurl from podcasts;"):
-        print line
+        print(line)
 
     result = con.execute("select epurl, status from episodes limit 10;")
     for line in result:
-        print line
+        print(line)
 
     return
 

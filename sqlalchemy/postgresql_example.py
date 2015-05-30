@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import os
 from sqlalchemy import create_engine
@@ -43,9 +43,9 @@ def postgresql_example():
 
     dframes = {}
 
-    for table, fields in table_dict.iteritems():
+    for table, fields in table_dict.items():
         query = 'select %s from %s;' % (', '.join(fields), table)
-        # print query
+        # print(query)
         result = con.execute(query)
         rows = result.fetchall()
         dframes[table] = pd.DataFrame(rows, columns=fields)
@@ -69,4 +69,5 @@ def postgresql_example_test():
         df.to_csv('%s.csv' % (table), index_label='Index')
 
 if __name__ == '__main__':
-    postgresql_example_test()
+    postgresql_example()
+    #postgresql_example_test()

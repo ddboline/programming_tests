@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import os
 from sqlalchemy import create_engine, Column, Integer, String
@@ -42,7 +42,7 @@ for line in insert_statements.split('\n'):
 
 result = con.execute('select * from person;')
 for line in result:
-    print line
+    print(line)
 
 insert_statement = """
 INSERT INTO person (id,  firstname,       lastname,    date_of_birth,     place_of_birth, ssn,           weight)
@@ -55,4 +55,4 @@ con.execute(insert_statement)
 
 result = con.execute('select * from person;')
 for line in result:
-    print line
+    print(line)
