@@ -1,6 +1,9 @@
 CXX = gcc
 CPP = g++
 
+BOOST_INC = /usr/include
+BOOST_LIB = /usr/lib
+
 all: reverse_string atoi_impl ternary_conditional prbs7 selection_sort sampling_vose_alias_method primes pthread_hello thread_hello
 
 reverse_string:
@@ -13,7 +16,7 @@ ternary_conditional:
 	$(CXX) -O3 ./ternary_conditional.c -o ./ternary_conditional
 
 prbs7:
-	$(CPP) -std=c++11 -O3 ./prbs7.cpp -o ./prbs7
+	$(CPP) -std=c++11 -O3 -I$(BOOST_INC) -fPIC  -L$(BOOST_LIB) ./prbs7.cpp -o ./prbs7
 
 selection_sort:
 	$(CPP) -std=c++11 -O3 ./selection_sort.cpp -o ./selection_sort
