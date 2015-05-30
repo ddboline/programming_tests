@@ -3,7 +3,7 @@
 SELECT p.firstname, p.lastname, c.contact_type AS "Kind of Contact", c.contact_value AS "Call Number"
 FROM   person p
 JOIN   contact c ON p.id = c.person_id;
- 
+
 -- show only desired rows
 SELECT p.firstname, p.lastname, c.contact_type AS "Kind of Contact", c.contact_value AS "Call Number"
 FROM   person p
