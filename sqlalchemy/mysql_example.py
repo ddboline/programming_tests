@@ -21,13 +21,13 @@ def mysql_example(database):
             fields.append(row[0])
         table_dict[table] = fields
 
-    # print table_dict
+    # print(table_dict)
 
     dframes = {}
 
     for table, fields in table_dict.iteritems():
         query = 'select %s from %s;' % (', '.join(fields), table)
-        # print query
+        # print(query)
         result = con.execute(query)
         rows = result.fetchall()
         dframes[table] = pd.DataFrame(rows, columns=fields)
