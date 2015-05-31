@@ -38,7 +38,6 @@ int main(int argc, char** argv) {
         if(start == 0)
             start = 1432838330 & 0x7F;
     }
-    uint8_t a = start;
     vector<uint8_t> output;
     int period = prbs7(start, output);
     unique_ptr<char> b(new char(output.size()));
