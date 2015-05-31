@@ -4,43 +4,16 @@ CPP = g++
 BOOST_INC = /usr/include
 BOOST_LIB = /usr/lib
 
-CXX_FILES = reverse_string atoi_impl ternary_conditional
-CPP_FILES = prbs7 selection_sort sampling_vose_alias_method primes pthread_hello thread_hello forward
+CXX_FILES = reverse_string atoi_impl ternary_conditional pthread_hello
+CPP_FILES = prbs7 selection_sort sampling_vose_alias_method primes thread_hello forward
+
+%: %.c
+	$(CXX) -Wall -O3 $*.c -o $* -lpthread
+
+%: %.cpp
+	$(CPP) -Wall -pthread -std=c++11 -O3 -I$(BOOST_INC) -fPIC -L$(BOOST_LIB) $*.cpp -o $*
 
 all: $(CXX_FILES) $(CPP_FILES)
 
 clean:
 	rm $(CXX_FILES) $(CPP_FILES)
-
-# %.c:
-# 	$(CXX) -O3 $* $($*:.c=)
-
-reverse_string:
-	$(CXX) -O3 ./reverse_string.c -o ./reverse_string
-
-atoi_impl:
-	$(CXX) -O3 ./atoi_impl.c -o ./atoi_impl
-
-ternary_conditional:
-	$(CXX) -O3 ./ternary_conditional.c -o ./ternary_conditional
-
-prbs7:
-	$(CPP) -std=c++11 -O3 -I$(BOOST_INC) -fPIC  -L$(BOOST_LIB) ./prbs7.cpp -o ./prbs7
-
-selection_sort:
-	$(CPP) -std=c++11 -O3 ./selection_sort.cpp -o ./selection_sort
-
-sampling_vose_alias_method:
-	$(CPP) -std=c++11 -O3 ./sampling_vose_alias_method.cpp -o ./sampling_vose_alias_method
-
-primes:
-	$(CPP) -std=c++11 -O3 ./primes.cpp -o ./primes
-
-pthread_hello:
-	$(CPP) -O3 pthread_hello.c -o pthread_hello -lpthread 
-
-thread_hello:
-	$(CPP) -Wall -pthread -std=c++11 -O3 thread_hello.cpp -o thread_hello
-
-forward:
-	$(CPP) -std=c++11 -O3 forward.cpp -o forward
