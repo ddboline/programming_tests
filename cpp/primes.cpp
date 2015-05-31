@@ -5,11 +5,11 @@
 
 using namespace std;
 
-int primes( const int pmax ) {
+int primes( const int pmax , int & result ) {
     int n = 3 , k = 0 , i;
     vector<int> p;
     p.push_back(2);
-    int result = 0;
+    result = 0;
     while( n < pmax ) {
         i = 0;
         while( i < k && n % p[i] != 0 )
@@ -29,8 +29,9 @@ int primes( const int pmax ) {
 
 int main(int argc, char **argv)
 {
+    int largest_prime = 0;
     cout << argc << endl;
     if(argc > 1)
-        cout << primes(atoi(argv[1])) << endl;
+        cout << primes(atoi(argv[1]), largest_prime) << " " << largest_prime << endl;
     return 0;
 }
