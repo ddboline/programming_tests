@@ -4,8 +4,8 @@ CPP = g++
 BOOST_INC = /usr/include
 BOOST_LIB = /usr/lib
 
-CXX_FILES = reverse_string atoi_impl ternary_conditional pthread_hello
-CPP_FILES = prbs7 selection_sort sampling_vose_alias_method primes thread_hello forward
+CXX_FILES = reverse_string atoi_impl ternary_conditional pthread_hello prbs7_c
+CPP_FILES = prbs7 selection_sort sampling_vose_alias_method primes thread_hello forward move
 
 %: %.c
 	$(CXX) -Wall -O3 $*.c -o $* -lpthread
