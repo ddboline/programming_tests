@@ -4,7 +4,16 @@ CPP = g++
 BOOST_INC = /usr/include
 BOOST_LIB = /usr/lib
 
-all: reverse_string atoi_impl ternary_conditional prbs7 selection_sort sampling_vose_alias_method primes pthread_hello thread_hello
+CXX_FILES = reverse_string atoi_impl ternary_conditional
+CPP_FILES = prbs7 selection_sort sampling_vose_alias_method primes pthread_hello thread_hello forward
+
+all: $(CXX_FILES) $(CPP_FILES)
+
+clean:
+	rm $(CXX_FILES) $(CPP_FILES)
+
+# %.c:
+# 	$(CXX) -O3 $* $($*:.c=)
 
 reverse_string:
 	$(CXX) -O3 ./reverse_string.c -o ./reverse_string
@@ -33,5 +42,5 @@ pthread_hello:
 thread_hello:
 	$(CPP) -Wall -pthread -std=c++11 -O3 thread_hello.cpp -o thread_hello
 
-clean:
-	rm reverse_string atoi_impl ternary_conditional prbs7 selection_sort sampling_vose_alias_method primes pthread_hello thread_hello
+forward:
+	$(CPP) -std=c++11 -O3 forward.cpp -o forward
