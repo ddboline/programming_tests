@@ -25,7 +25,7 @@ class VoseAliasMethod{
             auto scaled_p = p;
             for(auto & it : scaled_p)
                 it *= prob_length;
-            for(auto idx=0; idx<scaled_p.size(); idx++){
+            for(size_t idx=0; idx<scaled_p.size(); idx++){
                 if(scaled_p[idx]<1)
                     small.push_back(idx);
                 else
@@ -92,7 +92,7 @@ int main(int argc, char ** argv){
                      1000000, 1000000, 1000000, 
                      10000000, 10000000, 10000000,};
     auto t = clock();
-    for(auto idx=0; idx<runs.size(); idx++){
+    for(size_t idx=0; idx<runs.size(); idx++){
         vector<double> hist(number);
         for(auto jdx=0; jdx<runs[idx]; jdx++)
             hist[v.generate()] += 1;
