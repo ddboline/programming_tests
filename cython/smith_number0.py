@@ -22,7 +22,7 @@ def prime_factors(pval):
             k += 1
             while cval % n == 0:
                 factors.append(n)
-                cval /= n
+                cval = cval//n
         if k*k > cval:
             factors.append(cval)
             break
@@ -33,7 +33,7 @@ def sum_of_digits(number):
     sum_of_digit = 0
     divisor = 1
     while divisor < number:
-        sum_of_digit += (number/divisor) % 10
+        sum_of_digit += (number//divisor) % 10
         divisor *= 10
     return sum_of_digit
 
@@ -43,3 +43,6 @@ def smith_number(number):
     for _prime in primes:
         sum_of_prime_dig += sum_of_digits(_prime)
     return int(sum_of_prime_dig == sum_of_digits(number))
+
+if __name__ == '__main__':
+    print(smith_number(int(os.sys.argv[1])))
