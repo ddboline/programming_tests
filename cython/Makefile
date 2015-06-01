@@ -1,7 +1,9 @@
 CXX = gcc
 CPP = g++
 
-all: integ primes smith_number sampling_vose_alias_method python
+TARGETS = integ primes smith_number sampling_vose_alias_method
+
+all: $(TARGETS) python
 
 %: %.c
 	$(CXX) -O3 $*.c -o $*
@@ -9,8 +11,9 @@ all: integ primes smith_number sampling_vose_alias_method python
 %: %.cpp
 	$(CPP) -std=c++11 -O3 $*.cpp -o $*
 
-clean:
-	rm -rf cos_func.c matmul2.c matmul3.c primes primes1.cpp sampling_vose_alias_method sampling_vose_alias_method1.cpp smith_number smith_number2.cpp __pycache__ *.so *.pyc build
-
 python:
-	python3 setup.py build_ext --inplace
+	./setup.py build_ext --inplace
+
+clean:
+	rm $(TARGETS)
+	rm -rf cos_func.c matmul2.c matmul3.c primes1.cpp sampling_vose_alias_method1.cpp smith_number2.cpp __pycache__ *.so *.pyc build
