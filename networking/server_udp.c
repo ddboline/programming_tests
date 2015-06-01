@@ -16,11 +16,10 @@ void error(const char *msg)
 
 int main(int argc, char *argv[])
 {
-     int sockfd, newsockfd, portno;
-     socklen_t clilen;
+     int sockfd, portno;
      char buffer[1024];
-     struct sockaddr_in serv_addr, cli_addr;
-     int n , saddrlen = sizeof(serv_addr);
+     struct sockaddr_in serv_addr;
+     unsigned int n , saddrlen = sizeof(serv_addr);
      if (argc < 2) {
          fprintf(stderr,"ERROR, no port provided\n");
          exit(1);

@@ -7,19 +7,19 @@
 #include <sys/types.h> 
 #include <sys/socket.h>
 #include <netinet/in.h>
-
+#include <pthread.h>
 
 #define NTELNETCOMMANDS 6
 #define NTELNETTOKENS 20
 
-typedef unsigned   char    u8_t;
-typedef signed     char    s8_t;
-typedef unsigned   short   u16_t;
-typedef signed     short   s16_t;
-typedef unsigned   long    u32_t;
-typedef signed     long    s32_t;
-typedef unsigned   long long    u64_t;
-typedef signed     long long    s64_t;
+typedef uint8_t   u8_t;
+typedef int8_t    s8_t;
+typedef uint16_t  u16_t;
+typedef int16_t   s16_t;
+typedef uint32_t  u32_t;
+typedef int32_t   s32_t;
+typedef uint64_t  u64_t;
+typedef int64_t   s64_t;
 
 pthread_mutex_t lock;
 u8_t u8_array[4] = { 0x12 , 0x34 , 0x56 , 0x78 };
@@ -85,19 +85,19 @@ int telnet_response(int s, const void *data, size_t size, int sockfd)
     if( command_type == DEBUG ) {
         memset( input_buf , 0 , size+1 );
         pthread_mutex_lock(&lock);
-        sprintf( input_buf , "echo mrd 0x%x 4 b | nc localhost 10878\r\n" , (u64_t*)u8_array );
+        sprintf( input_buf , "echo mrd 0x%lx 4 b | nc localhost 10878\r\n" , (long unsigned int)u8_array );
         pthread_mutex_unlock(&lock);
         
         lwip_send(s, input_buf, strlen(input_buf), 0);
         
         pthread_mutex_lock(&lock);
-        sprintf( input_buf , "echo mrd 0x%x 4 h | nc localhost 10878\r\n" , (u64_t*)u16_array );
+        sprintf( input_buf , "echo mrd 0x%lx 4 h | nc localhost 10878\r\n" , (long unsigned int)u16_array );
         pthread_mutex_unlock(&lock);
         
         lwip_send(s, input_buf, strlen(input_buf), 0);
         
         pthread_mutex_lock(&lock);
-        sprintf( input_buf , "echo mrd 0x%x 2 w | nc localhost 10878\r\n" , (u64_t*)u32_array );
+        sprintf( input_buf , "echo mrd 0x%lx 2 w | nc localhost 10878\r\n" , (long unsigned int)u32_array );
         pthread_mutex_unlock(&lock);
 
         return lwip_send(s, input_buf, strlen(input_buf), 0);        
