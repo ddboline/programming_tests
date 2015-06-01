@@ -7,8 +7,7 @@ import primes0
 import primes1
 import primes2
 import time, os
-
-os.system('gcc primes.c -o primes')
+from subprocess import call
 
 ts = []
 
@@ -19,7 +18,7 @@ print(primes1.primes(10000))
 ts.append(time.clock())
 print(primes2.primes(10000))
 ts.append(time.clock())
-os.system('./primes 10000')
+call('./primes 10000', shell=True)
 ts.append(time.clock())
 
 for i in range(0,len(ts)-1):

@@ -10,8 +10,7 @@ import integ1
 import integ2
 import time
 import os
-
-os.system('gcc integ.c -o integ')
+from subprocess import call
 
 t = []
 t.append(time.clock())
@@ -21,7 +20,7 @@ print(integ1.integrate_f(0., 1., 5e7))
 t.append(time.clock())
 print(integ2.integrate_f(0., 1., 5e7))
 t.append(time.clock())
-os.system('./integ')
+call('./integ', shell=True)
 t.append(time.clock())
 
 print('timing:',)
