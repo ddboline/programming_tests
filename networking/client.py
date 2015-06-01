@@ -10,8 +10,10 @@ def main():
     if err:
         print('failed to open socket %s' % err)
         exit(1)
-    s.send(input().encode())
-    print(s.recv(1024))
+    msg = ' '.join(os.sys.argv[3:])
+    s.send(msg.encode())
+    msg = s.recv(1024).decode()
+    print(msg)
     s.close()
     return 0
 

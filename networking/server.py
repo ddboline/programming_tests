@@ -15,7 +15,7 @@ def main():
     s.listen(1)
     while 1:
         c, a = s.accept()
-        d = str(c.recv(1024))
+        d = c.recv(1024).decode()
         if not d or d.find('q') >= 0:
             break
         print("Here is the message: %s" % d)
