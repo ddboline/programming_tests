@@ -20,6 +20,7 @@ void * ThreadAdd(void * a)
       ++count1;
       pthread_mutex_unlock( &lock );
     }
+    return 0;
 }
 
 int main(int argc, char * argv[])
@@ -51,10 +52,6 @@ int main(int argc, char * argv[])
       exit(1);
     }
 
-//   int value;
-//   sem_getvalue(&mutex, &value);
-//   printf("semaphore value %d\n", value);
-//   sem_destroy(&mutex);
   pthread_mutex_destroy(&lock);
     
   if (count < 2 * NITER) 
