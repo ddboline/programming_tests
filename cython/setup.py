@@ -14,7 +14,13 @@ extensions = [
                  libraries = ['m']),
     Extension('sampling_vose_alias_method1',
               ['sampling_vose_alias_method1.pyx'],
-              language="c++",)
+              language="c++",),
+    Extension('smith_number2',
+              ['smith_number2.pyx'],
+              language="c++",),
+    Extension('primes1',
+              ['primes1.pyx'],
+              language="c++",),
 ]
 setup(
     ext_modules = cythonize(extensions),
