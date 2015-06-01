@@ -4,6 +4,7 @@
 #include <iostream>
 #include <time.h>
 #include <chrono>
+#include <functional>
 
 using namespace std;
 
@@ -11,14 +12,13 @@ class VoseAliasMethod{
     public:
         int prob_length;
         vector<double> alias_arr, prob_arr;
-        default_random_engine generator;
-        uniform_int_distribution<int> int_distribution;
-        uniform_real_distribution<double> real_distribution;
+        function<int()> int_distribution;
+        function<double()> real_distribution;
 
-        VoseAliasMethod(vector<double> & p){
+        VoseAliasMethod(const vector<double> & p, const default_random_engine & generator){
             prob_length = p.size();
-            int_distribution = uniform_int_distribution<int>(0, prob_length-1);
-            real_distribution = uniform_real_distribution<double>(0.0, 1.0);
+            int_distribution = bind(uniform_int_distribution<int>(0, prob_length-1), generator);
+            real_distribution = bind(uniform_real_distribution<double>(0.0, 1.0), generator);
             alias_arr.resize(prob_length);
             prob_arr.resize(prob_length);
             deque<int> small, large;
@@ -57,8 +57,8 @@ class VoseAliasMethod{
         };
         
         int generate(){
-            auto i = int_distribution(generator);
-            auto r = real_distribution(generator);
+            auto i = int_distribution();
+            auto r = real_distribution();
             if(r<prob_arr[i])
                 return i;
             else
@@ -71,9 +71,9 @@ int main(int argc, char ** argv){
     vector<double> prob_array(number);
     auto seed = chrono::system_clock::now().time_since_epoch().count();
     default_random_engine generator(seed);
-    uniform_real_distribution<double> real_distribution(0.0,1.0);
+    function<double()> real_distribution = bind(uniform_real_distribution<double>(0.0,1.0), generator);
     for(auto & it : prob_array)
-        it = real_distribution(generator);
+        it = real_distribution();
     auto sum = 0.0;
     for(auto it : prob_array)
         sum += it;
@@ -83,7 +83,7 @@ int main(int argc, char ** argv){
         cout << it << " ";
     cout << endl;
     
-    VoseAliasMethod v(prob_array);
+    VoseAliasMethod v(prob_array, generator);
     vector<int> runs{10, 10, 10,
                      100, 100, 100, 
                      1000, 1000, 1000,
