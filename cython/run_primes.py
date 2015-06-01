@@ -4,6 +4,7 @@ import pyximport
 pyximport.install()
 
 import primes0
+import primes1
 import primes2
 import time, os
 
@@ -13,6 +14,8 @@ ts = []
 
 ts.append(time.clock())
 print(primes0.primes(10000))
+ts.append(time.clock())
+print(primes1.primes(10000))
 ts.append(time.clock())
 print(primes2.primes(10000))
 ts.append(time.clock())
