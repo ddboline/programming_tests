@@ -255,7 +255,7 @@ def analyze_files():
             with open_fn(fname, 'r') as logf:
                 analyze_single_file_apache(logf, logcsv)
 
-def find_originating_country(hostname, country_code_list=None):
+def find_originating_country(hostname, country_code_list=None, orig_host=None):
     """ Find country associated with hostname, using whois """
     if not hasattr(hostname, 'split'):
         return None
@@ -263,6 +263,8 @@ def find_originating_country(hostname, country_code_list=None):
         return None
     if len(hostname.split('.')) < 2:
         return None
+    if not orig_host:
+        orig_host = hostname
 
     output = []
     result = 'find hostname country: %s ' % hostname
@@ -285,7 +287,7 @@ def find_originating_country(hostname, country_code_list=None):
             in output or 'Timeout' in output:
         time.sleep(10)
         print(hostname)
-        return find_originating_country(hostname)
+        return find_originating_country(hostname, orig_host=orig_host)
 
     country = None
     for line in output.split('\n'):
@@ -304,13 +306,17 @@ def find_originating_country(hostname, country_code_list=None):
     if 'KOREAN' in output:
         country = 'KR'
 
+    if 'hinet.net' in output:
+        country = 'CN'
+
     if not country and hostname:
-        country = find_originating_country('.'.join(hostname.split('.')[1:]))
+        country = find_originating_country('.'.join(hostname.split('.')[1:]),
+                                           orig_host=orig_host)
 
     if country:
         result += country
     else:
-        raise TypeError('No Country %s %s' % (result, hostname))
+        raise TypeError('No Country %s %s %s' % (result, hostname, orig_host))
     print(result)
 
     return country
