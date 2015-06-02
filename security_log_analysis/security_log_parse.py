@@ -140,13 +140,15 @@ def dump_postgresql_csv():
                 csvwriter.writerow(line)
     return
 
-def dump_csv_to_postgresql(create_tables=False):
+def open_postgresql_ssh_tunnel():
     if HOSTNAME != 'dilepton-tower':
         _cmd = 'ssh -N -L localhost:5432:localhost:5432 ddboline@ddbolineathome.mooo.com'
         args = shlex.split(_cmd)
         tunnel_process = Popen(args, shell=False)
         time.sleep(5)
-    
+    return tunnel_process
+
+def dump_csv_to_postgresql(create_tables=False):
     engine = create_db_engine()
     hostlist = []
     for table, fname in FILE_MAPPING.items():
@@ -200,10 +202,6 @@ def dump_csv_to_postgresql(create_tables=False):
         cond = df_['Host'] == host
         cmd = update_table(df_[cond], table)
         engine.execute(cmd)
-    if HOSTNAME != 'dilepton-tower':
-        return tunnel_process
-    else:
-        return
 
 def analyze_file():
     fname = 'logcsv.csv.gz'
@@ -411,7 +409,9 @@ def get_country_info():
                     print(host)
 
 if __name__ == '__main__':
+    tun = open_postgresql_ssh_tunnel()
     dump_postgresql_csv()
     analyze_file()
     get_country_info()
     dump_csv_to_postgresql(create_tables=False)
+    tun.kill()
