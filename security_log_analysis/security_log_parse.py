@@ -52,6 +52,7 @@ COLUMN_MAPPING = {
                {'name': 'Host', 'type': 'char', 'isnull': False},],}
 
 def create_db_engine():
+    """ Create sqlalchemy database engine """
     user = 'ddboline'
     pwd = 'BQGIvkKFZPejrKvX'
     host = 'localhost'
@@ -61,13 +62,16 @@ def create_db_engine():
     engine = create_engine(dbstring)
     return engine
 
-def str_len(x):
+def str_len(st_):
+    """ length of string, otherwise 0 """
     try:
-        return len(x)
-    except:
+        return len(st_)
+    except Exception as exc:
+        print('Exception %s' % exc)
         return 0
 
 def create_table(df_, table_name='country_code'):
+    """ SQL to create table """
     output = 'CREATE TABLE %s ' % table_name
     vals = []
     for vdict in COLUMN_MAPPING[table_name]:
@@ -89,10 +93,11 @@ def create_table(df_, table_name='country_code'):
     return output
 
 def update_table(df_, table_name='country_code'):
+    """ SQL to insert rows into table """
     output = 'INSERT INTO %s ' % table_name
     labels = []
     values = []
-    for idx, row in df_.iterrows():
+    for _, row in df_.iterrows():
         labs = []
         vals = []
         for vdict in COLUMN_MAPPING[table_name]:
@@ -117,7 +122,7 @@ def update_table(df_, table_name='country_code'):
                     ent = ent.replace("'", '')
                 if type(ent) != int and '%' in ent:
                     ent = ent.replace('%', '')
-                vals.append("'%s'" % ent)            
+                vals.append("'%s'" % ent)
             else:
                 labs.append(cname)
                 vals.append('%s' % ent)
@@ -127,7 +132,8 @@ def update_table(df_, table_name='country_code'):
     output += '(%s) VALUES %s;' % (', '.join(labels), ', '.join(values))
     return output
 
-def dump_postgresql_csv():
+def dump_sql_csv():
+    """ Dump SQL to CSV """
     engine = create_db_engine()
     for table, fname in FILE_MAPPING.items():
         print(table, fname)
@@ -140,13 +146,15 @@ def dump_postgresql_csv():
                 csvwriter.writerow(line)
     return
 
-class open_postgresql_ssh_tunnel(object):
+class OpenPostgreSQLsshTunnel(object):
+    """ Class to let us open an ssh tunnel, then close it when done """
     def __init__(self):
         self.tunnel_process = 0
 
     def __enter__(self):
         if HOSTNAME != 'dilepton-tower':
-            _cmd = 'ssh -N -L localhost:5432:localhost:5432 ddboline@ddbolineathome.mooo.com'
+            _cmd = 'ssh -N -L localhost:5432:localhost:5432 ' + \
+                   'ddboline@ddbolineathome.mooo.com'
             args = shlex.split(_cmd)
             self.tunnel_process = Popen(args, shell=False)
             time.sleep(5)
@@ -160,7 +168,8 @@ class open_postgresql_ssh_tunnel(object):
         else:
             return True
 
-def dump_csv_to_postgresql(create_tables=False):
+def dump_csv_to_sql(create_tables=False):
+    """ Dump csv to SQL """
     engine = create_db_engine()
     hostlist = []
     for table, fname in FILE_MAPPING.items():
@@ -187,14 +196,14 @@ def dump_csv_to_postgresql(create_tables=False):
         if line[0] > maxtimestamp:
             maxtimestamp = line[0]
     for line in engine.execute('select host, code from host_country;'):
-        host, code = line
+        host, _ = line
         hostlist.append(host)
 
     for table in ('ssh_log', 'apache_log'):
         fname = FILE_MAPPING[table]
         df_ = pd.read_csv(fname, compression='gzip', na_values=['nan'],
                           keep_default_na=False)
-        df_['Datetime'] = df_['Datetime'].apply(lambda x: parse(x, 
+        df_['Datetime'] = df_['Datetime'].apply(lambda x: parse(x,
                                                             ignoretz=True))
         cond = df_['Datetime'].dropna() > maxtimestamp
         print(df_[cond].shape)
@@ -206,7 +215,7 @@ def dump_csv_to_postgresql(create_tables=False):
             cmd = update_table(df_[cond], table)
         engine.execute(cmd)
 
-    table = 'host_country'    
+    table = 'host_country'
     fname = FILE_MAPPING[table]
     df_ = pd.read_csv(fname, compression='gzip')
     notinlist = set(df_['Host']) ^ set(hostlist)
@@ -215,7 +224,8 @@ def dump_csv_to_postgresql(create_tables=False):
         cmd = update_table(df_[cond], table)
         engine.execute(cmd)
 
-def analyze_file():
+def analyze_files():
+    """ Analyze log files """
     fname = 'logcsv.csv.gz'
     if HOSTNAME != 'dilepton-tower':
         fname = 'logcsv_cloud.csv.gz'
@@ -246,6 +256,7 @@ def analyze_file():
                 analyze_single_file_apache(logf, logcsv)
 
 def find_originating_country(hostname, country_code_list=None):
+    """ Find country associated with hostname, using whois """
     if not hasattr(hostname, 'split'):
         return None
     if '.' not in hostname:
@@ -259,7 +270,7 @@ def find_originating_country(hostname, country_code_list=None):
     if len(ents) > 2 and country_code_list and ents[-1].upper() in \
             country_code_list:
         return ents[-1].upper()
-    
+
     while True:
         pipe = Popen('whois %s' % hostname, shell=True, stdin=PIPE,
                      stdout=PIPE, close_fds=True)
@@ -299,12 +310,13 @@ def find_originating_country(hostname, country_code_list=None):
     if country:
         result += country
     else:
-        raise(TypeError('No Country %s %s' % (result, hostname)))
+        raise TypeError('No Country %s %s' % (result, hostname))
     print(result)
 
     return country
 
 def analyze_single_line_ssh(line):
+    """ Analyze single line from ssh log file """
     if 'pam_unix' not in line and 'Invalid user' not in line:
         return None, None, None
     ents = line.split()
@@ -343,39 +355,44 @@ def analyze_single_line_ssh(line):
     return date, rhost, user
 
 def analyze_single_file_ssh(infile, logcsv):
+    """ Analyze single ssh log file """
     for line in infile:
-        d, h, u = analyze_single_line_ssh(line)
-        if h in ['24.44.92.189', '129.49.56.207', '75.72.228.84',
+        dt_, hst, usr = analyze_single_line_ssh(line)
+        if hst in ['24.44.92.189', '129.49.56.207', '75.72.228.84',
                  'ddbolineathome.mooo.com', 'ool-182c5cbd.dyn.optonline.net',
                  'dboline.physics.sunysb.edu']:
             continue
-        if d and h and u:
-            logcsv.write('%s,%s,%s\n' % (dateTimeString(d), h, u))
+        if dt_ and hst and usr:
+            logcsv.write('%s,%s,%s\n' % (dateTimeString(dt_), hst, usr))
 
 def parse_apache_time_str(timestr):
+    """ Parse apache time string """
     day = int(timestr[:2])
     mon = int(MONTH_NAMES.index(timestr[3:6]))+1
     year = int(timestr[7:11])
     hour = int(timestr[12:14])
     minute = int(timestr[15:17])
     second = int(timestr[18:20])
-    return datetime.datetime(year=year, month=mon, day=day, hour=hour, minute=minute, second=second)
+    return datetime.datetime(year=year, month=mon, day=day, hour=hour,
+                             minute=minute, second=second)
 
-def analyze_single_file_apache(f, logcsv):
-    for line in f:
+def analyze_single_file_apache(infile, logcsv):
+    """ Analyze single line of apache log file """
+    for line in infile:
         try:
-            h = line.split()[0]
-            t = parse_apache_time_str(line.split()[3].replace('[', ''))
-            if h in ['24.44.92.189', '129.49.56.207', '75.72.228.84',
+            hst = line.split()[0]
+            dt_ = parse_apache_time_str(line.split()[3].replace('[', ''))
+            if hst in ['24.44.92.189', '129.49.56.207', '75.72.228.84',
                      'ddbolineathome.mooo.com',
                      'ool-182c5cbd.dyn.optonline.net',
                      'dboline.physics.sunysb.edu']:
                 continue
-            logcsv.write('%s,%s\n' % (dateTimeString(t), h))
+            logcsv.write('%s,%s\n' % (dateTimeString(dt_), hst))
         except:
             continue
 
 def get_country_info():
+    """ find host country for each host in host_country.csv.gz """
     fname_ssh = 'logcsv.csv.gz'
     fname_http = 'logcsv_apache.csv.gz'
     if HOSTNAME != 'dilepton-tower':
@@ -385,22 +402,22 @@ def get_country_info():
     apache_df = pd.read_csv(fname_http, compression='gzip')
     ccode_df = pd.read_csv('country_code_name.csv.gz', compression='gzip')
     country_list = set(ccode_df['Code'])
-    for df in [ssh_df, apache_df]:
-        df['Datetime'] = pd.to_datetime(df['Datetime'])
+    for df_ in [ssh_df, apache_df]:
+        df_['Datetime'] = pd.to_datetime(df_['Datetime'])
 
     if not os.path.exists('host_country.csv.gz'):
-        with gzip.open('host_country.csv.gz', 'w') as f:
-            f.write('Host,Code\n')
+        with gzip.open('host_country.csv.gz', 'w') as infile:
+            infile.write('Host,Code\n')
     host_country_df = pd.read_csv('host_country.csv.gz', compression='gzip')
-    
+
     with gzip.open('host_country.csv.gz', 'w') as output:
         output.write('Host,Code\n')
         for host in host_country_df['Host'].unique():
             hcond = host_country_df['Host'] == host
-            output.write('%s,%s\n' % (host, 
+            output.write('%s,%s\n' % (host,
                                       list(host_country_df[hcond]['Code'])[0]))
-        for df in [ssh_df, apache_df]:
-            for host in df['Host'].unique():
+        for df_ in [ssh_df, apache_df]:
+            for host in df_['Host'].unique():
                 if host in host_country_df['Host'].unique():
                     continue
                 country = find_originating_country(host,
@@ -421,8 +438,8 @@ def get_country_info():
                     print(host)
 
 if __name__ == '__main__':
-    with open_postgresql_ssh_tunnel() as tun:
-        dump_postgresql_csv()
-        analyze_file()
+    with OpenPostgreSQLsshTunnel() as tun:
+        dump_sql_csv()
+        analyze_files()
         get_country_info()
-        dump_csv_to_postgresql(create_tables=False)
+        dump_csv_to_sql(create_tables=False)
