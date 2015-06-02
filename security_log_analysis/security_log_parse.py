@@ -150,10 +150,15 @@ class open_postgresql_ssh_tunnel(object):
             args = shlex.split(_cmd)
             self.tunnel_process = Popen(args, shell=False)
             time.sleep(5)
+        return self.tunnel_process
 
     def __exit__(self, exc_type, exc_value, traceback):
         if self.tunnel_process:
             self.tunnel_process.kill()
+        if exc_type or exc_value or traceback:
+            return False
+        else:
+            return True
 
 def dump_csv_to_postgresql(create_tables=False):
     engine = create_db_engine()
