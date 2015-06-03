@@ -10,14 +10,12 @@
 
 using namespace std;
 
-void f(int n)
-{
+void f(int n) {
     this_thread::sleep_for(chrono::seconds(n));
     cout << "thread " << n << " ended" << '\n';
 }
  
-int main()
-{
+int main() {
     string str = "Hello";
     vector<string> v;
  

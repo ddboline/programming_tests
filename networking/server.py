@@ -11,7 +11,7 @@ def main():
     try:
         s.bind((host, portno))
     except socket.error:
-        exit(1)
+        return
     s.listen(1)
     while 1:
         c, a = s.accept()

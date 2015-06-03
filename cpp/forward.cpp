@@ -21,22 +21,19 @@ private:
 };
  
 template<class T, class U>
-std::unique_ptr<T> make_unique1(U&& u)
-{
+std::unique_ptr<T> make_unique1(U&& u) {
     return std::unique_ptr<T>(new T(std::forward<U>(u)));
 }
  
 template<class T, class... U>
-std::unique_ptr<T> make_unique(U&&... u)
-{
+std::unique_ptr<T> make_unique(U&&... u) {
     return std::unique_ptr<T>(new T(std::forward<U>(u)...));
 }
  
-int main()
-{   
+int main() {
     std::cout << "A\n";
     auto p1 = make_unique1<A>(2); // rvalue
-    int i = 1;
+    auto i = 1;
     auto p2 = make_unique1<A>(i); // lvalue
  
     std::cout << "B\n";

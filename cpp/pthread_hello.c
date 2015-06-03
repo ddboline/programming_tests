@@ -16,8 +16,7 @@ void *PrintHello(void *threadid)
 {
     int idx = 0;
     for(idx=0; idx < 10; idx++){
-        long tid;
-        tid = (long)threadid;
+        long tid = (long)threadid;
         printf("Hello World! It's me, thread #%ld, it %d!\n", tid, idx);
         sleep(1);
     }

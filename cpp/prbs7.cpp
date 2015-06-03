@@ -16,7 +16,7 @@
 using namespace std;
 using namespace boost::archive::iterators;
 
-int prbs7(uint8_t start, vector<uint8_t> & output){
+int prbs7(uint8_t start, vector<uint8_t> & output) {
     uint8_t a = start;
     for(int i=1;; i++) {
         int newbit = (((a >> 6) ^ (a >> 5)) & 1);

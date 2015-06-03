@@ -43,6 +43,7 @@ int main(int argc, char ** argv){
         printf( "%s " , rev_string );
     }
     printf( "\n" );
-    free(rev_string);
+    if(rev_string)
+        free(rev_string);
     return 0;
 }
