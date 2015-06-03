@@ -4,13 +4,13 @@ PORT=`shuf -i 2000-65000 -n 1`
 ./server.py $PORT &
 PROC=$!
 sleep 5
-./client.py localhost $PORT "HEY THERE"
+./client.py localhost $PORT "Passed python port: $PORT"
 
 PORT=`shuf -i 2000-65000 -n 1`
 ./server $PORT &
 PROC="${PROC} $!"
 sleep 5
-echo "HOW GOES IT" | ./client.py localhost $PORT
+echo "Passed c port: $PORT" | ./client localhost $PORT
 
 PORT=`shuf -i 2000-65000 -n 1`
 ./server_udp $PORT &
@@ -24,7 +24,7 @@ PORT=`shuf -i 2000-65000 -n 1`
 ./simple_server $PORT &
 PROC="${PROC} $!"
 sleep 5
-./simple_client $PORT "WHAT UP"
+./simple_client $PORT "Passed c++ port: $PORT"
 
 sleep 10
 kill -9 ${PROC}
