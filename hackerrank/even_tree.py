@@ -1,23 +1,63 @@
 #!/usr/bin/python3
 
-def even_tree(N, edges):
-    edge_dict = {n: set() for n in range(1,N+1)}
+def get_vdict(edges):
+    vdict = {}
     for u, v in edges:
-        edge_dict[u].add(v)
-        edge_dict[v].add(u)
-    u, v = edges[0]
-    start = u
-    visited = set({u})
-    for e in [x for x in edge_dict[start] if x != v]:
-        visited.add(e)
-    print(visited)
+        for x in (u, v):
+            if x not in vdict:
+                vdict[x] = set()
+        vdict[u].add(v)
+        vdict[v].add(u)
+    return vdict
+
+def walk_tree(vdict, vset, ucurr, vcurr=None):
+    if ucurr not in vdict:
+        return
+    if not vdict[ucurr]:
+        return
+    for node in vdict[ucurr]:
+        if node == vcurr:
+            continue
+        if node not in vset:
+            vset.add(node)
+            walk_tree(vdict, vset, node, ucurr)
     return
+
+def even_tree(edges):
+    vdict = get_vdict(edges)
+    for edge in edges:
+        u, v = edge
+        vset0 = set()
+        walk_tree(vdict, vset0, u, v)
+        
+        vset1 = set()
+        walk_tree(vdict, vset1, v, u)
+        
+        if len(vset0) == 0 or len(vset1) == 0:
+            continue
+        if len(vset0) % 2 != 0 or len(vset1) % 2 != 0:
+            continue
+        print('vset0', vset0, 'vset1', vset1)
+        edge0 = []
+        edge1 = []
+        for ed in edges:
+#            if ed == edge:
+#                continue
+            u, v = ed
+            if u in vset0 and v in vset0:
+                edge0.append(ed)
+            elif u in vset1 and v in vset1:
+                edge1.append(ed)
+        print(edge0, edge1)
+        even_tree(edge0)
+        even_tree(edge1)
+    return None
+
 
 N, M = 10, 9
 edges = ((2, 1), (3, 1), (4, 3), (5, 2), 
          (6, 1), (7, 2), (8, 6), (9, 8), (10, 8),)
-
-even_tree(N, edges)
+print(even_tree(edges))
 
 print('\n\n')
 
@@ -26,4 +66,4 @@ edges = ((2, 1), (3, 1), (4, 3), (5, 2), (6, 5), (7, 1), (8, 1), (9, 2),
          (10, 7), (11, 10), (12, 3), (13, 7), (14, 8), (15, 12), (16, 6),
          (17, 6), (18, 10), (19, 1), (20, 8))
 
-even_tree(N, edges)
+print(even_tree(edges))
