@@ -22,6 +22,8 @@ print(primes2.primes(10000))
 ts.append(time.clock())
 print(primes3.primes(10000))
 ts.append(time.clock())
+print(primes3.primes(10000))
+ts.append(time.clock())
 call('./primes 10000', shell=True)
 ts.append(time.clock())
 
