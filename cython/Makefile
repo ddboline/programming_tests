@@ -12,7 +12,7 @@ all: $(TARGETS) python
 	$(CPP) -std=c++11 -O3 $*.cpp -o $*
 
 python:
-	python ./setup.py build_ext --inplace
+	./setup.py build_ext --inplace
 
 clean:
 	rm $(TARGETS)
