@@ -17,7 +17,7 @@ def primes(kmax):  # The argument will be converted to int or raise a TypeError.
         if i == n_primes:
             try:
                 primes_[i] = prime_candidate
-            except IndexError:
+            except KeyError:
                 primes_.extend(1000*[0])
                 primes_[i] = prime_candidate
             n_primes += 1
