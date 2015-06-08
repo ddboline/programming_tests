@@ -6,7 +6,8 @@ pyximport.install()
 import primes0
 import primes1
 import primes2
-import time, os
+import primes3
+import time
 from subprocess import call
 
 ts = []
@@ -17,6 +18,8 @@ ts.append(time.clock())
 print(primes1.primes(10000))
 ts.append(time.clock())
 print(primes2.primes(10000))
+ts.append(time.clock())
+print(primes3.primes(10000))
 ts.append(time.clock())
 call('./primes 10000', shell=True)
 ts.append(time.clock())
