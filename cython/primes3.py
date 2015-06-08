@@ -16,10 +16,12 @@ def primes(kmax):  # The argument will be converted to int or raise a TypeError.
         while i < n_primes and prime_candidate % primes_[i] != 0:
             i += 1
         if i == n_primes:
-            #if n_primes >= primes_size:
-                #primes_ = np.append(primes_, np.zeros(primes_size, dtype=np.int64))
-                #primes_size = primes_.size
-            primes_[i] = prime_candidate
+            try:
+                primes_[i] = prime_candidate
+            except IndexError:
+                primes_ = np.append(primes_, np.zeros(primes_size, dtype=np.int64))
+                primes_size = primes_.size
+                primes_[i] = prime_candidate
             n_primes += 1
             largest_prime = prime_candidate
         prime_candidate += 1
