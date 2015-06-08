@@ -8,6 +8,7 @@ pyximport.install()
 import integral_approx0
 import integral_approx1
 import integral_approx2
+import integral_approx3
 import time
 import os
 
@@ -21,7 +22,9 @@ print(integral_approx1.integrate_f(Nx, Ny, Nz))
 t2 = time.clock()
 print(integral_approx2.integrate_f(Nx, Ny, Nz))
 t3 = time.clock()
+print(integral_approx3.integrate_f(Nx, Ny, Nz))
+t4 = time.clock()
 #os.system('/home/ddboline/temp/cython/integ')
 # t4 = time.clock()
 
-print('timing:', t3-t2, t2-t1, t1-t0)
+print('timing:', t4-t3, t3-t2, t2-t1, t1-t0)
