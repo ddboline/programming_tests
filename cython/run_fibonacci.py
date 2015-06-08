@@ -23,7 +23,7 @@ for n in range(0, 20):
     t3 = time.clock()
 
     print('timing:', n, t1-t0, t2-t1)
-    results.append([n, t1-t0, t2-t1])
+    results.append([n, t1-t0, t2-t1, t3-t2])
 
 t0 = time.clock()
 for n, f in fibonacci0.next_fibonacci():
@@ -31,11 +31,10 @@ for n, f in fibonacci0.next_fibonacci():
         break
     t1 = time.clock()
 
-    print(n, t1-t0, t2-t1)
+    print(n, t1-t0)
     results[n].append(t1-t0)
-    results[n].append(t2-t1)
     t0 = time.clock()
 
 
-for n, t0, t1, t2 in results:
-    print('timing:', n, t0, t1, t2)
+for n, t0, t1, t2, t3 in results:
+    print('timing:', n, t0, t1, t2, t3)
