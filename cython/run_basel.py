@@ -5,6 +5,7 @@ pyximport.install()
 
 import basel0
 import basel1
+import basel2
 import time
 import math
 
@@ -19,6 +20,8 @@ def time_execution():
     print(basel1.approx_pi(10**7))
     t.append(time.clock())
     print(basel1.approx_pi(10**9))
+    t.append(time.clock())
+    print(basel2.approx_pi(10**7))
     t.append(time.clock())
 
     print('timing:',)
