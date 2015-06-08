@@ -1,12 +1,12 @@
 #!/usr/bin/python3
 from numba import jit
-from numba import int32
+import numpy as np
 
-@jit
+@jit(int64(int64))
 def primes(kmax):  # The argument will be converted to int or raise a TypeError.
     #cdef int n, k, i  # These variables are declared with C types.
     #cdef int p[1000] # Another C type
-    primes_ = int32[:]
+    primes_ = np.array([], dtype=np.int64)
     largest_prime = 1
     n_primes = 0
     prime_candidate = 2
@@ -15,7 +15,7 @@ def primes(kmax):  # The argument will be converted to int or raise a TypeError.
         while i < n_primes and prime_candidate % primes_[i] != 0:
             i += 1
         if i == n_primes:
-            primes_[i] = prime_candidate
+            primes_.append(prime_candidate)
             n_primes += 1
             largest_prime = prime_candidate
         prime_candidate += 1
