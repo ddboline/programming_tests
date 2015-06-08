@@ -3,6 +3,7 @@ try:
     from numba import jit
 except ImportError:
     def jit(arg):
+        print('no jit')
         return arg
 
 @jit
