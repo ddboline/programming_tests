@@ -17,8 +17,8 @@ def primes(kmax):  # The argument will be converted to int or raise a TypeError.
             i += 1
         if i == n_primes:
             if n_primes >= primes_size:
-                primes_size *= 1.5
-                primes_ = np.resize(primes_, primes_size)
+                primes_ = np.append(primes_, np.zeros(primes_size, dtype=np.int64))
+                primes_size = primes_.size
             primes_[i] = prime_candidate
             n_primes += 1
             largest_prime = prime_candidate
