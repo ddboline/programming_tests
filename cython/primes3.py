@@ -6,7 +6,7 @@ import numpy as np
 def primes(kmax):  # The argument will be converted to int or raise a TypeError.
     #cdef int n, k, i  # These variables are declared with C types.
     #cdef int p[1000] # Another C type
-    primes_ = np.array([], dtype=np.int64)
+    primes_ = np.array(8*[0], dtype=np.int64)
     largest_prime = 1
     n_primes = 0
     prime_candidate = 2
