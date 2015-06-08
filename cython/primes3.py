@@ -16,7 +16,7 @@ def primes(kmax):  # The argument will be converted to int or raise a TypeError.
             i += 1
         if i == n_primes:
             if n_primes == primes_.size:
-                newsize = (primes_.size+1)*2
+                newsize = (primes_.size+1)*4
                 primes_ = np.resize(primes_, newsize)
             primes_[i] = prime_candidate
             n_primes += 1
