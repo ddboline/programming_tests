@@ -5,11 +5,12 @@ pyximport.install()
 
 import chudnovsky_pi
 import chudnovsky_pi1
+import chudnovsky_pi2
 
 def main():
     print(chudnovsky_pi.calc_chudnovsky_pi(0))
-    print(chudnovsky_pi.calc_chudnovsky_pi(0))
-
+    print(chudnovsky_pi1.calc_chudnovsky_pi(0))
+    print(chudnovsky_pi2.calc_chudnovsky_pi(0))
 
     for idx in range(0, 2):
         num = float(chudnovsky_pi.chudnovsky_num(idx))
