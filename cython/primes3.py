@@ -3,10 +3,8 @@ from numba import jit, int64
 
 @jit
 def primes(kmax):  # The argument will be converted to int or raise a TypeError.
-    #cdef int n, k, i  # These variables are declared with C types.
-    #cdef int p[1000] # Another C type
-    primes_ = 1000*[0]
-    primes_size = 1000
+    primes_ = []
+    primes_size = 0
     largest_prime = 1
     n_primes = 0
     prime_candidate = 2
@@ -16,8 +14,8 @@ def primes(kmax):  # The argument will be converted to int or raise a TypeError.
             i += 1
         if i == n_primes:
             if i == primes_size:
-                primes_.extend(1000*[0])
-                primes_size += 1000
+                primes_.extend(((primes_size+1)*2)*[0])
+                primes_size = len(primes_)
             primes_[i] = prime_candidate
             n_primes += 1
             largest_prime = prime_candidate
