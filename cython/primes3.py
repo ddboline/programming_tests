@@ -15,7 +15,8 @@ def primes(kmax):  # The argument will be converted to int or raise a TypeError.
         while i < n_primes and prime_candidate % primes_[i] != 0:
             i += 1
         if i == n_primes:
-            np.append(primes_, [prime_candidate], axis=0)
+            a.resize(n_primes+1)
+            a[i] = prime_candidate
             n_primes += 1
             largest_prime = prime_candidate
         prime_candidate += 1
