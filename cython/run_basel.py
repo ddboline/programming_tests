@@ -23,6 +23,8 @@ def time_execution():
     t.append(time.clock())
     print(basel2.approx_pi(10**7))
     t.append(time.clock())
+    print(basel2.approx_pi(10**9))
+    t.append(time.clock())
 
     print('timing:',)
     for n in range(1, len(t)):
