@@ -33,6 +33,7 @@ for n, f in fibonacci0.next_fibonacci():
 
     print(n, t1-t0, t2-t1)
     results[n].append(t1-t0)
+    results[n].append(t2-t1)
     t0 = time.clock()
 
 
