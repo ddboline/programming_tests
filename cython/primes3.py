@@ -6,7 +6,8 @@ import numpy as np
 def primes(kmax):  # The argument will be converted to int or raise a TypeError.
     #cdef int n, k, i  # These variables are declared with C types.
     #cdef int p[1000] # Another C type
-    primes_ = np.array(8*[0], dtype=np.int64)
+    primes_ = np.zeros(1000, dtype=np.int64)
+    primes_size = 1000
     largest_prime = 1
     n_primes = 0
     prime_candidate = 2
@@ -15,9 +16,9 @@ def primes(kmax):  # The argument will be converted to int or raise a TypeError.
         while i < n_primes and prime_candidate % primes_[i] != 0:
             i += 1
         if i == n_primes:
-            if n_primes == primes_.size:
-                newsize = (primes_.size+1)*2
-                primes_ = np.resize(primes_, newsize)
+            if n_primes >= primes_size:
+                primes_size *= 1.5
+                primes_ = np.resize(primes_, primes_size)
             primes_[i] = prime_candidate
             n_primes += 1
             largest_prime = prime_candidate
