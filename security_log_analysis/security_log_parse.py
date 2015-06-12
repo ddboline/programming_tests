@@ -451,4 +451,4 @@ if __name__ == '__main__':
         #dump_sql_csv()
         #analyze_files()
         #get_country_info()
-        dump_csv_to_sql(create_tables=True)
+        dump_csv_to_sql(create_tables=False)
