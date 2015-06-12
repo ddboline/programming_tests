@@ -36,20 +36,20 @@ FILE_MAPPING = {'country_code': 'country_code_name.csv.gz',
                 'apache_log_cloud': 'logcsv_apache_cloud.csv.gz',}
 
 COLUMN_MAPPING = {
-'country_code': [{'name': 'Code', 'type': 'char', 'isnull': False},
-                 {'name': 'Country', 'type': 'char', 'isnull': False}],
-'host_country': [{'name': 'Host', 'type': 'char', 'isnull': False},
-                 {'name': 'Code', 'type': 'char', 'isnull': False}],
+'country_code': [{'name': 'Code', 'type': 'char', 'isnull': False, 'len': 2},
+                 {'name': 'Country', 'type': 'char', 'isnull': False, 'len': 50}],
+'host_country': [{'name': 'Host', 'type': 'char', 'isnull': False, 'len': 60},
+                 {'name': 'Code', 'type': 'char', 'isnull': False, 'len': 2}],
 'ssh_log': [{'name': 'Datetime', 'type': 'datetime', 'isnull': False},
-            {'name': 'Host', 'type': 'char', 'isnull': False},
-            {'name': 'User', 'type': 'char', 'isnull': False}],
+            {'name': 'Host', 'type': 'char', 'isnull': False, 'len': 60},
+            {'name': 'User', 'type': 'char', 'isnull': False, 'len': 10}],
 'apache_log': [{'name': 'Datetime', 'type': 'datetime', 'isnull': False},
-               {'name': 'Host', 'type': 'char', 'isnull': False},],
+               {'name': 'Host', 'type': 'char', 'isnull': False, 'len': 15},],
 'ssh_log_cloud': [{'name': 'Datetime', 'type': 'datetime', 'isnull': False},
-            {'name': 'Host', 'type': 'char', 'isnull': False},
-            {'name': 'User', 'type': 'char', 'isnull': False}],
+            {'name': 'Host', 'type': 'char', 'isnull': False, 'len': 60},
+            {'name': 'User', 'type': 'char', 'isnull': False, 'len': 10}],
 'apache_log_cloud': [{'name': 'Datetime', 'type': 'datetime', 'isnull': False},
-               {'name': 'Host', 'type': 'char', 'isnull': False},],}
+               {'name': 'Host', 'type': 'char', 'isnull': False, 'len': 15},],}
 
 def create_db_engine():
     """ Create sqlalchemy database engine """
@@ -80,10 +80,12 @@ def create_table(df_, table_name='country_code'):
             vdict['isnull'] = True
         if vdict['type'] == 'char':
             length = df_[cname].apply(str_len).max()
+            if 'len' in vdict:
+                length = vdict['len']
             if cname == 'User':
-                out = 'UserName VARCHAR(%s) ' % (length+1,)
+                out = 'UserName VARCHAR(%s) ' % (length,)
             else:
-                out = '%s VARCHAR(%s) ' % (cname, length+1)
+                out = '%s VARCHAR(%s) ' % (cname, length)
         elif vdict['type'] == 'datetime':
             out = '%s TIMESTAMP ' % cname
         if not vdict['isnull']:
@@ -198,6 +200,8 @@ def dump_csv_to_sql(create_tables=False):
     for line in engine.execute('select host, code from host_country;'):
         host, _ = line
         hostlist.append(host)
+    
+    print(maxtimestamp)
 
     for table in ('ssh_log', 'apache_log'):
         fname = FILE_MAPPING[table]
