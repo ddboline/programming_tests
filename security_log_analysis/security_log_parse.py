@@ -178,7 +178,10 @@ def dump_csv_to_sql(create_tables=False):
         if create_tables:
             cmd = create_table(df_, table)
             print(cmd)
-            engine.execute(cmd)
+            try:
+                engine.execute(cmd)
+            except sqlalchemy.exc.ProgrammingError:
+                pass
             cmd = update_table(df_, table)
             engine.execute(cmd)
     if create_tables:
