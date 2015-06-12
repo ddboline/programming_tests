@@ -17,17 +17,19 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from dateutil.parser import parse
 
-from security_log_parse import HOSTNAME, dump_postgresql_csv
+from security_log_parse import HOSTNAME, dump_sql_csv
 
 def plot_time_access(csvfile, title):
     df = pd.read_csv(csvfile, compression='gzip')
 
     if 'Datetime' in df.columns:
         df['Datetime'] = df['Datetime'].apply(parse)
+        df['Date'] = df['Datetime'].apply(lambda d: d.date())
 
     print(csvfile, title)
     print(df.describe())
     print(df['Host'].head())
+    print(sorted(df['Date'].unique()))
 
     ts = df['Datetime'].tolist()
 
@@ -79,11 +81,11 @@ def fill_country_plot():
 
 
 if __name__ == '__main__':
-#    dump_postgresql_csv()
+#    dump_sql_csv()
 
     plot_time_access('logcsv.csv.gz', 'ssh_access')
-    plot_time_access('logcsv_cloud.csv.gz', 'ssh_access_cloud')
-    plot_time_access('logcsv_apache.csv.gz', 'apache_access')
-    plot_time_access('logcsv_apache_cloud.csv.gz', 'apache_access_cloud')
+    #plot_time_access('logcsv_cloud.csv.gz', 'ssh_access_cloud')
+    #plot_time_access('logcsv_apache.csv.gz', 'apache_access')
+    #plot_time_access('logcsv_apache_cloud.csv.gz', 'apache_access_cloud')
 
     fill_country_plot()
