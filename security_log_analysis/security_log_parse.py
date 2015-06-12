@@ -334,7 +334,7 @@ def analyze_single_line_ssh(line):
 
     date = datetime.datetime(year=2014, month=month, day=day, hour=hr_,
                              minute=mn_, second=sc_)
-    if month <= 5:
+    if month <= datetime.datetime.now().month:
         date = datetime.datetime(year=2015, month=month, day=day, hour=hr_,
                                  minute=mn_, second=sc_)
 
