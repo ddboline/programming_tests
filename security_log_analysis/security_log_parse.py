@@ -42,12 +42,12 @@ COLUMN_MAPPING = {
                  {'name': 'Code', 'type': 'char', 'isnull': False, 'len': 2}],
 'ssh_log': [{'name': 'Datetime', 'type': 'datetime', 'isnull': False},
             {'name': 'Host', 'type': 'char', 'isnull': False, 'len': 60},
-            {'name': 'User', 'type': 'char', 'isnull': False, 'len': 10}],
+            {'name': 'User', 'type': 'char', 'isnull': False, 'len': 15}],
 'apache_log': [{'name': 'Datetime', 'type': 'datetime', 'isnull': False},
                {'name': 'Host', 'type': 'char', 'isnull': False, 'len': 15},],
 'ssh_log_cloud': [{'name': 'Datetime', 'type': 'datetime', 'isnull': False},
             {'name': 'Host', 'type': 'char', 'isnull': False, 'len': 60},
-            {'name': 'User', 'type': 'char', 'isnull': False, 'len': 10}],
+            {'name': 'User', 'type': 'char', 'isnull': False, 'len': 15}],
 'apache_log_cloud': [{'name': 'Datetime', 'type': 'datetime', 'isnull': False},
                {'name': 'Host', 'type': 'char', 'isnull': False, 'len': 15},],}
 
@@ -449,7 +449,7 @@ def get_country_info():
 
 if __name__ == '__main__':
     with OpenPostgreSQLsshTunnel() as tun:
-        #dump_sql_csv()
-        #analyze_files()
-        #get_country_info()
+        dump_sql_csv()
+        analyze_files()
+        get_country_info()
         dump_csv_to_sql(create_tables=False)
