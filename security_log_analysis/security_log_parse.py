@@ -316,7 +316,7 @@ def find_originating_country(hostname, country_code_list=None, orig_host=None):
     if country:
         result += country
     else:
-        raise TypeError('No Country %s %s %s' % (result, hostname, orig_host))
+        return country
     print(result)
 
     return country
