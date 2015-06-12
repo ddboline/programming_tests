@@ -445,7 +445,7 @@ def get_country_info():
 
 if __name__ == '__main__':
     with OpenPostgreSQLsshTunnel() as tun:
-        dump_sql_csv()
-        analyze_files()
-        get_country_info()
-        dump_csv_to_sql(create_tables=False)
+        #dump_sql_csv()
+        #analyze_files()
+        #get_country_info()
+        dump_csv_to_sql(create_tables=True)
