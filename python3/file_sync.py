@@ -49,7 +49,7 @@ def file_sync():
     return
 
 if __name__ == '__main__':
-    testfname = '%s/setup_files/build/programming_tests/python/file_sync.py' % os.getenv('HOME')
+    testfname = 'file_sync.py'
     #file_sync()
     print(get_md5_full(testfname))
     print(testfname)
