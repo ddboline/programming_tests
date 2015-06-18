@@ -6,7 +6,15 @@
 #include <chrono>
 #include <functional>
 
-using namespace std;
+using std::vector;
+using std::deque;
+using std::cout;
+using std::endl;
+using std::uniform_real_distribution;
+using std::uniform_int_distribution;
+using std::function;
+using std::default_random_engine;
+using std::chrono::system_clock;
 
 class VoseAliasMethod{
     public:
@@ -69,7 +77,7 @@ class VoseAliasMethod{
 int main(int argc, char ** argv){
     auto number = 6;
     vector<double> prob_array(number);
-    auto seed = chrono::system_clock::now().time_since_epoch().count();
+    auto seed = system_clock::now().time_since_epoch().count();
     default_random_engine generator(seed);
     function<double()> real_distribution = bind(uniform_real_distribution<double>(0.0,1.0), generator);
     for(auto & it : prob_array)

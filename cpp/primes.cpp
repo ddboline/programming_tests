@@ -3,7 +3,9 @@
 #include <iostream>
 #include <stdlib.h>
 
-using namespace std;
+using std::cout;
+using std::endl;
+using std::vector;
 
 int primes( const int pmax , int & result ) {
     int n = 3 , k = 0 , i;

@@ -8,7 +8,15 @@
 #include <string>
 #include <cstdlib>
 
-using namespace std;
+// using namespace std;
+using std::cout;
+using std::endl;
+using std::vector;
+using std::thread;
+using std::stringstream;
+using std::mutex;
+using std::atomic;
+using std::this_thread::yield;
 
 mutex mtx;
 
@@ -23,7 +31,7 @@ public:
 
 void print_hello(int threadid){
     while(!ready)
-        this_thread::yield();
+        yield();
     for(int idx=0; idx<10; idx++){
         local_lock current_lock(mtx);
         stringstream output;

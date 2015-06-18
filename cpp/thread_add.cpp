@@ -4,7 +4,12 @@
 #include <vector>
 #include <iostream>
 
-using namespace std;
+using std::cout;
+using std::endl;
+using std::vector;
+using std::thread;
+using std::mutex;
+using std::atomic;
 
 mutex mtx;
 

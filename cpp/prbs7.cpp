@@ -13,8 +13,19 @@
 #include <boost/archive/iterators/transform_width.hpp>
 #include <boost/archive/iterators/ostream_iterator.hpp>
 
-using namespace std;
-using namespace boost::archive::iterators;
+// using namespace std;
+// using namespace boost::archive::iterators;
+using std::cout;
+using std::endl;
+using std::vector;
+using std::string;
+using std::stringstream;
+using std::unique_ptr;
+using std::ostream_iterator;
+using std::copy;
+using boost::archive::iterators::insert_linebreaks;
+using boost::archive::iterators::base64_from_binary;
+using boost::archive::iterators::transform_width;
 
 int prbs7(uint8_t start, vector<uint8_t> & output) {
     uint8_t a = start;
@@ -54,7 +65,7 @@ int main(int argc, char** argv) {
     stringstream ss;
     typedef insert_linebreaks<base64_from_binary<transform_width<const char *, 6, 8> >, 4096> base64_enc;
     
-    std::copy(base64_enc(s.c_str()), base64_enc(s.c_str() + s.size()), std::ostream_iterator<char>(ss));
+    copy(base64_enc(s.c_str()), base64_enc(s.c_str() + s.size()), ostream_iterator<char>(ss));
     
     cout << ss.str() << endl;
 }

@@ -5,7 +5,10 @@
 #include <vector>
 #include <cstdlib>
 #include <ctime>
-using namespace std;
+
+using std::vector;
+using std::cout;
+using std::endl;
 
 vector<int> selection_sort_vector(const vector<int> & inpvec) {
     int lowindex=0, lowkey=0, temp=0, n = inpvec.size();
