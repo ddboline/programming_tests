@@ -124,6 +124,8 @@ def update_table(df_, table_name='country_code'):
                     ent = ent.replace("'", '')
                 if type(ent) != int and '%' in ent:
                     ent = ent.replace('%', '')
+                if 'len' in vdict and len(ent) > vdict['len']:
+                    ent = ent[:vdict['len']]
                 vals.append("'%s'" % ent)
             else:
                 labs.append(cname)
@@ -225,8 +227,9 @@ def dump_csv_to_sql(create_tables=False):
     notinlist = set(df_['Host']) ^ set(hostlist)
     for host in notinlist:
         cond = df_['Host'] == host
-        cmd = update_table(df_[cond], table)
-        engine.execute(cmd)
+        if np.sum(cond) > 0:
+            cmd = update_table(df_[cond], table)
+            engine.execute(cmd)
 
 def analyze_files():
     """ Analyze log files """
