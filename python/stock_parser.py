@@ -5,7 +5,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import multiprocessing
+from multiprocessing import Process, Queue
 from contextlib import closing
 import requests
 try:
@@ -49,8 +49,8 @@ def write_output_file(price_q):
                 outfile.flush()
 
 def run_stock_parser():
-    symbol_q = multiprocessing.Queue()
-    price_q = multiprocessing.Queue()
+    symbol_q = Queue()
+    price_q = Queue()
     
     stock_symbols = []
     with open('symbols.txt','r') as symfile:
@@ -63,12 +63,12 @@ def run_stock_parser():
                       open('/proc/cpuinfo')
                       .read().split('\n')))
 
-    pool = [multiprocessing.Process(target=read_stock_worker,
+    pool = [Process(target=read_stock_worker,
                                     args=(symbol_q, price_q,))
                                     for _ in range(ncpu*2)]
     for p in pool:
         p.start()
-    output = multiprocessing.Process(target=write_output_file, args=(price_q,))
+    output = Process(target=write_output_file, args=(price_q,))
     output.start()
 
     for symbol in stock_symbols:

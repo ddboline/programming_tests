@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-import multiprocessing
+from multiprocessing import Process, Queue
 from contextlib import closing
 import requests
 
@@ -41,8 +41,8 @@ def write_output_file(price_q):
             outfile.flush()
 
 def run_stock_parser():
-    symbol_q = multiprocessing.Queue()
-    price_q = multiprocessing.Queue()
+    symbol_q = Queue()
+    price_q = Queue()
     
     stock_symbols = []
     with open('symbols.txt','r') as symfile:
@@ -54,10 +54,10 @@ def run_stock_parser():
     ncpu = len([x for x in open('/proc/cpuinfo').read().split('\n')\
                 if x.find('processor') == 0])
 
-    pool = [multiprocessing.Process(target=read_stock_worker, args=(symbol_q, price_q,)) for _ in range(ncpu*2)]
+    pool = [Process(target=read_stock_worker, args=(symbol_q, price_q,)) for _ in range(ncpu*2)]
     for p in pool:
         p.start()
-    output = multiprocessing.Process(target=write_output_file, args=(price_q,))
+    output = Process(target=write_output_file, args=(price_q,))
     output.start()
 
     for symbol in stock_symbols:
