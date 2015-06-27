@@ -157,8 +157,8 @@ class OpenPostgreSQLsshTunnel(object):
 
     def __enter__(self):
         if HOSTNAME != 'dilepton-tower':
-            _cmd = 'ssh -N -L localhost:5432:localhost:5432 ' + \
-                   'ddboline@ddbolineathome.mooo.com'
+            _cmd = 'ssh -N -L localhost:5432:localhost:5432 ' \
+                   + 'ddboline@ddbolineathome.mooo.com'
             args = shlex.split(_cmd)
             self.tunnel_process = Popen(args, shell=False)
             time.sleep(5)
@@ -205,7 +205,11 @@ def dump_csv_to_sql(create_tables=False):
     
     print(maxtimestamp)
 
-    for table in ('ssh_log', 'apache_log'):
+    tables = ('ssh_log', 'apache_log')
+    if HOSTNAME != 'dilepton-tower':
+        tables = ('ssh_log_cloud', 'apache_log_cloud')
+
+    for table in tables:
         fname = FILE_MAPPING[table]
         df_ = pd.read_csv(fname, compression='gzip', na_values=['nan'],
                           keep_default_na=False)
