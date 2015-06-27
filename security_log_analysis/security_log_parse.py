@@ -219,10 +219,7 @@ def dump_csv_to_sql(create_tables=False):
         print(df_[cond].shape)
         if df_[cond].shape[0] == 0:
             continue
-        if HOSTNAME != 'dilepton-tower':
-            cmd = update_table(df_[cond], table_name='%s_cloud' % table)
-        else:
-            cmd = update_table(df_[cond], table)
+        cmd = update_table(df_[cond], table)
         engine.execute(cmd)
 
     table = 'host_country'
