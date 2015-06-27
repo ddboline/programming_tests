@@ -108,9 +108,10 @@ def update_table(df_, table_name='country_code'):
             if ent is np.nan:
                 if cname == 'User':
                     labs.append('UserName')
+                    vals.append('NoUser')
                 else:
                     labs.append(cname)
-                vals.append('NULL')
+                    vals.append('NULL')
             elif vdict['type'] == 'datetime':
                 labs.append(cname)
                 vals.append('TIMESTAMP\'%s\'' % ent)
