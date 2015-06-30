@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-from multiprocessing import Process, Queue
+from threading import Thread
+from queue import Queue
 from contextlib import closing
 import requests
 
@@ -54,12 +55,12 @@ def run_stock_parser():
     ncpu = len([x for x in open('/proc/cpuinfo').read().split('\n')\
                 if x.find('processor') == 0])
 
-    pool = [Process(target=read_stock_worker,
+    pool = [Thread(target=read_stock_worker,
                     args=(symbol_q, price_q,)) for _ in range(ncpu*4)]
 
     for p in pool:
         p.start()
-    output = Process(target=write_output_file, args=(price_q,))
+    output = Thread(target=write_output_file, args=(price_q,))
     output.start()
 
     for symbol in stock_symbols:
