@@ -27,45 +27,36 @@ from __future__ import unicode_literals
 
 import numpy as np
 
-def buy_sell_per_stock(inp_array):
-    '''
-        Find single buy/sell trade which maximizes profit.
-        input is list of stock prices for individual stock
-        return tuple of (buy_index, sell_index)
-    '''
-    if len(inp_array) < 2:
-        raise Exception
-    ### consider first two elements first
-    buy_index = 0
-    sell_index = 1
-    max_profit = inp_array[sell_index] - inp_array[buy_index]
-    if len(inp_array) == 2:
-        return (buy_index, sell_index)
-    for index in range(2, len(inp_array)):
-        ### now consider a sliding window starting with 1,2
-        test_buy_index = index - 1
-        test_sell_index = index
-        ### if test_sell + current best buy increases profit, keep it
-        if inp_array[test_sell_index] - inp_array[buy_index] > max_profit:
-            sell_index = test_sell_index
-            max_profit = inp_array[sell_index] - inp_array[buy_index]
-        ### if test_sell + test_buy increases profit, keep both
-        if inp_array[test_sell_index] - inp_array[test_buy_index] > max_profit:
-            sell_index = test_sell_index
-            buy_index = test_buy_index
-            max_profit = inp_array[sell_index] - inp_array[buy_index]
-    return (buy_index, sell_index)
-
 def buy_sell(inp_array):
     '''
+        Find buy/sell trade which maximizes profit per stock
         input is array of stock prices
         columns are stocks
         rows are time increments
-        return list of (buy_index, sell_index) tuples
+        return is list of (buy_index, sell_index) tuples
     '''
     out_array = []
+    if inp_array.shape[0] < 2:
+        raise Exception
     for stock_idx in range(inp_array.shape[1]):
-        out_array.append(buy_sell_per_stock(inp_array[:, stock_idx].tolist()))
+        ### consider first two time periods
+        buy_idx = 0
+        sell_idx = 1
+        min_buy_idx = np.argmin(inp_array[0:2, stock_idx])
+        max_profit = inp_array[sell_idx, stock_idx] - \
+                     inp_array[buy_idx, stock_idx]
+        for time_idx in range(2, inp_array.shape[0]):
+            test_sell_idx = time_idx
+            if inp_array[time_idx-1, stock_idx] < \
+                    inp_array[min_buy_idx, stock_idx]:
+                min_buy_idx = time_idx-1
+            if inp_array[test_sell_idx, stock_idx] - \
+                    inp_array[min_buy_idx, stock_idx] > max_profit:
+                sell_idx = test_sell_idx
+                buy_idx = min_buy_idx
+                max_profit = inp_array[sell_idx, stock_idx] - \
+                             inp_array[buy_idx, stock_idx]
+        out_array.append((buy_idx, sell_idx))
     return out_array
 
 if __name__ == '__main__':
@@ -81,6 +72,19 @@ if __name__ == '__main__':
                          [48.08,   7.2,  39.42,  27.94,  35.45]])
 
     print([(4, 9), (1, 2), (0, 7), (4, 5), (2, 6)])
+    print(buy_sell(test_set))
+
+    test_set = np.array([[ 26.97,   2.89,  15.82,  13.5,   17.75],
+                         [ 10.42,   0.07,  21.98,  46.04,   6.54],
+                         [ 19.82,   1.55,   8.19,  43.97,   5.36],
+                         [ 30.41,   1.26,  33.15,  25.96,   2.31],
+                         [ 16.75,  48.23,   0.4,    9.28,  32.68],
+                         [ 17.45,  34.79,  23.59,  24.15,  48.04],
+                         [ 10.34,  45.48,  37.39,  23.35,  26.31],
+                         [  2.25,   8.94,   4.92,   6.42,  16.52],
+                         [ 40.89,  40.36,  43.07,  33.94,  13.56],
+                         [ 22.92,   6.37,  11.89,  38.31,  10.16]])
+
     print(buy_sell(test_set))
 
     test_set = (np.random.random((10, 5))*50).round(2)
