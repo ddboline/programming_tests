@@ -12,30 +12,28 @@ import numpy as np
 def buy_sell_per_stock(inp_array):
     if len(inp_array) < 2:
         raise Exception
+    ### consider first two elements first
     buy_index = 0
-    buy_value = inp_array[buy_index]
     sell_index = 1
-    sell_value = inp_array[sell_index]
-    profit = sell_value - buy_value
+    max_profit = inp_array[sell_index] - inp_array[buy_index]
     if len(inp_array) == 2:
         return (buy_index, sell_index)
     for index in range(2, len(inp_array)):
+        ### now consider a sliding window starting with 1,2
         test_buy_index = index - 1
         test_sell_index = index
-        if inp_array[test_sell_index] - inp_array[buy_index] > profit:
+        ### if test_sell + current best buy increases profit, keep it
+        if inp_array[test_sell_index] - inp_array[buy_index] > max_profit:
             sell_index = test_sell_index
-            sell_value = inp_array[sell_index]
-            profit = sell_value - buy_value
-        if inp_array[test_sell_index] - inp_array[test_buy_index] > profit:
+            max_profit = inp_array[sell_index] - inp_array[buy_index]
+        ### if test_sell + test_buy increases profit, keep both
+        if inp_array[test_sell_index] - inp_array[test_buy_index] > max_profit:
             sell_index = test_sell_index
-            sell_value = inp_array[sell_index]
             buy_index = test_buy_index
-            buy_value = inp_array[test_buy_index]
-            profit = sell_value - buy_value
+            max_profit = inp_array[sell_index] - inp_array[buy_index]
     return (buy_index, sell_index)
 
 def buy_sell(inp_array):
-    print(inp_array.shape)
     out_array = []
     for stock_idx in range(inp_array.shape[1]):
         out_array.append(buy_sell_per_stock(inp_array[:, stock_idx].tolist()))
@@ -53,6 +51,10 @@ if __name__ == '__main__':
                          [ 21.81,  19.36,  45.95,  15.43,  13.9 ],
                          [ 48.08,   7.2 ,  39.42,  27.94,  35.45]])
 
-    #buy_sell(n)  ==  [(4, 9), (1, 2), (0, 7), (4, 5), (2, 6)]
     print([(4, 9), (1, 2), (0, 7), (4, 5), (2, 6)])
+    print(buy_sell(test_set))
+
+    test_set = (np.random.random((10, 5))*50).round(2)
+    print((test_set*100).astype(int)/100.)
+
     print(buy_sell(test_set))
