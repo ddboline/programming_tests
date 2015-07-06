@@ -10,6 +10,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import os
 import pandas as pd
 import numpy as np
 import matplotlib
@@ -77,6 +78,8 @@ def fill_country_plot():
                         output.write("%10s['%s', %d],\n" % ('', c, n))
                 else:
                     output.write(line)
+    if os.path.exists('%s/public_html'):
+        os.system('mv %s %s/public_html/' % (outfname, os.getenv('HOME')))
     return
 
 
