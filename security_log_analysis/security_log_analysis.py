@@ -78,7 +78,7 @@ def fill_country_plot():
                         output.write("%10s['%s', %d],\n" % ('', c, n))
                 else:
                     output.write(line)
-    if os.path.exists('%s/public_html'):
+    if os.path.exists('%s/public_html' % os.getenv('HOME')):
         os.system('mv %s %s/public_html/' % (outfname, os.getenv('HOME')))
     return
 
