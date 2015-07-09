@@ -5,13 +5,10 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from multiprocessing import Process, Queue
+from threading import Thread
+from Queue import Queue
 from contextlib import closing
 import requests
-try:
-    requests.packages.urllib3.disable_warnings()
-except AttributeError:
-    pass
 
 def read_stock_url(symbol):
     urlname = 'http://finance.yahoo.com/q?s=' + symbol.lower() + \
@@ -27,23 +24,25 @@ def read_stock_url(symbol):
 
 def read_stock_worker(symbol_q, price_q):
     while True:
-        symbol = symbol_q.get(timeout=10)
-        if symbol == 'EMPTY':
-            return True
-        price = read_stock_url(symbol)
-        if price >= 0:
-            price_q.put((symbol.upper(), price))
+        while not symbol_q.empty():
+            symbol = symbol_q.get()
+            if symbol == 'EMPTY':
+                return True
+            price = read_stock_url(symbol)
+            if price >= 0:
+                price_q.put((symbol.upper(), price))
     return
 
 def write_output_file(price_q):
     with open('stock_prices.csv', 'w') as outfile:
         outfile.write('Stock,Price\n')
         while True:
-            vals = price_q.get(timeout=10)
-            if vals == 'EMPTY':
-                return True
-            s, p = vals
-            outfile.write('%s,%s\n' % (s, p))
+            while not price_q.empty():
+                vals = price_q.get()
+                if vals == 'EMPTY':
+                    return True
+                s, p = vals
+                outfile.write('%s,%s\n' % (s, p))
             outfile.flush()
 
 def run_stock_parser():
@@ -57,16 +56,15 @@ def run_stock_parser():
             if sym:
                 stock_symbols.append(sym)
 
-    ncpu = len(filter(lambda x: x.find('processor')==0,
-                      open('/proc/cpuinfo')
-                      .read().split('\n')))
+    ncpu = len([x for x in open('/proc/cpuinfo').read().split('\n')\
+                if x.find('processor') == 0])
 
-    pool = [Process(target=read_stock_worker,
-                                    args=(symbol_q, price_q,))
-                                    for _ in range(ncpu*2)]
+    pool = [Thread(target=read_stock_worker,
+                    args=(symbol_q, price_q,)) for _ in range(ncpu*4)]
+
     for p in pool:
         p.start()
-    output = Process(target=write_output_file, args=(price_q,))
+    output = Thread(target=write_output_file, args=(price_q,))
     output.start()
 
     for symbol in stock_symbols:

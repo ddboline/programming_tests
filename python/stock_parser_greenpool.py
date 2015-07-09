@@ -1,16 +1,26 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
-from multiprocessing import Pool
+from eventlet import monkey_patch
+from eventlet.greenpool import GreenPool
 from contextlib import closing
 import requests
+try:
+    requests.packages.urllib3.disable_warnings()
+except AttributeError:
+    pass
+monkey_patch()
 
 def read_stock_url(symbol):
     urlname = 'http://finance.yahoo.com/q?s=' + symbol.lower() + \
               '&ql=0'
     with closing(requests.get(urlname, stream=True)) as url_:
         for line in url_.iter_lines():
-            line = line.decode()
+            line = line.decode(errors='ignore')
             if 'yfs_l84_%s' % symbol.lower() in line:
                 price = float(line.split('yfs_l84_%s\">' % symbol.lower())[1]\
                                   .split('</')[0].replace(',',''))
@@ -33,7 +43,7 @@ def run_stock_parser():
     ncpu = len([_ for _ in open('/proc/cpuinfo').read().split('\n')
                 if 'processor' in _])
 
-    pool = Pool(ncpu*4)
+    pool = GreenPool(ncpu*4)
 
     stock_prices = []
     for symbol, price in pool.imap(read_stock_url, stock_symbols):

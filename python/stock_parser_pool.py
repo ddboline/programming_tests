@@ -1,5 +1,9 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 from multiprocessing import Pool
 from contextlib import closing
@@ -10,7 +14,7 @@ def read_stock_url(symbol):
               '&ql=0'
     with closing(requests.get(urlname, stream=True)) as url_:
         for line in url_.iter_lines():
-            line = line.decode()
+            line = line.decode(errors='ignore')
             if 'yfs_l84_%s' % symbol.lower() in line:
                 price = float(line.split('yfs_l84_%s\">' % symbol.lower())[1]\
                                   .split('</')[0].replace(',',''))

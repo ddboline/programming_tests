@@ -29,30 +29,26 @@ def read_stock_url(symbol):
 
 def read_stock_worker(symbol_q, price_q):
     while True:
-        while not symbol_q.empty():
-            symbol = symbol_q.get()
-            if symbol == 'EMPTY':
-                return True
-            price = read_stock_url(symbol)
-            if price >= 0:
-                price_q.put((symbol.upper(), price))
-            greenthread.sleep()
-        greenthread.sleep()
+        symbol = symbol_q.get()
+        if symbol == 'EMPTY':
+            return True
+        price = read_stock_url(symbol)
+        if price >= 0:
+            price_q.put((symbol.upper(), price))
+#        greenthread.sleep()
     return
 
 def write_output_file(price_q):
     with open('stock_prices.csv', 'w') as outfile:
         outfile.write('Stock,Price\n')
         while True:
-            while not price_q.empty():
-                vals = price_q.get()
-                if vals == 'EMPTY':
-                    return True
-                s, p = vals
-                outfile.write('%s,%s\n' % (s, p))
-                outfile.flush()
-                greenthread.sleep()
-            greenthread.sleep()
+            vals = price_q.get()
+            if vals == 'EMPTY':
+                return True
+            s, p = vals
+            outfile.write('%s,%s\n' % (s, p))
+            outfile.flush()
+#            greenthread.sleep()
 
 def run_stock_parser():
     symbol_q = Queue()
