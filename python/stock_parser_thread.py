@@ -23,25 +23,20 @@ def read_stock_url(symbol):
     return -1
 
 def read_stock_worker(symbol_q, price_q):
-    while True:
-        symbol = symbol_q.get()
-        if symbol == 'EMPTY':
-            return True
+    for symbol in iter(symbol_q.get, 'EMPTY'):
         price = read_stock_url(symbol)
         if price >= 0:
             price_q.put((symbol.upper(), price))
-    return
+    return True
 
 def write_output_file(price_q):
     with open('stock_prices.csv', 'w') as outfile:
         outfile.write('Stock,Price\n')
-        while True:
-            vals = price_q.get()
-            if vals == 'EMPTY':
-                return True
+        for vals in iter(price_q.get, 'EMPTY'):
             s, p = vals
             outfile.write('%s,%s\n' % (s, p))
             outfile.flush()
+    return True
 
 def run_stock_parser():
     symbol_q = Queue()

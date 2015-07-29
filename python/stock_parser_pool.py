@@ -40,7 +40,7 @@ def run_stock_parser():
     pool = Pool(ncpu*4)
 
     stock_prices = []
-    for symbol, price in pool.imap(read_stock_url, stock_symbols):
+    for symbol, price in pool.map(read_stock_url, stock_symbols):
         stock_prices.append((symbol, price))
 
     with open('stock_prices.csv', 'w') as outfile:
