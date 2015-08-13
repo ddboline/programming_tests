@@ -453,7 +453,7 @@ def get_country_info():
                     print(host)
 
 if __name__ == '__main__':
-    with OpenPostgreSQLsshTunnel() as tun:
+    with OpenPostgreSQLsshTunnel():
         dump_sql_csv()
         analyze_files()
         get_country_info()
