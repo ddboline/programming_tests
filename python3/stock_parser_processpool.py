@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor
 from contextlib import closing
 import requests
 
@@ -34,7 +34,7 @@ def run_stock_parser():
                 if 'processor' in _])
 
     stock_prices = []
-    with ThreadPoolExecutor(max_workers=ncpu*4) as pool:
+    with ProcessPoolExecutor(max_workers=ncpu*4) as pool:
         for symbol, price in pool.map(read_stock_url, stock_symbols):
             stock_prices.append((symbol, price))
 
