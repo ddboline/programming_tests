@@ -13,6 +13,8 @@ try:
 except AttributeError:
     pass
 
+_sentinel = 'EMPTY'
+
 def read_stock_url(symbol):
     urlname = 'http://finance.yahoo.com/q?s=' + symbol.lower() + \
               '&ql=0'
@@ -26,16 +28,17 @@ def read_stock_url(symbol):
     return -1
 
 def read_stock_worker(symbol_q, price_q):
-    for symbol in iter(symbol_q.get, 'EMPTY'):
+    for symbol in iter(symbol_q.get, _sentinel):
         price = read_stock_url(symbol)
         if price >= 0:
             price_q.put((symbol.upper(), price))
+    symbol_q.put(_sentinel)
     return True
 
 def write_output_file(price_q):
     with open('stock_prices.csv', 'w') as outfile:
         outfile.write('Stock,Price\n')
-        for vals in iter(price_q.get, 'EMPTY'):
+        for vals in iter(price_q.get, _sentinel):
             s, p = vals
             outfile.write('%s,%s\n' % (s, p))
             outfile.flush()
@@ -64,11 +67,10 @@ def run_stock_parser():
             if symbol:
                 symbol_q.put(symbol)
 
-    for p in pool:
-        symbol_q.put('EMPTY')
+    symbol_q.put(_sentinel)
     for p in pool:
         p.join()
-    price_q.put('EMPTY')
+    price_q.put(_sentinel)
     output.join()
 
 if __name__ == '__main__':
