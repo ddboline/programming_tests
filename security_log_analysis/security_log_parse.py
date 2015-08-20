@@ -68,7 +68,7 @@ def str_len(st_):
         return len(st_)
     except Exception as exc:
         print('Exception %s' % exc)
-        return 0
+        raise
 
 def create_table(df_, table_name='country_code'):
     """ SQL to create table """
@@ -182,7 +182,6 @@ def dump_csv_to_sql(create_tables=False):
                           keep_default_na=False)
         if create_tables:
             cmd = create_table(df_, table)
-            print(cmd)
             engine.execute(cmd)
             cmd = update_table(df_, table)
             engine.execute(cmd)
@@ -204,8 +203,6 @@ def dump_csv_to_sql(create_tables=False):
         host, _ = line
         hostlist.append(host)
     
-    print(maxtimestamp)
-
     tables = ('ssh_log', 'apache_log')
     if HOSTNAME != 'dilepton-tower':
         tables = ('ssh_log_cloud', 'apache_log_cloud')
@@ -232,6 +229,7 @@ def dump_csv_to_sql(create_tables=False):
         if np.sum(cond) > 0:
             cmd = update_table(df_[cond], table)
             engine.execute(cmd)
+            
 
 def analyze_files():
     """ Analyze log files """
@@ -282,13 +280,11 @@ def find_originating_country(hostname, country_code_list=None, orig_host=None):
             country_code_list:
         return ents[-1].upper()
 
-    while True:
-        pipe = Popen('whois %s' % hostname, shell=True, stdin=PIPE,
-                     stdout=PIPE, close_fds=True)
-        wfile = pipe.stdout
-        output = [l for l in wfile]
-        pipe.wait()
-        break
+    pipe = Popen('whois %s' % hostname, shell=True, stdin=PIPE,
+                 stdout=PIPE, close_fds=True)
+    wfile = pipe.stdout
+    output = [l for l in wfile]
+    pipe.wait()
 
     output = ''.join(['%s' % s.decode(errors='ignore') for s in output])
 
@@ -296,11 +292,17 @@ def find_originating_country(hostname, country_code_list=None, orig_host=None):
             in output or 'Timeout' in output:
         time.sleep(10)
         print(hostname)
-        return find_originating_country(hostname, orig_host=orig_host)
+        return find_originating_country(hostname,
+                                        country_code_list=country_code_list,
+                                        orig_host=orig_host)
 
     country = None
     for line in output.split('\n'):
         if 'country' in line or 'Country' in line:
+            cn_ = line.split()[-1]
+            if cn_ in country_code_list.values():
+                _dict = {v: k for (k, v) in country_code_list.items()}
+                return _dict[cn_]
             cn_ = line.split()[-1][-2:].upper()
             if country != cn_:
                 if country is not None:
@@ -320,13 +322,13 @@ def find_originating_country(hostname, country_code_list=None, orig_host=None):
 
     if not country and hostname:
         country = find_originating_country('.'.join(hostname.split('.')[1:]),
+                                           country_code_list=country_code_list,
                                            orig_host=orig_host)
 
     if country:
         result += country
     else:
         return country
-    print(result)
 
     return country
 
@@ -416,7 +418,7 @@ def get_country_info():
     ssh_df = pd.read_csv(fname_ssh, compression='gzip')
     apache_df = pd.read_csv(fname_http, compression='gzip')
     ccode_df = pd.read_csv('country_code_name.csv.gz', compression='gzip')
-    country_list = set(ccode_df['Code'])
+    country_list = dict(zip(ccode_df['Code'], ccode_df['Country']))
     for df_ in [ssh_df, apache_df]:
         df_['Datetime'] = pd.to_datetime(df_['Datetime'])
 
@@ -451,6 +453,15 @@ def get_country_info():
                     output.flush()
                 else:
                     print(host)
+
+def test_find_originating_country():
+    ccode_df = pd.read_csv('country_code_name.csv.gz', compression='gzip')
+    country_list = dict(zip(ccode_df['Code'], ccode_df['Country']))
+    
+    host = 'host-219-235-1-84.iphost.gotonets.com'
+    country = find_originating_country(hostname=host,
+                                       country_code_list=country_list)
+    assert country == 'CN'
 
 if __name__ == '__main__':
     with OpenPostgreSQLsshTunnel():
