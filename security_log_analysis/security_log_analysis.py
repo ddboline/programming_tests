@@ -18,7 +18,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from dateutil.parser import parse
 
-from security_log_parse import HOSTNAME, dump_sql_csv
+from util import HOSTNAME, OpenPostgreSQLsshTunnel, create_db_engine
 
 def plot_time_access(csvfile, title):
     df = pd.read_csv(csvfile, compression='gzip')
@@ -92,3 +92,9 @@ if __name__ == '__main__':
     #plot_time_access('logcsv_apache_cloud.csv.gz', 'apache_access_cloud')
 
     fill_country_plot()
+
+    with OpenPostgreSQLsshTunnel():
+        engine = create_db_engine()
+        cmd = "select * from local_remote_compare"
+        for line in engine.execute(cmd):
+            print(line)

@@ -11,7 +11,6 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import time
-import shlex
 import glob
 from subprocess import Popen, PIPE
 from dateutil.parser import parse
@@ -19,11 +18,9 @@ import datetime
 import os, csv, gzip
 import pandas as pd
 import numpy as np
-from sqlalchemy import create_engine
 
-from util import dateTimeString
-
-HOSTNAME = os.uname()[1]
+from util import (dateTimeString, OpenPostgreSQLsshTunnel, HOSTNAME,
+                  create_db_engine)
 
 MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
                'Oct', 'Nov', 'Dec']
@@ -50,17 +47,6 @@ COLUMN_MAPPING = {
             {'name': 'User', 'type': 'char', 'isnull': False, 'len': 15}],
 'apache_log_cloud': [{'name': 'Datetime', 'type': 'datetime', 'isnull': False},
                {'name': 'Host', 'type': 'char', 'isnull': False, 'len': 15},],}
-
-def create_db_engine():
-    """ Create sqlalchemy database engine """
-    user = 'ddboline'
-    pwd = 'BQGIvkKFZPejrKvX'
-    host = 'localhost'
-    port = 5432
-    dbname = 'ssh_intrusion_logs'
-    dbstring = 'postgresql://%s:%s@%s:%s/%s' % (user, pwd, host, port, dbname)
-    engine = create_engine(dbstring)
-    return engine
 
 def str_len(st_):
     """ length of string, otherwise 0 """
@@ -150,28 +136,6 @@ def dump_sql_csv():
             for line in engine.execute(cmd):
                 csvwriter.writerow(line)
     return
-
-class OpenPostgreSQLsshTunnel(object):
-    """ Class to let us open an ssh tunnel, then close it when done """
-    def __init__(self):
-        self.tunnel_process = 0
-
-    def __enter__(self):
-        if HOSTNAME != 'dilepton-tower':
-            _cmd = 'ssh -N -L localhost:5432:localhost:5432 ' \
-                   + 'ddboline@ddbolineathome.mooo.com'
-            args = shlex.split(_cmd)
-            self.tunnel_process = Popen(args, shell=False)
-            time.sleep(5)
-        return self.tunnel_process
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        if self.tunnel_process:
-            self.tunnel_process.kill()
-        if exc_type or exc_value or traceback:
-            return False
-        else:
-            return True
 
 def dump_csv_to_sql(create_tables=False):
     """ Dump csv to SQL """
