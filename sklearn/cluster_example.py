@@ -1,5 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 import matplotlib
 matplotlib.use('Agg')
@@ -10,9 +14,9 @@ from sklearn import datasets, cluster
 def kmeans():
     iris = datasets.load_iris()
     k_means = cluster.KMeans(n_clusters=3)
-    print k_means.fit(iris.data)
-    print k_means.labels_[::10]
-    print iris.target[::10]
+    print(k_means.fit(iris.data))
+    print(k_means.labels_[::10])
+    print(iris.target[::10])
 
 def posterize():
     from scipy import misc

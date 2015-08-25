@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
 """
 Stripped-down version of the face recognition example by Olivier Grisel
 
@@ -8,6 +7,10 @@ http://scikit-learn.org/dev/auto_examples/applications/face_recognition.html
 
 ## original shape of images: 50, 37
 """
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 import numpy as np
 from sklearn import cross_validation, datasets, decomposition, svm
@@ -32,5 +35,5 @@ X_test_pca = pca.transform(X_test)
 clf = svm.SVC(C=5., gamma=0.001)
 clf.fit(X_train_pca, y_train)
 
-print 'Score on unseen data: '
-print clf.score(X_test_pca, y_test)
+print('Score on unseen data: ')
+print(clf.score(X_test_pca, y_test))

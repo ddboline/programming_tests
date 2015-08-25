@@ -5,6 +5,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+from multiprocessing import cpu_count
 from eventlet import spawn, Queue
 from eventlet import monkey_patch
 from contextlib import closing
@@ -44,6 +45,7 @@ def write_output_file(price_q):
             s, p = vals
             outfile.write('%s,%s\n' % (s, p))
             outfile.flush()
+            print('%s, %s' % (s, p))
     return True
 
 def run_stock_parser():
@@ -57,9 +59,7 @@ def run_stock_parser():
             if sym:
                 stock_symbols.append(sym)
 
-    ncpu = len(filter(lambda x: x.find('processor')==0,
-                      open('/proc/cpuinfo')
-                      .read().split('\n')))
+    ncpu = cpu_count()
 
     pool = [spawn(read_stock_worker, symbol_q, price_q)
                                     for _ in range(ncpu*2)]

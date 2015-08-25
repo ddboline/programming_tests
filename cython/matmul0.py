@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 
 def matmul0(A, B, out):
     for i in range(A.shape[0]):

@@ -1,9 +1,9 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 
 import os
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
-from binascii import b2a_hex, a2b_hex, b2a_base64
+from binascii import b2a_base64
 
 engine = create_engine('sqlite:///:memory:', echo=False)
 Base = declarative_base()

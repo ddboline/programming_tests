@@ -32,6 +32,7 @@ def run_stock_parser():
         outfile.write('Stock,Price\n')
         for symbol, price in map(read_stock_url, stock_symbols):
             outfile.write('%s,%s\n' % (symbol, price))
+            print('%s, %s' % (s, p))
 
 if __name__ == '__main__':
     run_stock_parser()

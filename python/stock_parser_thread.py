@@ -5,6 +5,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+from multiprocessing import cpu_count
 from threading import Thread
 from Queue import Queue
 from contextlib import closing
@@ -13,8 +14,8 @@ import requests
 _sentinel = object()
 
 def read_stock_url(symbol):
-    urlname = 'http://finance.yahoo.com/q?s=' + symbol.lower() + \
-              '&ql=0'
+    urlname = 'http://finance.yahoo.com/q?s=' + symbol.lower() \
+              + '&ql=0'
     with closing(requests.get(urlname, stream=True)) as url_:
         for line in url_.iter_lines():
             line = line.decode(errors='ignore')
@@ -39,6 +40,7 @@ def write_output_file(price_q):
             s, p = vals
             outfile.write('%s,%s\n' % (s, p))
             outfile.flush()
+            print('%s, %s' % (s, p))
     return True
 
 def run_stock_parser():
@@ -52,8 +54,7 @@ def run_stock_parser():
             if sym:
                 stock_symbols.append(sym)
 
-    ncpu = len([x for x in open('/proc/cpuinfo').read().split('\n')\
-                if x.find('processor') == 0])
+    ncpu = cpu_count()
 
     pool = [Thread(target=read_stock_worker,
                     args=(symbol_q, price_q,)) for _ in range(ncpu*4)]

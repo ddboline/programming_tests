@@ -1,5 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 import numpy as np
 import random
@@ -23,7 +27,7 @@ def reevaluate_centers(mu, clusters):
     return newmu
  
 def has_converged(mu, oldmu):
-    return (set([tuple(a) for a in mu]) == set([tuple(a) for a in oldmu])
+    return set([tuple(a) for a in mu]) == set([tuple(a) for a in oldmu])
  
 def find_centers(X, K):
     # Initialize to K random centers
@@ -38,7 +42,8 @@ def find_centers(X, K):
     return(mu, clusters)
 
 def init_board(N):
-    X = np.array([(random.uniform(-1, 1), random.uniform(-1, 1)) for i in range(N)])
+    X = np.array([(random.uniform(-1, 1), random.uniform(-1, 1)) for i in
+                                                                    range(N)])
     return X
 
 def init_board_gauss(N, k):
@@ -49,7 +54,8 @@ def init_board_gauss(N, k):
         s = random.uniform(0.05,0.5)
         x = []
         while len(x) < n:
-            a, b = np.array([np.random.normal(c[0], s), np.random.normal(c[1], s)])
+            a, b = np.array([np.random.normal(c[0], s), np.random.normal(c[1],
+                                                                         s)])
             # Continue drawing points from the distribution in the range [-1,1]
             if abs(a) < 1 and abs(b) < 1:
                 x.append([a,b])
@@ -57,3 +63,9 @@ def init_board_gauss(N, k):
     X = np.array(X)[:N]
     return X
 
+if __name__ == '__main__':
+    X = init_board_gauss(100, 100)
+    print(X)
+    Y = init_board(100)
+    print(Y)
+    print(find_centers(X, 10))

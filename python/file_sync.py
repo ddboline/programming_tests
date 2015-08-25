@@ -67,6 +67,9 @@ class FileList(object):
             self.subdirs = [self.basepath]
         self.filelist_dict = {}
         
+    def remove_persistence_file(self):
+        os.remove(self.pfilename)
+        
     def read_persistence_file(self):
         if not os.path.exists(self.pfilename):
             return

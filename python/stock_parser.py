@@ -5,7 +5,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from multiprocessing import Process, Queue
+from multiprocessing import Process, Queue, cpu_count
 from contextlib import closing
 import requests
 try:
@@ -42,15 +42,14 @@ def write_output_file(price_q):
             s, p = vals
             outfile.write('%s,%s\n' % (s, p))
             outfile.flush()
+            print('%s, %s' % (s, p))
     return True
 
 def run_stock_parser():
     symbol_q = Queue()
     price_q = Queue()
 
-    ncpu = len(filter(lambda x: x.find('processor')==0,
-                      open('/proc/cpuinfo')
-                      .read().split('\n')))
+    ncpu = cpu_count()
 
     pool = [Process(target=read_stock_worker,
                                     args=(symbol_q, price_q,))

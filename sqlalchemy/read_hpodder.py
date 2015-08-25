@@ -1,8 +1,6 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 
-import os
 from sqlalchemy import create_engine
-import pandas as pd
 
 def read_hpodder():
     engine = create_engine('sqlite:///hpodder.db', echo=False)

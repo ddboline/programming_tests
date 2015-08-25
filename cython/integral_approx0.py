@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 
 def func_f(a, b, c):
     return a**b - c

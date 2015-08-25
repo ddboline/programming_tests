@@ -1,10 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 import matplotlib
 matplotlib.use('Agg')
-import pylab as pl
-import numpy as np
+#import pylab as pl
+#import numpy as np
 from sklearn import datasets, linear_model
 
 def sparse_model():
@@ -15,13 +19,13 @@ def sparse_model():
     diabetes_y_test  = diabetes.target[-20:]
 
     regr = linear_model.Lasso(alpha=.3)
-    print regr.fit(diabetes_X_train, diabetes_y_train)
-    print regr.coef_
-    print regr.score(diabetes_X_test, diabetes_y_test)
+    print(regr.fit(diabetes_X_train, diabetes_y_train))
+    print(regr.coef_)
+    print(regr.score(diabetes_X_test, diabetes_y_test))
 
     lin = linear_model.LinearRegression()
-    print lin.fit(diabetes_X_train, diabetes_y_train)
-    print lin.coef_
-    print lin.score(diabetes_X_test, diabetes_y_test)
+    print(lin.fit(diabetes_X_train, diabetes_y_train))
+    print(lin.coef_)
+    print(lin.score(diabetes_X_test, diabetes_y_test))
 
 sparse_model()

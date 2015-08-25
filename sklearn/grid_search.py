@@ -1,9 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 import matplotlib
 matplotlib.use('Agg')
-import pylab as pl
+#import pylab as pl
 import numpy as np
 from sklearn import datasets, svm, linear_model, grid_search
 
@@ -14,19 +18,19 @@ def grid_search_test():
     gammas = np.logspace(-6, -1, 10)
     svc = svm.SVC()
     clf = grid_search.GridSearchCV(estimator=svc, param_grid=dict(gamma=gammas), n_jobs=-1)
-    print clf.fit(data[:1000], digits.target[:1000])
-    print clf.best_score_
-    print clf.best_estimator_.gamma
+    print(clf.fit(data[:1000], digits.target[:1000]))
+    print(clf.best_score_)
+    print(clf.best_estimator_.gamma)
 
 def cross_validated_estimators():
     lasso = linear_model.LassoCV()
     diabetes = datasets.load_diabetes()
     X_diabetes = diabetes.data
     y_diabetes = diabetes.target
-    print lasso.fit(X_diabetes, y_diabetes)
+    print(lasso.fit(X_diabetes, y_diabetes))
 
     # The estimator chose automatically its lambda:
-    print lasso.alpha_
+    print(lasso.alpha_)
 
 grid_search_test()
 cross_validated_estimators()

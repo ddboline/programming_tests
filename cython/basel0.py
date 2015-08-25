@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 
 def approx_pi(n=10**7):
     val = 0.

@@ -5,6 +5,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+from multiprocessing import cpu_count
 from eventlet import monkey_patch
 from eventlet.greenpool import GreenPool
 from contextlib import closing
@@ -40,8 +41,7 @@ def run_stock_parser():
             if sym:
                 stock_symbols.append(sym)
 
-    ncpu = len([_ for _ in open('/proc/cpuinfo').read().split('\n')
-                if 'processor' in _])
+    ncpu = cpu_count()
 
     pool = GreenPool(ncpu*4)
 
@@ -53,6 +53,7 @@ def run_stock_parser():
         outfile.write('Stock,Price\n')
         for symbol, price in stock_prices:
             outfile.write('%s,%s\n' % (symbol, price))
+            print('%s, %s' % (s, p))
 
 if __name__ == '__main__':
     run_stock_parser()

@@ -1,5 +1,5 @@
-PYTHON_VERSION = 3.4
-PYTHON_VER = 34
+PYTHON_VERSION = 2.7
+PYTHON_VER = 27
 PYTHON_INCLUDE = /usr/include/python$(PYTHON_VERSION)
 
 # location of the Boost Python include files and library

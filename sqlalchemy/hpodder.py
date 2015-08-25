@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 
 class podcasts(object):
     __tablename__ = 'podcasts'
