@@ -16,30 +16,39 @@ import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from dateutil.parser import parse
 
 from util import HOSTNAME, OpenPostgreSQLsshTunnel, create_db_engine
 
+def dump_csv(engine, table, title):
+    import gzip, csv
+    from security_log_parse import COLUMN_MAPPING
+    columns = [d['name'] for d in COLUMN_MAPPING[table]]
+    with gzip.open('%s.csv.gz' % table, 'wb') as csvfile:
+        csvwriter = csv.writer(csvfile)
+        csvwriter.writerow(columns)
+        cmd = 'select %s from %s' % (', '.join(columns), table)
+        for line in engine.execute(cmd):
+            csvwriter.writerow(line)
+
 def plot_time_access(csvfile, title):
-    df = pd.read_csv(csvfile, compression='gzip')
+    df = pd.read_csv(csvfile, compression='gzip', parse_dates=['Datetime'])
 
     if 'Datetime' in df.columns:
-        df['Datetime'] = df['Datetime'].apply(parse)
         df['Date'] = df['Datetime'].apply(lambda d: d.date())
+        df['Hours'] = df['Datetime'].apply(lambda x: (x.hour + x.minute/60.
+                                                        + x.second/3600.))
+        df['Weekdays'] = df['Datetime'].apply(lambda x: x.weekday())
 
     print(csvfile, title)
-    print(df.describe())
-    print(df['Host'].head())
-    print(sorted(df['Date'].unique()))
+    print(df.head())
 
-    ts = df['Datetime'].tolist()
-
-    sec = np.array([(x.hour + x.minute/60. + x.second/3600.) for x in ts])
-    plt.hist(sec, bins=np.linspace(0, 24, 24), histtype='step')
+    sec = df['Hours'].values
+    plt.hist(sec, bins=np.linspace(0, 24, 24),
+             histtype='step')
     plt.savefig('%s_hour.png' % title, format='png')
     plt.clf()
 
-    sec = np.array([x.weekday() for x in ts])
+    sec = df['Weekdays'].values
     plt.hist(sec, bins=np.linspace(0, 7, 7), histtype='step')
     plt.savefig('%s_weekday.png' % title, format='png')
     plt.clf()
@@ -76,6 +85,14 @@ if __name__ == '__main__':
 
     with OpenPostgreSQLsshTunnel():
         engine = create_db_engine()
+
+        table = 'ssh_log'
+        if HOSTNAME != 'dilepton-tower':
+            table = 'ssh_log_cloud'
+            
+#        dump_csv(engine, table, 'ssh_access')
+        plot_time_access('%s.csv.gz' % table, 'ssh_access')
+
         fill_country_plot(engine)
         cmd = "select * from local_remote_compare"
         for line in engine.execute(cmd):
