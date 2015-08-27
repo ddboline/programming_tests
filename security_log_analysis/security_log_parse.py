@@ -127,6 +127,8 @@ def dump_sql_csv():
     """ Dump SQL to CSV """
     engine = create_db_engine()
     for table, fname in FILE_MAPPING.items():
+        if any(_ in table for _ in ('ssh_log', 'apache_log')):
+            continue
         print(table, fname)
         columns = [d['name'] for d in COLUMN_MAPPING[table]]
         with gzip.open(fname, 'wb') as csvfile:
@@ -151,27 +153,15 @@ def dump_csv_to_sql(create_tables=False):
             engine.execute(cmd)
     if create_tables:
         return
-    maxtimestamp = datetime.datetime(year=1970, month=1, day=1)
-    table = 'ssh_log'
-    if HOSTNAME != 'dilepton-tower':
-        table = 'ssh_log_cloud'
-    for line in engine.execute('select max(datetime) from %s;' % table):
-        maxtimestamp = line[0]
-    table = 'apache_log'
-    if HOSTNAME != 'dilepton-tower':
-        table = 'apache_log_cloud'
-    for line in engine.execute('select max(datetime) from %s;' % table):
-        if line[0] > maxtimestamp:
-            maxtimestamp = line[0]
-    for line in engine.execute('select host, code from host_country;'):
-        host, _ = line
-        hostlist.append(host)
-    
-    tables = ('ssh_log', 'apache_log')
-    if HOSTNAME != 'dilepton-tower':
-        tables = ('ssh_log_cloud', 'apache_log_cloud')
 
-    for table in tables:
+    for table in 'ssh_log', 'apache_log':
+        maxtimestamp = datetime.datetime(year=1970, month=1, day=1)
+        if HOSTNAME != 'dilepton-tower':
+            table += '_cloud'
+        cmd = 'select max(datetime) from %s;' % table
+        maxtimestamp = list(engine.execute(cmd))[0][0]
+        print(table, maxtimestamp)
+
         fname = FILE_MAPPING[table]
         df_ = pd.read_csv(fname, compression='gzip', na_values=['nan'],
                           keep_default_na=False)
@@ -184,6 +174,10 @@ def dump_csv_to_sql(create_tables=False):
         cmd = update_table(df_[cond], table)
         engine.execute(cmd)
 
+    for line in engine.execute('select host, code from host_country;'):
+        host, _ = line
+        hostlist.append(host)
+
     table = 'host_country'
     fname = FILE_MAPPING[table]
     df_ = pd.read_csv(fname, compression='gzip')
@@ -193,7 +187,7 @@ def dump_csv_to_sql(create_tables=False):
         if np.sum(cond) > 0:
             cmd = update_table(df_[cond], table)
             engine.execute(cmd)
-            
+
 
 def analyze_files():
     """ Analyze log files """
@@ -421,7 +415,7 @@ def get_country_info():
 def test_find_originating_country():
     ccode_df = pd.read_csv('country_code_name.csv.gz', compression='gzip')
     country_list = dict(zip(ccode_df['Code'], ccode_df['Country']))
-    
+
     host = 'host-219-235-1-84.iphost.gotonets.com'
     country = find_originating_country(hostname=host,
                                        country_code_list=country_list)
