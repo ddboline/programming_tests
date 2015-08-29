@@ -90,10 +90,18 @@ if __name__ == '__main__':
         if HOSTNAME != 'dilepton-tower':
             table = 'ssh_log_cloud'
             
-#        dump_csv(engine, table, 'ssh_access')
+        #dump_csv(engine, table, 'ssh_access')
         plot_time_access('%s.csv.gz' % table, 'ssh_access')
 
+        print(engine.table_names())
         fill_country_plot(engine)
-        cmd = "select * from local_remote_compare"
-        for line in engine.execute(cmd):
-            print(line)
+        columns = ('date', 'local', 'remote')
+        cmd = "select %s from local_remote_compare" % (', '.join(columns),)
+        import gzip, csv
+        with gzip.open('local_remote_compare.csv.gz', 'wb') as csvfile:
+            csvwriter = csv.writer(csvfile)
+            csvwriter.writerow(columns)
+            for line in engine.execute(cmd):
+                csvwriter.writerow(line)
+        df = pd.read_csv('local_remote_compare.csv.gz', compression='gzip')
+        print(df.to_string(index=False))
