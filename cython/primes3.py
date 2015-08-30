@@ -1,5 +1,9 @@
 #!/usr/bin/python
-from numba import jit, int64
+
+try:
+    from numba import jit
+except ImportError:
+    from util import jit
 
 @jit
 def primes(kmax):  # The argument will be converted to int or raise a TypeError.

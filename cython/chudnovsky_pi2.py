@@ -1,5 +1,9 @@
 #!/usr/bin/python
-from numba import jit
+
+try:
+    from numba import jit
+except ImportError:
+    from util import jit
 
 @jit
 def fact(n):

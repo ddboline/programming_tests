@@ -1,6 +1,11 @@
 #!/usr/bin/python
-from numba import jit
+
 import os
+
+try:
+    from numba import jit
+except ImportError:
+    from util import jit
 
 @jit
 def fibonacci(n):
