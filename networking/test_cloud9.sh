@@ -1,5 +1,12 @@
 #!/bin/bash
 
+make clean
+make
+cd cpp_socket
+make clean
+make
+cd ..
+
 PORT=`shuf -i 2000-65000 -n 1`
 ./server.py $PORT &
 PROC=$!
