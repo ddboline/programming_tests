@@ -1,5 +1,7 @@
 #!/bin/bash
 
+make clean
+make
 echo "Basel"
 ./run_basel.py
 echo "Chudnovsky"
