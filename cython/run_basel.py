@@ -19,11 +19,11 @@ def time_execution():
     t.append(time.clock())
     print(basel1.approx_pi(10**7))
     t.append(time.clock())
-    print(basel1.approx_pi(10**9))
+    print(basel1.approx_pi(10**8))
     t.append(time.clock())
     print(basel2.approx_pi(10**7))
     t.append(time.clock())
-    print(basel2.approx_pi(10**9))
+    print(basel2.approx_pi(10**8))
     t.append(time.clock())
 
     print('timing:',)
