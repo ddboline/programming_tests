@@ -35,6 +35,5 @@ sleep 10
 kill -9 ${PROC}
 make clean
 
-cd cpp_socket
-make clean
 cd ..
+make clean
