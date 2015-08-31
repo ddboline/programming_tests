@@ -4,6 +4,7 @@ import os
 from sqlalchemy import create_engine
 import pandas as pd
 from subprocess import Popen, PIPE, call
+from util import OpenPostgreSQLsshTunnel
 
 USER = os.getenv('USER')
 
@@ -71,7 +72,8 @@ def postgresql_example():
 
 def test_postgresql_example():
     from util import get_md5
-    postgresql_example()
+    with OpenPostgreSQLsshTunnel():
+        postgresql_example()
     
     csv_md5 = {'booking.csv': '90fd6d84b6234ff73acc5208995cf85e',
                'contact.csv': 'b1d0f7c24d7ac5dfd70668c17c5e559d',
