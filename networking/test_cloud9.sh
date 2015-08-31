@@ -1,9 +1,7 @@
 #!/bin/bash
 
-make clean
 make
 cd cpp_socket
-make clean
 make
 cd ..
 
@@ -35,3 +33,8 @@ sleep 5
 
 sleep 10
 kill -9 ${PROC}
+make clean
+
+cd cpp_socket
+make clean
+cd ..

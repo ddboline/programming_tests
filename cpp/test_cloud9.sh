@@ -1,6 +1,5 @@
 #!/bin/bash
 
-make clean
 make
 NUMBER=`head -c1000 /dev/urandom | tr -dc [:digit:] | head -c8`
 echo atoi_impl $NUMBER
@@ -17,3 +16,4 @@ echo sampling_vose_alias_method
 ./sampling_vose_alias_method
 echo primes
 ./primes 1000
+make clean

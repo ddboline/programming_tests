@@ -1,6 +1,5 @@
 #!/bin/bash
 
-make clean
 make
 echo "Basel"
 ./run_basel.py
@@ -18,3 +17,4 @@ echo "Matrix Multiplication"
 ./run_matmul.py 100 100 100
 echo "Pi Wallis"
 ./run_pi_wallis.py
+make clean
