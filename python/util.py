@@ -49,6 +49,15 @@ def run_command(command, do_popen=False, turn_on_commands=True,
     else:
         return call(command, shell=True)
 
+def get_md5(fname):
+    """ md5 function using cli """
+    if not os.path.exists(fname):
+        return None
+    
+    with run_command('md5sum "%s"' % fname, do_popen=True) as pop_:
+        output = pop_.stdout.read().split()[0]
+    return output.decode()
+
 def convert_date(input_date):
     """
         convert string to datetime object

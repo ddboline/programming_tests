@@ -4,16 +4,7 @@
 import os
 import json
 import pandas as pd
-from util import run_command
-
-def get_md5(fname):
-    """ md5 function using cli """
-    if not os.path.exists(fname):
-        return None
-    
-    with run_command('md5sum "%s"' % fname, do_popen=True) as pop_:
-        output = pop_.stdout.read().split()[0]
-    return output.decode()
+from util import get_md5
 
 def urlopen(url_):
     """ wrapper around requests.get.text simulating urlopen """

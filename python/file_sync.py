@@ -115,7 +115,7 @@ def run_tests():
     script_path = os.path.abspath(os.path.curdir)
     testfname = '%s/analyze_gmail.py' % script_path
     finfo = FileInfo(testfname)
-    assert finfo.md5sum == 'e9dc10073356c4527d70752871c65e10'
+    assert finfo.md5sum == 'f5895714b558d215ad125eaee7dcc6c7'
     print(os.stat(testfname), '\n')
     
     testdir = '/home/ddboline/Documents/mp3'

@@ -12,7 +12,6 @@ import email
 import email.header
 import base64
 import collections
-# from memory_profiler import profile
 
 EMAIL_LABELS = ['from', 'to', 'cc']
 
@@ -84,9 +83,14 @@ def analyze_gmail(fname):
         for k, n in sorted(em_stats.email_addresses.items()):
             f.write('%s,%d\n' % (k, n))
 
+def test_analyze_gmail():
+    from util import get_md5
+    analyze_gmail('temp.mbox')
+    assert get_md5('email_addresses.txt') == '72f7ca8571da827f68a2114ad4d2fe9d'
+
 if __name__ == '__main__':
     fn = ''
-    if len(os.sys.argv)>1 and os.path.exists(os.sys.argv[1]):
+    if len(os.sys.argv) > 1 and os.path.exists(os.sys.argv[1]):
         fn = os.sys.argv[1]
     elif os.path.exists('temp.mbox'):
         fn = 'temp.mbox'

@@ -21,7 +21,7 @@ def lambda_gamma_functions():
         gamma_vec.append(gamma_func(lambda_vec[n-1], lambda_vec[n]))
     
     for n in range(10):
-        print n, lambda_vec[n], gamma_vec[n]
+        print(n, lambda_vec[n], gamma_vec[n])
 
 if __name__ == '__main__':
     lambda_gamma_functions()
