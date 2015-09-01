@@ -1,3 +1,10 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 class Muslim:
     def performsMuslimRitual(self):
         return
@@ -29,7 +36,10 @@ if __name__ == '__main__':
     hinduGirl = HinduFemale()
     muslimGirl = MuslimFemale()
     muslimRitual = MuslimRitual()
-    #muslimRitual.carryOutRitual(hinduGirl)
+    try:
+        muslimRitual.carryOutRitual(hinduGirl)
+    except AttributeError as exc:
+        print(exc)
     adaptedHindu = MuslimAdapter(hinduGirl)
  
     muslimRitual.carryOutRitual(muslimGirl)

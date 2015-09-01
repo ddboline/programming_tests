@@ -6,8 +6,6 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import os
-import numpy as np
-from dateutil import parser
 
 labels = {}
 email_labels = ['CC', 'From', 'To']
@@ -15,6 +13,7 @@ gmail_labels = {}
 email_addresses = {}
 
 def parse_header(lines):
+    output = []
     header_entries = {}
     current_label = None
     for line in lines:
@@ -35,8 +34,8 @@ def parse_header(lines):
             if l not in gmail_labels:
                 gmail_labels[l] = 0
             gmail_labels[l] += 1
-    #if 'Cc' in header_entries:
-        #print header_entries['Cc']
+    if 'Cc' in header_entries:
+        output.append('%s' % header_entries['Cc'])
     for lab in header_entries:
         if lab in email_labels:
             for ent in (' '.join(header_entries[lab])).split():
@@ -52,8 +51,10 @@ def parse_header(lines):
                 if em not in email_addresses:
                     email_addresses[em] = 0
                 email_addresses[em] += 1
+    return output
 
 def parse_email(lines):
+    output = []
     header_lines = []
     body_lines = {}
     for line in lines:
@@ -61,7 +62,8 @@ def parse_email(lines):
             for b in body_lines.keys():
                 if '%s--' % b in line:
                     bl = body_lines.pop(b)
-                    #print 'body:', b, ' '.join(['%s' % len(l) for l in bl])
+                    output.append('body: %s %s' % (b, ' '.join([
+                                                '%s' % len(l) for l in bl])))
                 elif b in line:
                     body_lines[b].append([])
                 elif body_lines[b]:
@@ -73,25 +75,29 @@ def parse_email(lines):
             b = line.split('boundary=')[-1].replace('"','')
             body_lines[b] = []
 
-    #print 'header:',len(header_lines)
-    parse_header(header_lines)
+    output.append('header: %s' % len(header_lines))
+    output.extend(parse_header(header_lines))
+    return output
 
 def parse_mbox(fname):
     ''' parse mbox file '''
+    output = []
     email_lines = None
     number_of_emails = 0
     with open(fname, 'r') as mboxf:
         for line in mboxf:
+            if hasattr(line, 'decode'):
+                line = line.decode(errors='ignore')
             if line.find('From ') == 0:
                 if email_lines:
-                    parse_email(email_lines)
+                    output.extend(parse_email(email_lines))
                     number_of_emails += 1
-                    #if number_of_emails > 100000:
-                        #break
+                    if number_of_emails > 100000:
+                        break
                 email_lines = []
             email_lines.append(line.replace('\r\n','').replace('\n',''))
         if email_lines:
-            parse_email(email_lines)
+            output.extend(parse_email(email_lines))
             number_of_emails += 1
 
     with open('labels.txt', 'w') as loutf:
@@ -100,12 +106,21 @@ def parse_mbox(fname):
         gloutf.write('%s\n' % '\n'.join('%s %d' % (k, i) for k, i in sorted(gmail_labels.items())))
     with open('email_addresses.txt', 'w') as eaoutf:
         eaoutf.write('%s\n' % '\n'.join('%s %d' % (k, i) for k, i in sorted(email_addresses.items())))
-    print 'labels:', len(labels)
-    print 'gmail_labels:', len(gmail_labels)
-    print 'email_addresses:', len(email_addresses)
-    print 'Nemails:', number_of_emails
+    output.append('labels: %s' % len(labels))
+    output.append('gmail_labels: %s' % len(gmail_labels))
+    output.append('email_addresses: %s' % len(email_addresses))
+    output.append('Nemails: %s' % number_of_emails)
+    return '\n'.join(output)
+
+def test_parse_mbox():
+    import hashlib
+    
+    output = parse_mbox('temp.mbox')
+    mstr = hashlib.md5()
+    mstr.update(output)
+    assert mstr.hexdigest() == 'd94be7bf5097c93e22bb58dccb3e0d37'
 
 if __name__ == '__main__':
     fname = os.sys.argv[1]
     if os.path.exists(fname):
-        parse_mbox(fname)
+        print(parse_mbox(fname))

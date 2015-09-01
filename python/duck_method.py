@@ -1,4 +1,9 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 class SomeClass(object):
     firstattr = 25
@@ -12,9 +17,9 @@ class SomeClass(object):
 
 c = SomeClass()
 
-print c
-print SomeClass.__dict__
-print c.__dict__
+print(c)
+print(dir(SomeClass))
+print(dir(c))
 
 def duck_method(inst, x):
     inst.fourthattr = 30
@@ -22,7 +27,7 @@ def duck_method(inst, x):
 
 SomeClass.duck_method = duck_method
 
-print c.duck_method(5)
-print c.fourthattr
-print SomeClass.__dict__
-print c.__dict__
+print(c.duck_method(5))
+print(c.fourthattr)
+print(dir(SomeClass))
+print(dir(c))

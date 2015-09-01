@@ -40,7 +40,6 @@ def write_output_file(price_q):
             s, p = vals
             outfile.write('%s,%s\n' % (s, p))
             outfile.flush()
-            print('%s, %s' % (s, p))
     return True
 
 def run_stock_parser():

@@ -91,6 +91,8 @@ def plot_test_dist():
 
     # truncate values to a reasonable range
     x = x[(x > -15) & (x < 15)]
+    
+    assert x.shape[0] == 4323
 
     #pl.hist(x, bins=100, normed=True)
 

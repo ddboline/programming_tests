@@ -112,11 +112,10 @@ def file_sync():
     return
 
 def run_tests():
-    script_path = '/'.join(os.path.abspath(os.sys.argv[0]).split('/')[:-1])
-    testfname = '%s/file_sync.py' % script_path
+    script_path = os.path.abspath(os.path.curdir)
+    testfname = '%s/analyze_gmail.py' % script_path
     finfo = FileInfo(testfname)
-    print(finfo.md5sum)
-    print(testfname)
+    assert finfo.md5sum == 'e9dc10073356c4527d70752871c65e10'
     print(os.stat(testfname), '\n')
     
     testdir = '/home/ddboline/Documents/mp3'
@@ -130,4 +129,4 @@ def run_tests():
     print(conf_obj, type(conf_obj))
 
 if __name__ == '__main__':
-    run_tests()
+    file_sync()
