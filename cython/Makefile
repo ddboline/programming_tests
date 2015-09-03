@@ -11,12 +11,12 @@ all: $(TARGETS)
 %: %.cpp
 	$(CPP) -std=c++11 -O3 $*.cpp -o $*
 
-python: integlib
+python:
 	./setup.py build_ext --inplace
 
-python3: integlib
+python3:
 	python3 setup.py build_ext --inplace
 
 clean:
 	rm $(TARGETS)
-	rm -rf cos_func.c integ4.c matmul2.c matmul3.c primes1.cpp sampling_vose_alias_method1.cpp smith_number2.cpp __pycache__ *.so *.pyc build
+	rm -rf cos_func.c matmul2.c matmul3.c primes1.cpp sampling_vose_alias_method1.cpp smith_number2.cpp __pycache__ *.so *.pyc build
