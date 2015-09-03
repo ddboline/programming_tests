@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 
 # from __future__ import division
 # from libc.math cimport cos

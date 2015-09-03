@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 """
     quick implementation of Vose Alias Sampling method taken from:
     http://www.keithschwarz.com/darts-dice-coins/

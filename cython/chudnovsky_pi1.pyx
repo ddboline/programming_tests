@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 # # # cython: profile=True
 
 cpdef int fact(int n):
