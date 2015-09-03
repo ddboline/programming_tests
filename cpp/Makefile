@@ -5,7 +5,7 @@ BOOST_INC = /usr/include
 BOOST_LIB = /usr/lib
 
 CXX_FILES = reverse_string atoi_impl ternary_conditional pthread_hello prbs7_c threadadd
-CPP_FILES = prbs7 selection_sort sampling_vose_alias_method primes thread_hello forward move thread_add
+CPP_FILES = async_test doubly_linked_list forward functional inheritance inheritance_test move packaged_task parse_csv prbs7 primes remove_char_inplace sampling_vose_alias_method selection_sort split_string thread_add thread_hello
 
 %: %.c
 	$(CXX) -Wall -O3 $*.c -o $* -lpthread

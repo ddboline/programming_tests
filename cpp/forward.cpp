@@ -11,7 +11,7 @@ struct A {
     A(int&& n) { cout << "rvalue overload, n=" << n << "\n"; }
     A(int& n)  { cout << "lvalue overload, n=" << n << "\n"; }
 };
- 
+
 class B {
 public:
     template<class T1, class T2, class T3>

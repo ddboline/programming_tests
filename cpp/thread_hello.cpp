@@ -32,7 +32,7 @@ public:
 void print_hello(int threadid){
     while(!ready)
         yield();
-    for(int idx=0; idx<10; idx++){
+    for(int idx=0; idx<5; idx++){
         local_lock current_lock(mtx);
         stringstream output;
         output << "Hello there from thread " << threadid << " " << idx << endl;
@@ -42,7 +42,7 @@ void print_hello(int threadid){
 
 int main(int argc, char ** argv){
     vector<thread> threads;
-    for(int idx=0; idx<10; idx++)
+    for(int idx=0; idx<5; idx++)
         threads.push_back(thread(print_hello, idx));
     ready = true;
     
