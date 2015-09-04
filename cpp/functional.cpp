@@ -30,7 +30,7 @@ int main()
     // (_1 and _2 are from std::placeholders, and represent future
     // arguments that will be passed to f1)
     auto f1 = std::bind(f, _2, _1, 42, std::cref(n), n);
-    n = 10;
+
     f1(1, 2, 1001); // 1 is bound by _2, 2 is bound by _1, 1001 is unused
  
     // nested bind subexpressions share the placeholders

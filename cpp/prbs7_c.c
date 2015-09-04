@@ -2,20 +2,18 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-char * prb7(uint8_t start){
+void prb7(uint8_t start){
     uint8_t a = start;
     int i = 1;
     for(i = 1;; i++) {
-        int newbit = (((a >> 6) ^ (a >> 5)) & 1);
+        uint8_t newbit = (((a >> 6) ^ (a >> 5)) & 1);
         a = ((a << 1) | newbit) & 0x7f;
         printf("%x", a);
         if (a == start) {
             printf("\nrepetition period is %d\n", i);
-            return "";
+            return ;
         }
     }
-
-    return "";
 }
 
 int main(int argc, char** argv) {

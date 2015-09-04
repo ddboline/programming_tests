@@ -1,5 +1,4 @@
 #include <iostream>
-// #include <forward_list>
 
 using namespace std;
 
@@ -16,6 +15,12 @@ public:
         root_node->x = 0;
         root_node->next = nullptr;
         current_node = root_node;
+    };
+    doubly_linked_list(const doubly_linked_list& x){
+        root_node = new node;
+        root_node->x = x.root_node->x;
+        root_node->next = x.root_node->next;
+        current_node = x.current_node;
     };
     ~doubly_linked_list() {
         while(root_node) {

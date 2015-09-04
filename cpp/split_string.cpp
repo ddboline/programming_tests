@@ -35,7 +35,6 @@ int split_string_manual(const string & input, const string & delim){
 }
 
 int split_string_boost(const string & input, const string & delim){
-    string input_ = input;
     vector<string> output;
     boost::algorithm::split(output, input, boost::is_any_of(","));
     vector<int> numbers = string_to_numbers(output);

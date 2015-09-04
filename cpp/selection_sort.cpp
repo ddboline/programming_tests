@@ -11,22 +11,22 @@ using std::cout;
 using std::endl;
 
 vector<int> selection_sort_vector(const vector<int> & inpvec) {
-    int lowindex=0, lowkey=0, temp=0, n = inpvec.size();
+    int n = inpvec.size();
     vector<int> outvec(n);
 
     for(int idx = 0; idx < n; idx++)
         outvec[idx] = inpvec[idx];
 
     for(int idx = 0; idx < n; idx++) {
-        lowindex = idx;
-        lowkey = outvec[idx];
+        int lowindex = idx;
+        int lowkey = outvec[idx];
         for(int jdx = idx+1; jdx < n; jdx++) {
             if(outvec[jdx] < lowkey) {
                 lowkey = outvec[jdx];
                 lowindex = jdx;
             }
         }
-        temp = outvec[idx];
+        int temp = outvec[idx];
         outvec[idx] = outvec[lowindex];
         outvec[lowindex] = temp;
     }
@@ -68,7 +68,7 @@ int main(int argc, char ** argv) {
     cout << "Selection Sorted array 1:";
     print_vector(output_vector);
 
-    int lowindex=0, lowkey=0, temp=0, n=vector_size;
+    int n=vector_size;
     int a[n];
 
     for (int i = 0; i < n; i++) {
@@ -76,15 +76,15 @@ int main(int argc, char ** argv) {
     }
 
     for (int i = 0; i < n; i++) {
-        lowindex = i;
-        lowkey = a[i];
+        int lowindex = i;
+        int lowkey = a[i];
         for (int j = i + 1; j < n; j++) {
             if (a[j] < lowkey) {
                 lowkey = a[j];
                 lowindex = j;
             }
         }
-        temp = a[i];
+        int temp = a[i];
         a[i] = a[lowindex];
         a[lowindex] = temp;
     }

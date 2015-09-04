@@ -27,10 +27,9 @@ public:
 
 int thread_add(int threadid)
 {
-  int i, tmp;
-  for(i = 0; i < NITER; i++)
+  for(int i = 0; i < NITER; i++)
     {
-      tmp = count;      /* copy the global count locally */
+      int tmp = count;      /* copy the global count locally */
       tmp = tmp+1;      /* increment the local copy */
       count = tmp;      /* store the local value into the global count */
       ++count2;

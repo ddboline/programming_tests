@@ -8,12 +8,12 @@ using std::endl;
 using std::vector;
 
 int primes( const int pmax , int & result ) {
-    int n = 3 , k = 0 , i;
+    int n = 3 , k = 0;
     vector<int> p;
     p.push_back(2);
     result = 0;
     while( n < pmax ) {
-        i = 0;
+        int i = 0;
         while( i < k && n % p[i] != 0 )
             i++;
         if( i == k ) {
@@ -31,9 +31,10 @@ int primes( const int pmax , int & result ) {
 
 int main(int argc, char **argv)
 {
-    int largest_prime = 0;
     cout << argc << endl;
-    if(argc > 1)
+    if(argc > 1){
+        int largest_prime = 0;
         cout << primes(atoi(argv[1]), largest_prime) << " " << largest_prime << endl;
+    }
     return 0;
 }

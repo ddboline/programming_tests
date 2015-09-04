@@ -6,11 +6,11 @@
 using namespace std;
 
 int split(string & input, vector<string> & output, string delim=","){
-    int begin_pos = 0, end_pos = -1;
+    int begin_pos = 0;
     while(true){
         int new_pos = input.find(delim, begin_pos);
 //         cout << input << " new_pos " << new_pos << " " << delim << " " << begin_pos << endl;
-        end_pos = new_pos;
+        int end_pos = new_pos;
         if(new_pos == -1)
             end_pos = input.size();
         auto sstr = input.substr(begin_pos, end_pos);

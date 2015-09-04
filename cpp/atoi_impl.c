@@ -7,7 +7,7 @@ int64_t atoi_impl( const char * inpstr ){
     int64_t outp = 0 , power = 1;
     int idx = 0;
     char ascii_code;
-    int inpstr_len = strlen( inpstr );
+    int inpstr_len = (int)strlen( inpstr );
     char ascii_offset = '0';
     for( idx = inpstr_len-1 ; idx >= 0 ; idx-- ){
         ascii_code = inpstr[idx];
