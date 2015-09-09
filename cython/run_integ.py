@@ -9,6 +9,7 @@ import integ0
 import integ1
 import integ2
 import integ3
+import integ4
 import time
 import os
 from subprocess import call
@@ -22,6 +23,8 @@ t.append(time.clock())
 print(integ2.integrate_f(0., 1., 5e7))
 t.append(time.clock())
 print(integ3.integrate_f(0., 1., 5e7))
+t.append(time.clock())
+print(integ4.integrate_f(0., 1., 5e7))
 t.append(time.clock())
 call('./integ', shell=True)
 t.append(time.clock())
