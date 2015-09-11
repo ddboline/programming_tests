@@ -90,7 +90,7 @@ if __name__ == '__main__':
         if HOSTNAME != 'dilepton-tower':
             table = 'ssh_log_cloud'
             
-        #dump_csv(engine, table, 'ssh_access')
+        dump_csv(engine, table, 'ssh_access')
         plot_time_access('%s.csv.gz' % table, 'ssh_access')
 
         print(engine.table_names())
