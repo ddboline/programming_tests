@@ -60,7 +60,7 @@ def fill_country_plot(engine):
         table = 'country_count_cloud'
         outfname = 'ssh_intrusion_attempts_cloud.html'
 
-    
+
     with open(outfname, 'w') as output:
         with open('COUNTRY_TEMPLATE.html', 'r') as inpfile:
             for line in inpfile:
@@ -89,7 +89,7 @@ if __name__ == '__main__':
         table = 'ssh_log'
         if HOSTNAME != 'dilepton-tower':
             table = 'ssh_log_cloud'
-            
+
         dump_csv(engine, table, 'ssh_access')
         plot_time_access('%s.csv.gz' % table, 'ssh_access')
 

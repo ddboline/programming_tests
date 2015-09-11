@@ -144,6 +144,8 @@ def dump_csv_to_sql(create_tables=False):
     engine = create_db_engine()
     hostlist = []
     for table, fname in FILE_MAPPING.items():
+        if not os.path.exists(fname):
+            continue
         df_ = pd.read_csv(fname, compression='gzip', na_values=['nan'],
                           keep_default_na=False)
         if create_tables:
@@ -186,6 +188,16 @@ def dump_csv_to_sql(create_tables=False):
         cond = df_['Host'] == host
         if np.sum(cond) > 0:
             cmd = update_table(df_[cond], table)
+            engine.execute(cmd)
+
+    from socket import gethostbyname
+    hosts_to_remove = []
+    for host in ('ddbolineathome.mooo.com', 'ddbolineinthecloud.mooo.com'):
+        hosts_to_remove.extend([host, gethostbyname(host)])
+
+    for host in hosts_to_remove:
+        for table in 'ssh_log', 'ssh_log_cloud', 'apache_log', 'apache_log_cloud':
+            cmd = "delete from %s where host = '%s'" % (table, host)
             engine.execute(cmd)
 
 
