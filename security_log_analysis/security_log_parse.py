@@ -156,6 +156,20 @@ def dump_csv_to_sql(create_tables=False):
     if create_tables:
         return
 
+    for line in engine.execute('select host, code from host_country;'):
+        host, _ = line
+        hostlist.append(host)
+
+    table = 'host_country'
+    fname = FILE_MAPPING[table]
+    df_ = pd.read_csv(fname, compression='gzip')
+    notinlist = set(df_['Host']) ^ set(hostlist)
+    for host in notinlist:
+        cond = df_['Host'] == host
+        if np.sum(cond) > 0:
+            cmd = update_table(df_[cond], table)
+            engine.execute(cmd)
+
     for table in 'ssh_log', 'apache_log':
         maxtimestamp = datetime.datetime(year=1970, month=1, day=1)
         if HOSTNAME != 'dilepton-tower':
@@ -175,20 +189,6 @@ def dump_csv_to_sql(create_tables=False):
             continue
         cmd = update_table(df_[cond], table)
         engine.execute(cmd)
-
-    for line in engine.execute('select host, code from host_country;'):
-        host, _ = line
-        hostlist.append(host)
-
-    table = 'host_country'
-    fname = FILE_MAPPING[table]
-    df_ = pd.read_csv(fname, compression='gzip')
-    notinlist = set(df_['Host']) ^ set(hostlist)
-    for host in notinlist:
-        cond = df_['Host'] == host
-        if np.sum(cond) > 0:
-            cmd = update_table(df_[cond], table)
-            engine.execute(cmd)
 
     from socket import gethostbyname
     hosts_to_remove = []
