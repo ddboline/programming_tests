@@ -96,7 +96,7 @@ if __name__ == '__main__':
         print(engine.table_names())
         fill_country_plot(engine)
         columns = ('date', 'local', 'remote')
-        cmd = "select %s from local_remote_compare" % (', '.join(columns),)
+        cmd = "select %s from local_remote_compare where date >= current_date - interval'5 days'" % (', '.join(columns),)
         import gzip, csv
         with gzip.open('local_remote_compare.csv.gz', 'wb') as csvfile:
             csvwriter = csv.writer(csvfile)
