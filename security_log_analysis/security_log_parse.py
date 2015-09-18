@@ -423,6 +423,8 @@ def get_country_info():
                     output.flush()
                 else:
                     print(host)
+                    output.write('%s,%s\n' % (host, country))
+                    output.flush()
 
 def test_find_originating_country():
     ccode_df = pd.read_csv('country_code_name.csv.gz', compression='gzip')
