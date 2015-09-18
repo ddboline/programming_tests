@@ -54,10 +54,10 @@ def plot_time_access(csvfile, title):
     plt.clf()
 
 def fill_country_plot(engine):
-    table = 'country_count'
+    table = 'country_count_recent'
     outfname = 'ssh_intrusion_attempts.html'
     if HOSTNAME != 'dilepton-tower':
-        table = 'country_count_cloud'
+        table = 'country_count_recent_cloud'
         outfname = 'ssh_intrusion_attempts_cloud.html'
 
 
@@ -96,7 +96,9 @@ if __name__ == '__main__':
         print(engine.table_names())
         fill_country_plot(engine)
         columns = ('date', 'local', 'remote')
-        cmd = "select %s from local_remote_compare where date >= current_date - interval'5 days'" % (', '.join(columns),)
+        cmd = "select %s " % (', '.join(columns),) + \
+              "from local_remote_compare " + \
+              "where date >= current_date - interval'5 days'"
         import gzip, csv
         with gzip.open('local_remote_compare.csv.gz', 'wb') as csvfile:
             csvwriter = csv.writer(csvfile)
