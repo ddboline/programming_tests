@@ -57,7 +57,7 @@ def fill_country_plot(engine):
     table = 'country_count_recent'
     outfname = 'ssh_intrusion_attempts.html'
     if HOSTNAME != 'dilepton-tower':
-        table = 'country_count_recent_cloud'
+        table = 'country_count_cloud_recent'
         outfname = 'ssh_intrusion_attempts_cloud.html'
 
 
