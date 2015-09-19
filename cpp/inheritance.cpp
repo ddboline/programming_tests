@@ -46,5 +46,4 @@ int main(int argc, char ** argv){
     cobj2.member_a_ = 2.4879;
     cobj2.member_b_ = 75;
     cout << cobj2.member_a_ << " " << cobj2.member_b_ << " " << cobj.member_c() << endl;
-    
 }

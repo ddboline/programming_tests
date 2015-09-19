@@ -8,18 +8,10 @@
 #include <thread>
 #include <chrono>
 
-using std::cout;
-using std::endl;
-using std::vector;
-using std::string;
-using std::thread;
-using std::back_inserter;
-using std::list;
-using std::chrono::seconds;
-using std::this_thread::sleep_for;
+using namespace std;
 
 void f(int n) {
-    sleep_for(seconds(n));
+    this_thread::sleep_for(chrono::seconds(n));
     cout << "thread " << n << " ended" << '\n';
 }
  
