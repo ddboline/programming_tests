@@ -12,10 +12,7 @@ using std::endl;
 
 vector<int> selection_sort_vector(const vector<int> & inpvec) {
     int n = inpvec.size();
-    vector<int> outvec(n);
-
-    for(int idx = 0; idx < n; idx++)
-        outvec[idx] = inpvec[idx];
+    vector<int> outvec = inpvec;
 
     for(int idx = 0; idx < n; idx++) {
         int lowindex = idx;
@@ -42,7 +39,7 @@ void print_array(int size, int arr[]){
 }
 
 void print_vector(const vector<int> & vec){
-    for(auto & it: vec)
+    for(auto it: vec)
         cout << " " << it;
     cout << endl;
 }

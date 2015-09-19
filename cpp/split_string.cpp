@@ -9,9 +9,9 @@ using namespace std;
 
 vector<int> string_to_numbers(const vector<string> & output){
     vector<int> numbers;
-    for(auto it=output.begin(); it!=output.end(); ++it){
+    for(auto it : output){
         try {
-            numbers.push_back(stoi(*it));
+            numbers.push_back(stoi(it));
         }
         catch(invalid_argument){
             continue;
@@ -22,8 +22,8 @@ vector<int> string_to_numbers(const vector<string> & output){
 
 int split_string_manual(const string & input, vector<string> & output, const string & delim){
     string current = "";
-    for(auto it=input.begin(); it!=input.end(); ++it){
-        auto chr = (*it);
+    for(auto it : input){
+        auto chr = (it);
         if(chr == delim[0]){
             output.push_back(current);
             current = "";
@@ -42,8 +42,8 @@ int split_string_boost(const string & input, vector<string> & output, const stri
 
 void print_strings(vector<string> & input){
     vector<int> numbers = string_to_numbers(input);
-    for(auto it=numbers.begin(); it!=numbers.end(); ++it)
-        cout << (*it) << " ";
+    for(auto it : numbers)
+        cout << it << " ";
     cout << endl;
 }
 
