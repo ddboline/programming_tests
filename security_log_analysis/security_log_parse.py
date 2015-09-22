@@ -297,8 +297,6 @@ def find_originating_country(hostname, country_code_list=None, orig_host=None):
 
     if country:
         result += country
-    else:
-        return country
 
     return country
 
@@ -410,9 +408,8 @@ def get_country_info():
                 country = find_originating_country(host,
                                                    country_code_list
                                                    =country_list)
-                if country:
-                    pass
-                elif isinstance(host, str) or isinstance(host, unicode):
+                if not country and any(isinstance(host, x)
+                                       for x in (str, unicode)):
                     if host[-3] == '.':
                         if host[-2:].upper() in list(ccode_df['Code']):
                             country = host[-2:].upper()
