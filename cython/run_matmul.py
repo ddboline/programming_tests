@@ -13,15 +13,16 @@ import matmul3
 import os
 import time
 
+
 def run_matmul():
     x = int(os.sys.argv[1])
     y = int(os.sys.argv[2])
     z = int(os.sys.argv[3])
 
     ts = []
-    a = np.random.random_sample((x,y))
+    a = np.random.random_sample((x, y))
     b = np.random.random_sample((y, z))
-    cs = [np.zeros((x,z)) for i in range(3)]
+    cs = [np.zeros((x, z)) for i in range(3)]
 
     ts.append(time.clock())
     cs[0] = matmul1.matmul1(a, b)
