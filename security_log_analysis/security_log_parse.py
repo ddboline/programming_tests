@@ -19,6 +19,9 @@ import os, csv, gzip
 import pandas as pd
 import numpy as np
 
+#from db_tables import (HostCountry, CountryCode, ApacheLog, ApacheLogCloud,
+#                       SSHLog, SSHLogCloud)
+
 from util import (dateTimeString, OpenPostgreSQLsshTunnel, HOSTNAME,
                   create_db_engine)
 
