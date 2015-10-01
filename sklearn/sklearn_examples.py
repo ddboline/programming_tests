@@ -43,7 +43,7 @@ def digits_example():
     N = digits.target.size
 
     for kern in ['linear', 'poly', 'rbf']:
-        svc = svm.SVC(kernel=kern)
+        svc = svm.SVC(kernel=str(kern))
         print(svc.fit(data[perm][:int(N*0.9)],
                       digits.target[perm][:int(N*0.9)]))
         print(svc.score(data[perm][int(N*0.9):],
