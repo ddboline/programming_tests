@@ -28,11 +28,6 @@ def read_stock_url(symbol):
                 return symbol, price
     return symbol, -1
 
-def read_stock_url_thread(symbol, price_q):
-    sym, price = read_stock_url(symbol)
-    price_q.put((sym, price))
-    return
-
 def run_stock_parser():
     stock_symbols = []
     with open('symbols.txt','r') as symfile:
