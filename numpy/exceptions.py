@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os
 import numpy as np
+
 
 def exception_example():
     while True:
@@ -16,6 +16,8 @@ def exception_example():
             pass
         finally:
             pass
+        return x
+
 
 def print_sorted(collection):
     try:
@@ -24,10 +26,12 @@ def print_sorted(collection):
         pass
     print(collection)
 
+
 def run_print_sorted():
     print_sorted(list(np.random.uniform(0., 1., 100)))
 
     print_sorted([a for a in 'powqeoposdj'])
+
 
 def filter_name(name):
     print(name)
@@ -40,10 +44,12 @@ def filter_name(name):
             #raise e
     return name
 
+
 def run_filter():
     filter_name(u'Gaël')
 
     filter_name(u'Stéfan')
+
 
 def achilles_arrow(x):
     if abs(x - 1) < 1e-3:
