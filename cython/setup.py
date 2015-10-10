@@ -10,6 +10,8 @@ PY23 = 'python%d.%d' % (sys.version_info[0:2])
 INCDIR = '/usr/lib/%s/numpy' % PY23
 if not os.path.exists(INCDIR):
     INCDIR = '/usr/lib/%s/dist-packages/numpy/core/include' % PY23
+if not os.path.exists(INCDIR):
+    INCDIR = '/opt/conda/lib/%s/site-packages/numpy/core/include' % PY23
 
 extensions = [
     Extension("matmul2", ["matmul2.pyx"], 
