@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for DIR in cython;
+for DIR in scipy cython;
 do
     cd $DIR
     sh setup_conda.sh
