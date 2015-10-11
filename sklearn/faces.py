@@ -19,7 +19,7 @@ from sklearn import cross_validation, datasets, decomposition, svm
 # .. load data ..
 lfw_people = datasets.fetch_lfw_people(min_faces_per_person=70, resize=0.4)
 faces = np.reshape(lfw_people.data, (lfw_people.target.shape[0], -1))
-train, test = iter(cross_validation.StratifiedKFold(lfw_people.target, n_folds=4)).next()
+train, test = [[y for y in x] for x in cross_validation.StratifiedKFold(lfw_people.target, n_folds=4)][0]
 X_train, X_test = faces[train], faces[test]
 y_train, y_test = lfw_people.target[train], lfw_people.target[test]
 
