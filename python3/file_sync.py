@@ -113,7 +113,7 @@ def read_config_file():
 def file_sync():
     return
 
-def run_tests():
+def main():
     script_path = '/'.join(os.path.abspath(os.sys.argv[0]).split('/')[:-1])
     testfname = '%s/file_sync.py' % script_path
     finfo = FileInfo(testfname)
@@ -132,4 +132,4 @@ def run_tests():
     print(conf_obj, type(conf_obj))
 
 if __name__ == '__main__':
-    run_tests()
+    main()
