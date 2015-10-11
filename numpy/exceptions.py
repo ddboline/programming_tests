@@ -36,7 +36,7 @@ def run_print_sorted():
 def filter_name(name):
     try:
         name = name.encode('ascii')
-    except UnicodeError as e:
+    except UnicodeEncodeError as e:
         if name == 'Gaël':
             print('OK, Gaël')
         else:
