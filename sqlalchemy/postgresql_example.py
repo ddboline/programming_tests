@@ -24,7 +24,7 @@ ORDER BY 1,2;
 '''
 
 def postgresql_example(port=5432):
-    engine = create_engine('postgresql://%s:BQGIvkKFZPejrKvX@localhost:%d/mydb' % (USER, port))
+    engine = create_engine('postgresql://ddboline:BQGIvkKFZPejrKvX@localhost:%d/mydb' % port)
     con = engine.connect()
 
     result = con.execute(postgresql_list_tables)

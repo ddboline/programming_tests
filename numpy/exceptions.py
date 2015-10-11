@@ -34,14 +34,13 @@ def run_print_sorted():
 
 
 def filter_name(name):
-    print(name)
-    #try:
-        #name = name.encode('ascii')
-    #except UnicodeError as e:
-        #if name == 'Gaël':
-            #print('OK, Gaël')
-        #else:
-            #raise e
+    try:
+        name = name.encode('ascii')
+    except UnicodeError as e:
+        if name == 'Gaël':
+            print('OK, Gaël')
+        else:
+            raise e
     return name
 
 
