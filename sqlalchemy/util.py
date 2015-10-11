@@ -91,6 +91,7 @@ class OpenPostgreSQLsshTunnel(object):
 
     def __enter__(self):
         if HOSTNAME != 'dilepton-tower':
+            import shlex
             self.postgre_port = 5437
             _cmd = 'ssh -N -L localhost:%d' % self.postgre_port + \
                    ':localhost:5432 ddboline@ddbolineathome.mooo.com'
