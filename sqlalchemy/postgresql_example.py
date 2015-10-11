@@ -23,8 +23,8 @@ WHERE c.relkind IN ('r','')
 ORDER BY 1,2;
 '''
 
-def postgresql_example():
-    engine = create_engine('postgresql://%s:BQGIvkKFZPejrKvX@localhost/mydb' % USER)
+def postgresql_example(port=5432):
+    engine = create_engine('postgresql://%s:BQGIvkKFZPejrKvX@localhost:%d/mydb' % (USER, port))
     con = engine.connect()
 
     result = con.execute(postgresql_list_tables)
@@ -72,8 +72,8 @@ def postgresql_example():
 
 def test_postgresql_example():
     from util import get_md5
-    with OpenPostgreSQLsshTunnel():
-        postgresql_example()
+    with OpenPostgreSQLsshTunnel() as pport:
+        postgresql_example(port=pport)
     
     csv_md5 = {'booking.csv': '90fd6d84b6234ff73acc5208995cf85e',
                'contact.csv': 'b1d0f7c24d7ac5dfd70668c17c5e559d',
@@ -88,5 +88,6 @@ def test_postgresql_example():
 
 
 if __name__ == '__main__':
-    postgresql_example()
+    with OpenPostgreSQLsshTunnel() as pport:
+        postgresql_example(port=pport)
     #postgresql_example_test()
