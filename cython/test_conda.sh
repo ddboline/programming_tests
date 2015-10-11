@@ -1,6 +1,7 @@
 #!/bin/bash
 
 make
+make python3
 echo "Basel"
 python3 ./run_basel.py
 echo "Chudnovsky"
