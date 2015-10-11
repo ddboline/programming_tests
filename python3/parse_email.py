@@ -100,10 +100,10 @@ def parse_mbox(fname):
         gloutf.write('%s\n' % '\n'.join('%s %d' % (k, i) for k, i in sorted(gmail_labels.items())))
     with open('email_addresses.txt', 'w') as eaoutf:
         eaoutf.write('%s\n' % '\n'.join('%s %d' % (k, i) for k, i in sorted(email_addresses.items())))
-    print 'labels:', len(labels)
-    print 'gmail_labels:', len(gmail_labels)
-    print 'email_addresses:', len(email_addresses)
-    print 'Nemails:', number_of_emails
+    print('labels:', len(labels))
+    print('gmail_labels:', len(gmail_labels))
+    print('email_addresses:', len(email_addresses))
+    print('Nemails:', number_of_emails)
 
 if __name__ == '__main__':
     fname = os.sys.argv[1]
