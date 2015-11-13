@@ -16,6 +16,7 @@ except AttributeError:
     pass
 monkey_patch()
 
+
 def read_stock_url(symbol):
     urlname = 'http://finance.yahoo.com/q?s=' + symbol.lower() + \
               '&ql=0'
@@ -23,14 +24,15 @@ def read_stock_url(symbol):
         for line in url_.iter_lines():
             line = line.decode(errors='ignore')
             if 'yfs_l84_%s' % symbol.lower() in line:
-                price = float(line.split('yfs_l84_%s\">' % symbol.lower())[1]\
-                                  .split('</')[0].replace(',',''))
+                price = float(line.split('yfs_l84_%s\">' % symbol.lower())[1]
+                                  .split('</')[0].replace(',', ''))
                 return symbol, price
     return symbol, -1
 
+
 def run_stock_parser():
     stock_symbols = []
-    with open('symbols.txt','r') as symfile:
+    with open('symbols.txt', 'r') as symfile:
         for n, line in enumerate(symfile):
             sym = line.strip()
             if sym:
