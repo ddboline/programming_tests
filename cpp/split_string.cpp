@@ -20,7 +20,8 @@ vector<int> string_to_numbers(const vector<string> & output){
     return numbers;
 }
 
-int split_string_manual(const string & input, vector<string> & output, const string & delim){
+vector<string> split_string_manual(const string & input, const string & delim){
+    vector<string> output;
     string current = "";
     for(auto it : input){
         auto chr = (it);
@@ -32,12 +33,13 @@ int split_string_manual(const string & input, vector<string> & output, const str
             current += chr;
     }
     output.push_back(current);
-    return 0;
+    return output;
 }
 
-int split_string_boost(const string & input, vector<string> & output, const string & delim){
+vector<string> split_string_boost(const string & input, const string & delim){
+    vector<string> output;
     boost::algorithm::split(output, input, boost::is_any_of(","));
-    return 0;
+    return output;
 }
 
 void print_strings(vector<string> & input){
@@ -50,17 +52,15 @@ void print_strings(vector<string> & input){
 int main(int argc, char ** argv){
     string delim = ",";
     string input = "0,1234,5,1234";
-    vector<string> output;
-    split_string_manual(input, output, delim);
+    vector<string> output = split_string_manual(input, delim);
     print_strings(output);
-    output.resize(0);
-    split_string_boost(input, output, delim);
+
+    output = split_string_boost(input, delim);
     print_strings(output);
 
     for(int i=1; i<argc; i++){
         string input(argv[i]);
-        output.resize(0);
-        split_string_manual(input, output, delim);
+        output = split_string_manual(input, delim);
         print_strings(output);
     }
     
