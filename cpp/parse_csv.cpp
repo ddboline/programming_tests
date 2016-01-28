@@ -10,12 +10,10 @@ vector<string> split(const string & input, string delim=","){
     int begin_pos = 0;
     while(true){
         int new_pos = input.find(delim, begin_pos);
-//         cout << input << " new_pos " << new_pos << " " << delim << " " << begin_pos << endl;
         int end_pos = new_pos;
         if(new_pos == -1)
             end_pos = input.size();
         auto sstr = input.substr(begin_pos, end_pos);
-//         printf("begin_pos %lu end_pos %lu sstr %s\n", begin_pos, end_pos, sstr.data());
         output.push_back(sstr);
         begin_pos = end_pos + 1;
         if(new_pos == -1)
