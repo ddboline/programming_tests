@@ -4,6 +4,7 @@ DATABASES="
 florida_doc_inmate_info
 garmin_summary
 lahman2014
+movie_queue
 mydb
 podcatch
 postgres
