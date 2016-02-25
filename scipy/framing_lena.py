@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from scipy import misc
 
 def framing_lena():
-    lena = misc.lena()
+    lena = misc.face()
     plt.imshow(lena, cmap=plt.cm.gray)
     plt.savefig('lena.png')
 
