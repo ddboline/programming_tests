@@ -9,6 +9,7 @@ mydb
 podcatch
 postgres
 quassel
+recipes
 ssh_intrusion_logs
 texas_high_value_datasets
 "
