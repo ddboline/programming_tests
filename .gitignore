@@ -11,3 +11,7 @@
 *.mbox
 *.db
 *.gz
+*.mps
+*.lp
+*.ilp
+*.sol
