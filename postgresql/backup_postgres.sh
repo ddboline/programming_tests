@@ -17,5 +17,5 @@ texas_high_value_datasets
 for DB in $DATABASES;
 do
     echo $DB
-    pg_dump ${DB} | gzip > ${DB}.sql.gz
+    sudo -u postgres pg_dump ${DB} | gzip > ${DB}.sql.gz
 done
