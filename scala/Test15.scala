@@ -7,12 +7,10 @@ object Test15 {
             println(matchTest(x))
         }
     }
-    def matchTest(x: Any) {
-        x match {
-            case 1 => "one"
-            case "two" => 2
-            case y: Int => "scala.Int"
-            case _ => "many"
-        }
+    def matchTest(x: Any) : Any = x match {
+        case 1 => "one"
+        case "two" => 2
+        case y: Int => "scala.Int"
+        case _ => "many"
     }
 }
