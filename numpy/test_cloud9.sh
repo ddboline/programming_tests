@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# ./basemap_test.py
+./basemap_test.py
 ./array_manipulations_exercise.py
 ./array_shape_test.py
 ./broadcasting_test.py
