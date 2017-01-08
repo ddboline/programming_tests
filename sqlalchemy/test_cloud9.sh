@@ -1,7 +1,7 @@
 #!/bin/bash
 
 rm test.db
-nosetests postgresql_example.py util.py
+py.test postgresql_example.py util.py
 ./sqlite_test.py
 ./sqlite_example.py
 
