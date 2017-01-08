@@ -7,6 +7,7 @@ import matplotlib
 matplotlib.use('Agg')
 import pylab as pl
 
+pl.clf()
 # Create a new figure of size 8x6 points, using 100 dots per inch
 pl.figure(figsize=(8, 6), dpi=100)
 
@@ -27,9 +28,6 @@ pl.xlim(X.min()*1.1, X.max()*1.1)
 
 # Set y limits
 pl.ylim(C.min()*1.1, C.max()*1.1)
-
-# Show result on screen
-# pl.show()
 
 ax = pl.gca()  # gca stands for 'get current axis'
 ax.spines['right'].set_color('none')
@@ -68,7 +66,5 @@ pl.annotate(r'$cos(\frac{2\pi}{3})=-\frac{1}{2}$',
 for label in ax.get_xticklabels() + ax.get_yticklabels():
     label.set_fontsize(16)
     label.set_bbox(dict(facecolor='white', edgecolor='None', alpha=0.65))
-
-pl.show()
 
 pl.savefig('plot_test.png')

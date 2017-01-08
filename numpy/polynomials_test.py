@@ -19,6 +19,7 @@ def first():
     print(cov)
     p = np.poly1d(pfit)
     t = np.linspace(0, 1, 200)
+    plt.clf()
     plt.plot(x, y, 'o', t, p(t), '-')
     plt.savefig('polynomials_test.png')
 
@@ -33,6 +34,7 @@ def third():
     y = np.cos(x) + 0.3*np.random.rand(2000)
     p = np.polynomial.Chebyshev.fit(x, y, 10)
     t = np.linspace(-1, 1, 200)
+    plt.clf()
     plt.plot(x, y, 'r.')
     plt.plot(t, p(t), 'k-', lw=3)
     plt.savefig('Chebyschev.png')

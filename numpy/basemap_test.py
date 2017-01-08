@@ -12,7 +12,7 @@ from mpl_toolkits.basemap import Basemap
 # of the map.
 # lat_ts is the latitude of true scale.
 # resolution = 'c' means use crude resolution coastlines.
-
+pl.clf()
 m = Basemap(projection='merc', llcrnrlat=-80, urcrnrlat=80, \
             llcrnrlon=-180, urcrnrlon=180, lat_ts=20, resolution='c')
 m.drawcoastlines()

@@ -19,6 +19,7 @@ def second_test():
     print(x, y)
     distance = np.sqrt(x ** 2 + y ** 2)
     print(distance)
+    plt.clf()
     plt.pcolor(distance)
     plt.colorbar()
     plt.savefig('mbroadcast.png', format='png')

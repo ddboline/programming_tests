@@ -19,6 +19,7 @@ def random_walk():
     mean_sq_distance = np.mean(sq_distance, axis=0)
 
     # plt.figure(figsize=(4, 3))
+    plt.clf()
     plt.plot(t, np.sqrt(mean_sq_distance), 'g.', t, np.sqrt(t), 'y-')
     plt.xlabel(r"$t$")
     plt.ylabel(r"$\sqrt{\langle (\delta x)^2 \rangle}$")

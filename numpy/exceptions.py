@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 import numpy as np
 
 
@@ -46,8 +47,10 @@ def filter_name(name):
 
 def run_filter():
     filter_name(u'Gaël')
-
-    filter_name(u'Stéfan')
+    try:
+        filter_name(u'Stéfan')
+    except UnicodeEncodeError as exc:
+        print(exc)
 
 
 def achilles_arrow(x):
@@ -56,15 +59,16 @@ def achilles_arrow(x):
     x = 1 - (1 - x)/2.
     return x
 
-x = 0
 
-while True:
-    try:
-        x = achilles_arrow(x)
-    except StopIteration:
-        break
+if __name__ == '__main__':
+    x = 0
+    while True:
+        try:
+            x = achilles_arrow(x)
+        except StopIteration:
+            break
 
-print(x)
-#exception_example()
-run_filter()
-run_print_sorted()
+    print(x)
+    #exception_example()
+    run_filter()
+    run_print_sorted()

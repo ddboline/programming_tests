@@ -18,6 +18,7 @@ def random_walk():
     sq_distance = positions**2
     mean_sq_distance = np.mean(sq_distance, axis=0)
 
+    plt.clf()
     plt.figure(figsize=(4, 3))
     plt.plot(t, np.sqrt(mean_sq_distance), 'g.', t, np.sqrt(t), 'y-')
     plt.xlabel(r"$t$")
