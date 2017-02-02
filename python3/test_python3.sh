@@ -1,6 +1,6 @@
 #!/bin/bash
 
-py.test unittests.py analyze_gmail.py file_sync.py exversion.py parse_email.py util.py
+py.test3 unittests.py analyze_gmail.py file_sync.py exversion.py parse_email.py util.py
 
 ./analyze_gmail.py temp.mbox
 ./default_dict_tree.py
