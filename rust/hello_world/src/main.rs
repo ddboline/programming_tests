@@ -102,4 +102,31 @@ fn main() {
     let point = Point { x: 5, y: Cell::new(6) };
     point.y.set(7);
     println!("x: {}, y: {:?}", point.x, point.y);
+    
+    struct Circle {
+        x: f64,
+        y: f64,
+        radius: f64,
+    }
+    
+    impl Circle {
+        fn area(&self) -> f64 {
+            std::f64::consts::PI * (self.radius * self.radius)
+        }
+        
+        fn grow(&self, increment: f64) -> Circle {
+            Circle { x: self.x, y: self.y, radius: self.radius + increment }
+        }
+        
+        fn new(x: f64, y: f64, radius: f64) -> Circle {
+            Circle {
+                x: x, y: y, radius: radius,
+            }
+        }
+    }
+    
+    let c = Circle { x: 0.0, y: 0.0, radius: 2.0 };
+    println!("{}", c.area());
+    let d = c.grow(2.0).area();
+    println!("{}", d);
 }
