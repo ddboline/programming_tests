@@ -13,7 +13,7 @@ fn take(v: Vec<i32>) -> Vec<i32> {
     v
 }
 
-fn join_int_list(l: &Vec<i32>) -> String {
+fn join_vector<T: ToString>(l: &Vec<T>) -> String {
     let _tmp: Vec<String> = l.iter().map(|x| x.to_string()).collect();
     _tmp.join(",")
 }
@@ -76,10 +76,10 @@ fn main() {
     let x = vec![0; 20];
     println!("val0 {:?}", x);
     
-    println!("val1 {}", join_int_list(&a));
+    println!("val1 {}", join_vector(&a));
     
     let b = take(a);
-    println!("val2 {}", join_int_list(&b));
+    println!("val2 {}", join_vector(&b));
     
     let mut x = 5;
     {
@@ -129,4 +129,11 @@ fn main() {
     println!("{}", c.area());
     let d = c.grow(2.0).area();
     println!("{}", d);
+    
+    let values = vec![1, 2, 3, 4];
+    for x in &values {
+        println!("{}", x);
+    }
+    let y = values;
+    println!("{}", join_vector(&y));
 }
