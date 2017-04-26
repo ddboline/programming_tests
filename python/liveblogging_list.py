@@ -12,8 +12,7 @@ from urllib2 import urlopen
 import lxml.etree
 
 if __name__ == '__main__':
-    urlout = urlopen(
-        'http://www.bradford-delong.com/liveblogging-world-war-ii/atom.xml')
+    urlout = urlopen('http://www.bradford-delong.com/liveblogging-world-war-ii/atom.xml')
     current_title = None
     link_dict = {}
     for line in lxml.etree.parse(urlout).iter():
@@ -21,8 +20,8 @@ if __name__ == '__main__':
                 line.text.lower():
             current_title = line.text
         if 'link' in line.tag:
-            _dict = {k: v for (k,v) in line.items()}
-            if current_title:            
+            _dict = {k: v for (k, v) in line.items()}
+            if current_title:
                 link_dict[current_title] = _dict['href']
 
     for key, val in link_dict.items():

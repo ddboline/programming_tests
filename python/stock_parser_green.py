@@ -9,14 +9,17 @@ from multiprocessing import cpu_count
 from eventlet import spawn, Queue
 from eventlet import monkey_patch
 from contextlib import closing
+
+monkey_patch()
+
 import requests
 try:
     requests.packages.urllib3.disable_warnings()
 except AttributeError:
     pass
-monkey_patch()
 
 _sentinel = object()
+
 
 def read_stock_url(symbol):
     urlname = 'http://finance.yahoo.com/q?s=' + symbol.lower() + \
@@ -30,6 +33,7 @@ def read_stock_url(symbol):
                 return price
     return -1
 
+
 def read_stock_worker(symbol_q, price_q):
     for symbol in iter(symbol_q.get, _sentinel):
         price = read_stock_url(symbol)
@@ -37,6 +41,7 @@ def read_stock_worker(symbol_q, price_q):
             price_q.put((symbol.upper(), price))
     symbol_q.put(_sentinel)
     return True
+
 
 def write_output_file(price_q):
     with open('stock_prices.csv', 'w') as outfile:
@@ -47,12 +52,13 @@ def write_output_file(price_q):
             outfile.flush()
     return True
 
+
 def run_stock_parser():
     symbol_q = Queue()
     price_q = Queue()
-    
+
     stock_symbols = []
-    with open('symbols.txt','r') as symfile:
+    with open('symbols.txt', 'r') as symfile:
         for n, line in enumerate(symfile):
             sym = line.strip()
             if sym:
@@ -60,8 +66,7 @@ def run_stock_parser():
 
     ncpu = cpu_count()
 
-    pool = [spawn(read_stock_worker, symbol_q, price_q)
-                                    for _ in range(ncpu*2)]
+    pool = [spawn(read_stock_worker, symbol_q, price_q) for _ in range(ncpu * 2)]
     output = spawn(write_output_file, price_q)
 
     for symbol in stock_symbols:
@@ -71,6 +76,7 @@ def run_stock_parser():
         p.wait()
     price_q.put(_sentinel)
     output.wait()
+
 
 if __name__ == '__main__':
     run_stock_parser()

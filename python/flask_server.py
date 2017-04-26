@@ -5,8 +5,7 @@ Created on Fri Oct 30 16:37:10 2015
 
 @author: ddboline
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import (absolute_import, division, print_function, unicode_literals)
 
 import eventlet
 from flask import Flask, jsonify
@@ -40,6 +39,7 @@ class Error(Exception):
 
 
 class BadInputs(Error):
+
     def __init__(self, message, payload=None):
         Error.__init__(self, message, 400, payload)
 
@@ -58,6 +58,7 @@ def handle_bad_inputs(error):
 
 
 class Internal(Error):
+
     def __init__(self, message, payload=None):
         Error.__init__(self, message, 500, payload)
 

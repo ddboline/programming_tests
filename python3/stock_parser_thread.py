@@ -8,6 +8,7 @@ import requests
 
 _sentinel = object()
 
+
 def read_stock_url(symbol):
     urlname = 'http://finance.yahoo.com/q?s=' + symbol.lower() + \
               '&ql=0'
@@ -20,6 +21,7 @@ def read_stock_url(symbol):
                 return price
     return -1
 
+
 def read_stock_worker(symbol_q, price_q):
     for symbol in iter(symbol_q.get, _sentinel):
         price = read_stock_url(symbol)
@@ -27,6 +29,7 @@ def read_stock_worker(symbol_q, price_q):
             price_q.put((symbol.upper(), price))
     symbol_q.put(_sentinel)
     return True
+
 
 def write_output_file(price_q):
     with open('stock_prices.csv', 'w') as outfile:
@@ -39,12 +42,13 @@ def write_output_file(price_q):
             outfile.flush()
     return True
 
+
 def run_stock_parser():
     symbol_q = Queue()
     price_q = Queue()
-    
+
     stock_symbols = []
-    with open('symbols.txt','r') as symfile:
+    with open('symbols.txt', 'r') as symfile:
         for n, line in enumerate(symfile):
             sym = line.strip()
             if sym:
@@ -53,12 +57,11 @@ def run_stock_parser():
     ncpu = len([x for x in open('/proc/cpuinfo').read().split('\n')\
                 if x.find('processor') == 0])
 
-    pool = [Thread(target=read_stock_worker,
-                    args=(symbol_q, price_q,)) for _ in range(ncpu*4)]
+    pool = [Thread(target=read_stock_worker, args=(symbol_q, price_q, )) for _ in range(ncpu * 4)]
 
     for p in pool:
         p.start()
-    output = Thread(target=write_output_file, args=(price_q,))
+    output = Thread(target=write_output_file, args=(price_q, ))
     output.start()
 
     for symbol in stock_symbols:
@@ -68,6 +71,7 @@ def run_stock_parser():
         p.join()
     price_q.put(_sentinel)
     output.join()
+
 
 if __name__ == '__main__':
     run_stock_parser()

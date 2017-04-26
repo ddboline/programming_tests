@@ -1,14 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import (absolute_import, division, print_function, unicode_literals)
 
 from multiprocessing import cpu_count
 from eventlet import monkey_patch
 from eventlet.greenpool import GreenPool
 from contextlib import closing
+
+monkey_patch()
+
 import requests
 try:
     requests.packages.urllib3.disable_warnings()
@@ -24,8 +24,8 @@ def read_stock_url(symbol):
         for line in url_.iter_lines():
             line = line.decode(errors='ignore')
             if 'yfs_l84_%s' % symbol.lower() in line:
-                price = float(line.split('yfs_l84_%s\">' % symbol.lower())[1]
-                                  .split('</')[0].replace(',', ''))
+                price = line.split('yfs_l84_%s\">' % symbol.lower())[1]
+                price = float(price.split('</')[0].replace(',', ''))
                 return symbol, price
     return symbol, -1
 
@@ -40,7 +40,7 @@ def run_stock_parser():
 
     ncpu = cpu_count()
 
-    pool = GreenPool(ncpu*4)
+    pool = GreenPool(ncpu * 4)
 
     stock_prices = []
     for symbol, price in pool.imap(read_stock_url, stock_symbols):
@@ -50,6 +50,7 @@ def run_stock_parser():
         outfile.write('Stock,Price\n')
         for symbol, price in stock_prices:
             outfile.write('%s,%s\n' % (symbol, price))
+
 
 if __name__ == '__main__':
     run_stock_parser()

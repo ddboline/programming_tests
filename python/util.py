@@ -15,11 +15,11 @@ HOMEDIR = os.getenv('HOME')
 
 class PopenWrapperClass(object):
     """ context wrapper around subprocess.Popen """
+
     def __init__(self, command):
         """ init fn """
         self.command = command
-        self.pop_ = Popen(self.command, shell=True, stdout=PIPE,
-                          close_fds=True)
+        self.pop_ = Popen(self.command, shell=True, stdout=PIPE, close_fds=True)
 
     def __enter__(self):
         """ enter fn """
@@ -38,8 +38,7 @@ class PopenWrapperClass(object):
                 return True
 
 
-def run_command(command, do_popen=False, turn_on_commands=True,
-                single_line=False):
+def run_command(command, do_popen=False, turn_on_commands=True, single_line=False):
     """ wrapper around os.system """
     if not turn_on_commands:
         print(command)
@@ -124,6 +123,7 @@ def dump_to_file(url_, outfile_):
 
 class OpenUnixSocketServer(object):
     """ context wrapper around unix socket """
+
     def __init__(self, socketfile):
         """ init fn """
         self.sock = None
@@ -152,6 +152,7 @@ class OpenUnixSocketServer(object):
 
 class OpenSocketConnection(object):
     """ context wrapper around socket connection """
+
     def __init__(self, sock):
         """ init fn """
         self.sock = sock
@@ -182,6 +183,7 @@ def walk_wrapper(direc, callback, arg):
 
 class OpenPostgreSQLsshTunnel(object):
     """ Class to let us open an ssh tunnel, then close it when done """
+
     def __init__(self, port=5432):
         self.tunnel_process = 0
         self.postgre_port = 5432
@@ -212,6 +214,5 @@ def test_datetimefromstring():
     import datetime
     from pytz import UTC
     dt0 = '1980-11-17T05:12:13Z'
-    dt1 = datetime.datetime(year=1980, month=11, day=17, hour=5, minute=12,
-                            second=13, tzinfo=UTC)
+    dt1 = datetime.datetime(year=1980, month=11, day=17, hour=5, minute=12, second=13, tzinfo=UTC)
     assert datetimefromstring(dt0) == dt1

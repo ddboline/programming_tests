@@ -12,6 +12,7 @@ email_labels = ['CC', 'From', 'To']
 gmail_labels = {}
 email_addresses = {}
 
+
 def parse_header(lines):
     output = []
     header_entries = {}
@@ -53,6 +54,7 @@ def parse_header(lines):
                 email_addresses[em] += 1
     return output
 
+
 def parse_email(lines):
     output = []
     header_lines = []
@@ -62,8 +64,7 @@ def parse_email(lines):
             for b in body_lines.keys():
                 if '%s--' % b in line:
                     bl = body_lines.pop(b)
-                    output.append('body: %s %s' % (b, ' '.join([
-                                                '%s' % len(l) for l in bl])))
+                    output.append('body: %s %s' % (b, ' '.join(['%s' % len(l) for l in bl])))
                 elif b in line:
                     body_lines[b].append([])
                 elif body_lines[b]:
@@ -72,12 +73,13 @@ def parse_email(lines):
             header_lines.append(line)
 
         if 'boundary=' in line:
-            b = line.split('boundary=')[-1].replace('"','')
+            b = line.split('boundary=')[-1].replace('"', '')
             body_lines[b] = []
 
     output.append('header: %s' % len(header_lines))
     output.extend(parse_header(header_lines))
     return output
+
 
 def parse_mbox(fname):
     ''' parse mbox file '''
@@ -95,7 +97,7 @@ def parse_mbox(fname):
                     if number_of_emails > 100000:
                         break
                 email_lines = []
-            email_lines.append(line.replace('\r\n','').replace('\n',''))
+            email_lines.append(line.replace('\r\n', '').replace('\n', ''))
         if email_lines:
             output.extend(parse_email(email_lines))
             number_of_emails += 1
@@ -105,20 +107,23 @@ def parse_mbox(fname):
     with open('gmail_labels.txt', 'w') as gloutf:
         gloutf.write('%s\n' % '\n'.join('%s %d' % (k, i) for k, i in sorted(gmail_labels.items())))
     with open('email_addresses.txt', 'w') as eaoutf:
-        eaoutf.write('%s\n' % '\n'.join('%s %d' % (k, i) for k, i in sorted(email_addresses.items())))
+        eaoutf.write('%s\n' % '\n'.join('%s %d' % (k, i)
+                                        for k, i in sorted(email_addresses.items())))
     output.append('labels: %s' % len(labels))
     output.append('gmail_labels: %s' % len(gmail_labels))
     output.append('email_addresses: %s' % len(email_addresses))
     output.append('Nemails: %s' % number_of_emails)
     return '\n'.join(output)
 
+
 def test_parse_mbox():
     import hashlib
-    
+
     output = parse_mbox('temp.mbox')
     mstr = hashlib.md5()
     mstr.update(output)
     assert mstr.hexdigest() == 'd94be7bf5097c93e22bb58dccb3e0d37'
+
 
 if __name__ == '__main__':
     fname = os.sys.argv[1]

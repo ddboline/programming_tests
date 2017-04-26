@@ -8,6 +8,7 @@ from __future__ import unicode_literals
 from contextlib import closing
 import requests
 
+
 def read_stock_url(symbol):
     urlname = 'http://finance.yahoo.com/q?s=' + symbol.lower() + \
               '&ql=0'
@@ -20,9 +21,10 @@ def read_stock_url(symbol):
                 return symbol, price
     return symbol, -1
 
+
 def run_stock_parser():
     stock_symbols = []
-    with open('symbols.txt','r') as symfile:
+    with open('symbols.txt', 'r') as symfile:
         for n, line in enumerate(symfile):
             sym = line.strip()
             if sym:
@@ -32,6 +34,7 @@ def run_stock_parser():
         outfile.write('Stock,Price\n')
         for symbol, price in map(read_stock_url, stock_symbols):
             outfile.write('%s,%s\n' % (symbol, price))
+
 
 if __name__ == '__main__':
     run_stock_parser()

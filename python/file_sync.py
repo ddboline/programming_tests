@@ -20,13 +20,15 @@ import json
 
 hostname = os.uname()[1]
 
+
 class FileInfo(object):
     ''' file info class '''
     __slots__ = ['fullfilename', 'hostname', 'md5sum', 'filestat']
 
     finf_attrs = (__slots__)
-    stat_attrs = ('st_atime', 'st_blksize', 'st_blocks', 'st_ctime', 'st_dev', 'st_gid', 'st_ino', 'st_mode', 'st_mtime', 'st_nlink', 'st_rdev', 'st_size', 'st_uid')
-    
+    stat_attrs = ('st_atime', 'st_blksize', 'st_blocks', 'st_ctime', 'st_dev', 'st_gid', 'st_ino',
+                  'st_mode', 'st_mtime', 'st_nlink', 'st_rdev', 'st_size', 'st_uid')
+
     def __init__(self, fn='', hn=hostname, md5='', fs=None):
         self.fullfilename = fn.encode(errors='ignore')
         self.hostname = hn
@@ -41,8 +43,8 @@ class FileInfo(object):
             self.filestat = {attr: getattr(_fstat, attr) for attr in self.stat_attrs}
 
     def __repr__(self):
-        return '<FileInfo(fn=%s, hs=%s, md5=%s, size=%s>' % (self.fullfilename,
-                                                             self.hostname, self.md5sum, self.filestat.st_size)
+        return '<FileInfo(fn=%s, hs=%s, md5=%s, size=%s>' % (self.fullfilename, self.hostname,
+                                                             self.md5sum, self.filestat.st_size)
 
     def get_md5_full(self, fname):
         if not os.path.exists(fname):
@@ -53,8 +55,9 @@ class FileInfo(object):
                 m.update(line)
         return m.hexdigest()
 
+
 class FileList(object):
-    
+
     def __init__(self, basepath='', subdirectories=[]):
         self.pfilename = '%s/.file_sync_%s.pkl.gz' % (os.getenv('HOME'), hostname)
         if basepath:
@@ -66,10 +69,10 @@ class FileList(object):
         else:
             self.subdirs = [self.basepath]
         self.filelist_dict = {}
-        
+
     def remove_persistence_file(self):
         os.remove(self.pfilename)
-        
+
     def read_persistence_file(self):
         if not os.path.exists(self.pfilename):
             return
@@ -77,7 +80,7 @@ class FileList(object):
             _temp = pickle.load(pfile)
             if _temp:
                 self.filelist_dict = _temp
-    
+
     def write_persistence_file(self):
         if not self.filelist_dict:
             return
@@ -85,6 +88,7 @@ class FileList(object):
             pickle.dump(self.filelist_dict, pfile, pickle.HIGHEST_PROTOCOL)
 
     def recursive_read(self):
+
         def parse_dir(arg, path, filelist):
             for fn in filelist:
                 fullfn = ('%s/%s' % (path, fn)).replace('//', '/')
@@ -99,7 +103,8 @@ class FileList(object):
         for d in self.subdirs:
             os.path.walk(d, parse_dir, self.filelist_dict)
         return
-    
+
+
 def read_config_file():
     conf_obj = []
     if os.path.exists('%s/.file_sync_config.json' % os.getenv('HOME')):
@@ -108,8 +113,10 @@ def read_config_file():
     else:
         return conf_obj
 
+
 def file_sync():
     return
+
 
 def run_tests():
     script_path = os.path.abspath(os.path.curdir)
@@ -117,7 +124,7 @@ def run_tests():
     finfo = FileInfo(testfname)
     assert finfo.md5sum == 'f5895714b558d215ad125eaee7dcc6c7'
     print(os.stat(testfname), '\n')
-    
+
     testdir = '/home/ddboline/Documents/mp3'
     testdir = '%s' % script_path
     flist = FileList(basepath=testdir)
@@ -127,6 +134,7 @@ def run_tests():
 
     conf_obj = read_config_file()
     print(conf_obj, type(conf_obj))
+
 
 if __name__ == '__main__':
     file_sync()

@@ -7,20 +7,21 @@ from __future__ import unicode_literals
 
 import pyinotify
 
+
 class ProcessControlFile(pyinotify.ProcessEvent):
 
     def process_IN_MODIFY(self, event):
-        outval = open(event.pathname,'r').read().strip()
+        outval = open(event.pathname, 'r').read().strip()
         if outval:
             print(outval)
 
     def process_default(self, event):
-        print('default',event.maskname)
+        print('default', event.maskname)
+
 
 wm = pyinotify.WatchManager()
 notifier = pyinotify.Notifier(wm)
-wm.watch_transient_file('/tmp/temp.tcx', pyinotify.IN_MODIFY,
-                        ProcessControlFile)
+wm.watch_transient_file('/tmp/temp.tcx', pyinotify.IN_MODIFY, ProcessControlFile)
 notifier.loop()
 
 print('hello?')

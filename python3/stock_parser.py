@@ -7,17 +7,18 @@ import requests
 
 _sentinel = 'EMPTY'
 
+
 def read_stock_url(symbol):
-    urlname = 'http://finance.yahoo.com/q?s=' + symbol.lower() + \
-              '&ql=0'
+    urlname = 'http://finance.yahoo.com/q?s=' + symbol.lower() + '&ql=0'
     with closing(requests.get(urlname, stream=True)) as url_:
         for line in url_.iter_lines():
             line = line.decode()
             if 'yfs_l84_%s' % symbol.lower() in line:
-                price = float(line.split('yfs_l84_%s\">' % symbol.lower())[1]\
-                                  .split('</')[0].replace(',',''))
+                price = line.split('yfs_l84_%s\">' % symbol.lower())[1]
+                price = float(price.split('</')[0].replace(',', ''))
                 return price
     return -1
+
 
 def read_stock_worker(symbol_q, price_q):
     for symbol in iter(symbol_q.get, _sentinel):
@@ -26,6 +27,7 @@ def read_stock_worker(symbol_q, price_q):
             price_q.put((symbol.upper(), price))
     symbol_q.put(_sentinel)
     return True
+
 
 def write_output_file(price_q):
     with open('stock_prices.csv', 'w') as outfile:
@@ -36,12 +38,13 @@ def write_output_file(price_q):
             outfile.flush()
     return True
 
+
 def run_stock_parser():
     symbol_q = Queue()
     price_q = Queue()
-    
+
     stock_symbols = []
-    with open('symbols.txt','r') as symfile:
+    with open('symbols.txt', 'r') as symfile:
         for n, line in enumerate(symfile):
             sym = line.strip()
             if sym:
@@ -50,12 +53,11 @@ def run_stock_parser():
     ncpu = len([x for x in open('/proc/cpuinfo').read().split('\n')\
                 if x.find('processor') == 0])
 
-    pool = [Process(target=read_stock_worker,
-                    args=(symbol_q, price_q,)) for _ in range(ncpu*4)]
+    pool = [Process(target=read_stock_worker, args=(symbol_q, price_q, )) for _ in range(ncpu * 4)]
 
     for p in pool:
         p.start()
-    output = Process(target=write_output_file, args=(price_q,))
+    output = Process(target=write_output_file, args=(price_q, ))
     output.start()
 
     for symbol in stock_symbols:
@@ -65,6 +67,7 @@ def run_stock_parser():
         p.join()
     price_q.put(_sentinel)
     output.join()
+
 
 if __name__ == '__main__':
     run_stock_parser()

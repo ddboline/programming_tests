@@ -4,6 +4,7 @@
 import json
 import pandas as pd
 
+
 def urlopen(url_):
     """ wrapper around requests.get.text simulating urlopen """
     import requests

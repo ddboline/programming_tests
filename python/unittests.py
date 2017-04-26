@@ -12,6 +12,7 @@ import unittest
 import datetime
 import analyze_gmail
 
+
 class TestAnalyzeGmail(unittest.TestCase):
 
     def setUp(self):
@@ -21,6 +22,7 @@ class TestAnalyzeGmail(unittest.TestCase):
         inp_str = '"Active.com Email Exclusive" <active_offers@news1-active.com>k.com>'
         output = analyze_gmail.parse_quoted_email_string(inp_str)
         self.assertEqual(output[0], 'active_offers@news1-active.com')
+
 
 if __name__ == '__main__':
     unittest.main()

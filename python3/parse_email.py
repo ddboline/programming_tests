@@ -14,6 +14,7 @@ email_labels = ['CC', 'From', 'To']
 gmail_labels = {}
 email_addresses = {}
 
+
 def parse_header(lines):
     header_entries = {}
     current_label = None
@@ -36,7 +37,7 @@ def parse_header(lines):
                 gmail_labels[l] = 0
             gmail_labels[l] += 1
     #if 'Cc' in header_entries:
-        #print header_entries['Cc']
+    #print header_entries['Cc']
     for lab in header_entries:
         if lab in email_labels:
             for ent in (' '.join(header_entries[lab])).split():
@@ -52,6 +53,7 @@ def parse_header(lines):
                 if em not in email_addresses:
                     email_addresses[em] = 0
                 email_addresses[em] += 1
+
 
 def parse_email(lines):
     header_lines = []
@@ -70,11 +72,12 @@ def parse_email(lines):
             header_lines.append(line)
 
         if 'boundary=' in line:
-            b = line.split('boundary=')[-1].replace('"','')
+            b = line.split('boundary=')[-1].replace('"', '')
             body_lines[b] = []
 
     #print 'header:',len(header_lines)
     parse_header(header_lines)
+
 
 def parse_mbox(fname):
     ''' parse mbox file '''
@@ -87,9 +90,9 @@ def parse_mbox(fname):
                     parse_email(email_lines)
                     number_of_emails += 1
                     #if number_of_emails > 100000:
-                        #break
+                #break
                 email_lines = []
-            email_lines.append(line.replace('\r\n','').replace('\n',''))
+            email_lines.append(line.replace('\r\n', '').replace('\n', ''))
         if email_lines:
             parse_email(email_lines)
             number_of_emails += 1
@@ -99,11 +102,13 @@ def parse_mbox(fname):
     with open('gmail_labels.txt', 'w') as gloutf:
         gloutf.write('%s\n' % '\n'.join('%s %d' % (k, i) for k, i in sorted(gmail_labels.items())))
     with open('email_addresses.txt', 'w') as eaoutf:
-        eaoutf.write('%s\n' % '\n'.join('%s %d' % (k, i) for k, i in sorted(email_addresses.items())))
+        eaoutf.write('%s\n' % '\n'.join('%s %d' % (k, i)
+                                        for k, i in sorted(email_addresses.items())))
     print('labels:', len(labels))
     print('gmail_labels:', len(gmail_labels))
     print('email_addresses:', len(email_addresses))
     print('Nemails:', number_of_emails)
+
 
 if __name__ == '__main__':
     fname = os.sys.argv[1]
