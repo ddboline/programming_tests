@@ -136,4 +136,15 @@ fn main() {
     }
     let y = values;
     println!("{}", join_vector(&y));
+    
+    let c = Circle::new(0.0, 0.0, 2.0);
+    println!("{}", c.area());
+    
+    let x = Box::new(1);
+    let ref y = x;
+    println!("{}", y);
+    println!("{}", x);
+    let x = 2;
+    println!("{}", x);
+    
 }
