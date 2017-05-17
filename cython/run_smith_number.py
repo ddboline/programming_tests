@@ -1,11 +1,13 @@
 #!/usr/bin/python
 
+import smith_number0
+import smith_number2
+
 import pyximport
 pyximport.install()
 
-import smith_number0
 import smith_number1
-import smith_number2
+
 import time
 from subprocess import call, Popen, PIPE
 

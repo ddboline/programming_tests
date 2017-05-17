@@ -18,5 +18,5 @@ python3:
 	python3 setup.py build_ext --inplace
 
 clean:
-	rm $(TARGETS)
 	rm -rf cos_func.c matmul2.c matmul3.c primes1.cpp sampling_vose_alias_method1.cpp smith_number2.cpp __pycache__ *.so *.pyc build
+	rm $(TARGETS)
