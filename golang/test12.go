@@ -13,21 +13,19 @@ type rot13Reader struct {
 
 func (v *rot13Reader) Read(b []byte) (n int, e error) {
         tot := 0
-	for {
-		n, err := v.r.Read(b)
-		if err != nil {
-			break
-		}
-		for i:=0 ; i<n; i++ {
-			if b[i] >= 65 && b[i] <= 90 {
-                            b[i] = (b[i] + 13 - 65) % 26 + 65
-			} else if b[i] >= 97 && b[i] <= 122 {
-                            b[i] = (b[i] + 13 - 97) % 26 + 97
-                        }
-		}
-		tot += n
-	}
-	return tot, io.EOF
+            n, err := v.r.Read(b)
+            if err != nil {
+                    return 0, err
+            }
+            for i, b_ := range b {
+                    if b_ >= 'a' && b_ <= 'z' {
+                        b[i] = (b_ + 13 - 'a') % 26 + 'a'
+                    } else if b_ >= 'A' && b_ <= 'Z' {
+                        b[i] = (b_ + 13 - 'A') % 26 + 'A'
+                    }
+            }
+            tot += n
+	return tot, nil
 }
 
 func main() {
