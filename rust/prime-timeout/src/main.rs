@@ -25,7 +25,7 @@ fn main() {
     let mut futures = Vec::new();
 
     for val in vals {
-        match String::from(val).trim().parse::<u64>() {
+        match String::from(val.clone()).trim().parse::<u64>() {
             Ok(x) => {
                 futures.push(pool.spawn_fn(move || {
                     let prime = is_prime(x);
@@ -33,7 +33,10 @@ fn main() {
                     res
                 }))
             }
-            Err(_) => (),
+            Err(e) => {
+                println!("Error {} {}", val, e.to_string());
+                ()
+            }
         }
     }
 
