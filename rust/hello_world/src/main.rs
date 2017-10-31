@@ -160,8 +160,8 @@ fn main() {
     let x = 2;
     println!("{}", x);
 
-    let a = String::from("hello");
-    let b = " world";
-    let c = a + b;
-    println!("{}", c);
+    let a = "hello";
+    let b = "world";
+    let c = format!("{} {}", a, b);
+    println!("{:p} {}", &c, &c.replace(" ", "_"));
 }
