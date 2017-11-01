@@ -2,6 +2,9 @@ extern crate rand;
 
 use std::cell::Cell;
 use rand::Rng;
+use std::fs::File;
+use std::io::BufReader;
+use std::io::prelude::*;
 // use std::slice::SliceConcatExt;
 
 fn test_fn(x: i32) -> i32 {
@@ -164,4 +167,18 @@ fn main() {
     let b = "world";
     let c = format!("{} {}", a, b);
     println!("{:p} {}", &c, &c.replace(" ", "_"));
+
+    println!("Hello World!");
+    let f = File::open("Cargo.toml").unwrap();
+    let b = BufReader::new(f);
+
+    for line in b.lines() {
+        println!("{}", line.unwrap());
+    }
+
+    //     let mut line = String::new();
+    //     while b.read_line(&mut line).unwrap() > 0 {
+    //         println!("{:p} {}", &line, line.trim());
+    //         line.clear()
+    //     }
 }
