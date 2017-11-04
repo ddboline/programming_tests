@@ -5,6 +5,7 @@ use rand::Rng;
 use std::fs::File;
 use std::io::BufReader;
 use std::io::prelude::*;
+use std::collections::HashMap;
 // use std::slice::SliceConcatExt;
 
 fn test_fn(x: i32) -> i32 {
@@ -175,6 +176,28 @@ fn main() {
     for line in b.lines() {
         println!("{}", line.unwrap());
     }
+
+    let mut scores = HashMap::new();
+
+    scores.insert("Blue".to_string(), 10);
+    scores.insert("Yellow".to_string(), 50);
+
+    for (k, v) in scores.iter() {
+        println!("{} {}", k, v);
+    }
+
+    println!("{:?}", scores);
+
+    let teams = vec!["Blue".to_string(), "Yellow".to_string()];
+    let initial_scores = vec![10, 50];
+
+    let scores: HashMap<_, _> = teams.into_iter().zip(initial_scores.into_iter()).collect();
+
+    for (k, v) in scores.iter() {
+        println!("{} {}", k, v);
+    }
+
+    println!("{:?}", scores);
 
     //     let mut line = String::new();
     //     while b.read_line(&mut line).unwrap() > 0 {
