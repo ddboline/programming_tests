@@ -23,18 +23,15 @@ fn main() {
         let rating = rating.unwrap_or(-1.0);
         let source = source.unwrap_or("".to_string());
 
-        let rating = if rating < 0.0 { 0.0 } else { rating };
+        let rating = if rating < 0.0 {
+            format!(" -1")
+        } else {
+            format!("{:1.1}", rating)
+        };
 
         show.truncate(40);
         title.truncate(40);
 
-        println!(
-            "{:40} {:40} {:9} {:1.1} {}",
-            show,
-            title,
-            link,
-            rating,
-            source
-        );
+        println!("{:40} {:40} {:9} {} {}", show, title, link, rating, source);
     }
 }
