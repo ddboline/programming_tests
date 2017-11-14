@@ -9,26 +9,43 @@ use rand::distributions::Range;
 use rand::distributions::Sample;
 use std::env;
 
-fn work_thread(tx: Sender<String>, idx: usize) {
-    let val = format!("Hi from thread {}", idx);
+fn work_thread(tx: Sender<(String, String, String)>, input: String) {
+    let one_time_pad = OneTimePad::new(&input);
 
-    tx.send(val).unwrap();
+    let key_str = one_time_pad.get_key_str();
+
+    let encrypted = one_time_pad.encrypt_string(&input);
+
+    let decrypted = one_time_pad.decrypt_string(&encrypted);
+
+    tx.send((key_str, encrypted, decrypted)).unwrap();
 }
 
-fn write_thread<T: std::fmt::Display>(rx: Receiver<T>) {
-    for received in rx {
-        println!("Got: {}", received);
+fn write_thread<T: std::fmt::Display>(rx: Receiver<(T, T, T)>) {
+    for (key_str, encrypt, decrypt) in rx {
+        println!("key:{}\nenc:{}\ndec:{}", key_str, encrypt, decrypt);
     }
+}
+
+fn get_string(input: &Vec<char>) -> String {
+    input
+        .par_iter()
+        .map(|&c| c.to_string())
+        .collect::<Vec<String>>()
+        .join("")
 }
 
 fn find_valid_characters(input: &String) -> Vec<char> {
-    let mut valid_chars = Vec::new();
-    for val in 0..26 {
-        valid_chars.push((('A' as u8) + val) as char)
-    }
-    for val in 0..26 {
-        valid_chars.push((('a' as u8) + val) as char)
-    }
+    let (a, b): (Vec<_>, Vec<_>) = (0..26)
+        .into_par_iter()
+        .map(|val| {
+            (
+                (('A' as u8) + val as u8) as char,
+                (('a' as u8) + val as u8) as char,
+            )
+        })
+        .unzip();
+    let mut valid_chars: Vec<_> = a.into_par_iter().chain(b.into_par_iter()).collect();
     valid_chars.sort();
     for ch in input.chars() {
         match valid_chars.binary_search(&ch) {
@@ -62,11 +79,6 @@ impl OneTimePad {
         }
     }
 
-    fn from_key(encrypt_key: &String) -> OneTimePad {
-        let valid_chars_ = find_valid_characters(&input);
-
-    }
-
     fn encrypt_char(&self, chr: char, key: usize) -> char {
         let nchr = self.valid_chars.len();
         match self.valid_chars.binary_search(&chr) {
@@ -85,7 +97,7 @@ impl OneTimePad {
 
     fn decrypt_string(&self, input: &String) -> String {
         let nchr = self.valid_chars.len();
-        let decrypt_key: Vec<usize> = self.encrypt_key.iter().map(|&k| nchr - k).collect();
+        let decrypt_key: Vec<usize> = self.encrypt_key.par_iter().map(|&k| nchr - k).collect();
         input
             .chars()
             .zip(decrypt_key.iter())
@@ -94,15 +106,17 @@ impl OneTimePad {
     }
 
     fn get_key_str(&self) -> String {
-        let key_str: Vec<String> = self.encrypt_key
+        get_string(&self.encrypt_key
             .par_iter()
-            .map(|&k| (self.valid_chars[k as usize]).to_string())
-            .collect();
-        key_str.join("")
+            .map(|&k| self.valid_chars[k as usize])
+            .collect::<Vec<char>>())
     }
 }
 
 fn main() {
+    let vals: Vec<String> = env::args().collect();
+    let original = vals.get(1..vals.len()).unwrap().join(" ");
+
     let (tx, rx) = mpsc::channel();
 
     let mut vals = Vec::new();
@@ -112,34 +126,10 @@ fn main() {
     }
     vals.push(tx);
 
-    for (idx, tx_) in vals.into_iter().enumerate() {
-        thread::spawn(move || work_thread(tx_, idx));
+    for tx_ in vals.into_iter() {
+        let tmp_str = original.clone();
+        thread::spawn(move || work_thread(tx_, tmp_str));
     }
 
     write_thread(rx);
-
-    let vals: Vec<String> = env::args().collect();
-    let original = vals.get(1..vals.len()).unwrap().join(" ");
-
-    let one_time_pad = OneTimePad::new(&original);
-
-    let nchr = one_time_pad.valid_chars.len();
-    println!(
-        "{} {}",
-        one_time_pad
-            .valid_chars
-            .iter()
-            .map(|&c| c.to_string())
-            .collect::<Vec<String>>()
-            .join(""),
-        nchr
-    );
-
-    let key_str = one_time_pad.get_key_str();
-
-    let encrypted = one_time_pad.encrypt_string(&original);
-
-    let decrypted = one_time_pad.decrypt_string(&encrypted);
-
-    println!("{}\n{}\n{}\n{}", original, key_str, encrypted, decrypted);
 }
