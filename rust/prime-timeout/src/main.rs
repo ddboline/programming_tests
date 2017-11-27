@@ -54,3 +54,14 @@ fn main() {
         }
     }
 }
+
+#[test]
+fn test_main() {
+    let vals = vec![15485867, 1235123123, 5123434123, 3, 177];
+    let results = vec![-1, 13, 179, -1, 3];
+
+    for (val, res) in vals.into_iter().zip(results.into_iter()) {
+        let (_, prime) = is_prime(val);
+        assert_eq!(prime, res);
+    }
+}

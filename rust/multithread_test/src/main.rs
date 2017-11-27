@@ -23,7 +23,7 @@ fn work_thread(tx: Sender<(String, String, String)>, input: String) {
 
 fn write_thread<T: std::fmt::Display>(rx: Receiver<(T, T, T)>) {
     for (key_str, encrypt, decrypt) in rx {
-        println!("key:{}\nenc:{}\ndec:{}", key_str, encrypt, decrypt);
+        println!("\nkey:{}\nenc:{}\ndec:{}\n", key_str, encrypt, decrypt);
     }
 }
 

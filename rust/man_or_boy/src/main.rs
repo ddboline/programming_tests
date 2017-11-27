@@ -3,16 +3,17 @@
 
 use std::cell::Cell;
 
-fn a(k: i32,
-     x1: &Fn() -> i32,
-     x2: &Fn() -> i32,
-     x3: &Fn() -> i32,
-     x4: &Fn() -> i32,
-     x5: &Fn() -> i32)
-     -> i32 {
+fn a(
+    k: i64,
+    x1: &Fn() -> i64,
+    x2: &Fn() -> i64,
+    x3: &Fn() -> i64,
+    x4: &Fn() -> i64,
+    x5: &Fn() -> i64,
+) -> i64 {
     let k = Cell::new(k);
 
-    let (b, tmp): (Cell<Option<&Fn() -> i32>>, _);
+    let (b, tmp): (Cell<Option<&Fn() -> i64>>, _);
     b = Cell::new(None);
     tmp = || {
         k.set(k.get() - 1);
@@ -28,7 +29,9 @@ fn a(k: i32,
 }
 
 fn main() {
-    println!("%{}", a(26, &|| 1, &|| -1, &|| -1, &|| 1, &|| 0));
+    for i in 1..17 {
+        println!("{} : {}", i, a(i, &|| 1, &|| -1, &|| -1, &|| 1, &|| 0));
+    }
 }
 
 #[test]
