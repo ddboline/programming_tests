@@ -27,7 +27,7 @@ fn write_thread<T: std::fmt::Display>(rx: Receiver<(T, T, T)>) {
     }
 }
 
-fn get_string(input: &Vec<char>) -> String {
+fn get_string(input: &[char]) -> String {
     input
         .par_iter()
         .map(|&c| c.to_string())
@@ -114,8 +114,15 @@ impl OneTimePad {
 }
 
 fn main() {
+    let exe = env::current_exe().unwrap().display().to_string();
     let vals: Vec<String> = env::args().collect();
-    let original = vals.get(1..vals.len()).unwrap().join(" ");
+    let original = vals.into_iter()
+        .map(|x| match exe.contains(&x) {
+            true => "".to_string(),
+            false => x,
+        })
+        .collect::<Vec<String>>()
+        .join(" ");
 
     let (tx, rx) = mpsc::channel();
 
