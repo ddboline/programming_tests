@@ -79,6 +79,11 @@ impl OneTimePad {
         }
     }
 
+    fn decrypt_key(&self) -> Vec<usize> {
+        let nchr = self.valid_chars.len();
+        self.encrypt_key.par_iter().map(|&k| nchr - k).collect()
+    }
+
     fn encrypt_char(&self, chr: char, key: usize) -> char {
         let nchr = self.valid_chars.len();
         match self.valid_chars.binary_search(&chr) {
@@ -96,11 +101,9 @@ impl OneTimePad {
     }
 
     fn decrypt_string(&self, input: &String) -> String {
-        let nchr = self.valid_chars.len();
-        let decrypt_key: Vec<usize> = self.encrypt_key.par_iter().map(|&k| nchr - k).collect();
         input
             .chars()
-            .zip(decrypt_key.iter())
+            .zip(self.decrypt_key().iter())
             .map(|(c, &k)| self.encrypt_char(c, k))
             .collect()
     }
