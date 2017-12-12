@@ -7,3 +7,4 @@ authors = ["Daniel Boline <ddboline@gmail.com>"]
 # futures = "0.1.14"
 rayon = "*"
 rand = "*"
+scoped_threadpool = "*"

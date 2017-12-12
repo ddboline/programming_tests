@@ -9,7 +9,7 @@ use rand::distributions::Range;
 use rand::distributions::Sample;
 use std::env;
 
-fn work_thread(tx: Sender<(String, String, String)>, input: String) {
+fn work_thread(tx: Sender<(String, String, String)>, input: &str) {
     let one_time_pad = OneTimePad::new(&input);
 
     let key_str = one_time_pad.get_key_str();
@@ -19,6 +19,7 @@ fn work_thread(tx: Sender<(String, String, String)>, input: String) {
     let decrypted = one_time_pad.decrypt_string(&encrypted);
 
     tx.send((key_str, encrypted, decrypted)).unwrap();
+    thread::sleep(std::time::Duration::from_secs(1));
 }
 
 fn write_thread<T: std::fmt::Display>(rx: Receiver<(T, T, T)>) {
@@ -35,7 +36,7 @@ fn get_string(input: &[char]) -> String {
         .join("")
 }
 
-fn find_valid_characters(input: &String) -> Vec<char> {
+fn find_valid_characters(input: &str) -> Vec<char> {
     let (a, b): (Vec<_>, Vec<_>) = (0..26)
         .into_par_iter()
         .map(|val| {
@@ -69,8 +70,8 @@ struct OneTimePad {
 }
 
 impl OneTimePad {
-    fn new(input: &String) -> OneTimePad {
-        let valid_chars_ = find_valid_characters(&input);
+    fn new(input: &str) -> OneTimePad {
+        let valid_chars_ = find_valid_characters(input);
         let nchar = valid_chars_.len();
         let keysize = input.len();
         OneTimePad {
@@ -92,7 +93,7 @@ impl OneTimePad {
         }
     }
 
-    fn encrypt_string(&self, input: &String) -> String {
+    fn encrypt_string(&self, input: &str) -> String {
         input
             .chars()
             .zip(self.encrypt_key.iter())
@@ -100,7 +101,7 @@ impl OneTimePad {
             .collect()
     }
 
-    fn decrypt_string(&self, input: &String) -> String {
+    fn decrypt_string(&self, input: &str) -> String {
         input
             .chars()
             .zip(self.decrypt_key().iter())
@@ -118,8 +119,9 @@ impl OneTimePad {
 
 fn main() {
     let exe = env::current_exe().unwrap().display().to_string();
-    let vals: Vec<String> = env::args().collect();
-    let original = vals.into_iter()
+
+    let original = env::args()
+        .into_iter()
         .map(|x| match exe.contains(&x) {
             true => "".to_string(),
             false => x,
@@ -136,10 +138,9 @@ fn main() {
     }
     vals.push(tx);
 
-    for tx_ in vals.into_iter() {
-        let tmp_str = original.clone();
-        thread::spawn(move || work_thread(tx_, tmp_str));
-    }
+    let _: Vec<_> = vals.into_par_iter()
+        .map(|tx_| work_thread(tx_, &original.clone()))
+        .collect();
 
     write_thread(rx);
 }
