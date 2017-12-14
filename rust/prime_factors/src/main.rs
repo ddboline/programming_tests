@@ -1,3 +1,7 @@
+extern crate rand;
+
+use rand::Rng;
+
 struct PrimeVec {
     primes: Vec<u64>,
     largest_prime: u64,
@@ -83,20 +87,25 @@ impl PrimeVec {
 }
 
 fn main() {
-    let test_numbers = vec![
+    let mut test_numbers = vec![
         8675309,
         600851475143,
         615689816516,
         984098498407,
         32135468768,
     ];
+    for _ in 0..100 {
+        test_numbers.push(rand::thread_rng().gen_range(1000, 10000000));
+    }
+    println!("{}", rand::thread_rng().gen_range(1, 101));
     let mut primes = PrimeVec::new();
     for test_n in test_numbers {
         let prime_factors = primes.find_prime_factors(test_n);
         let product = prime_factors.iter().fold(1, |a, b| a * b);
         println!(
-            "{:?} {} {} {}",
+            "{:?} {} {} {} {}",
             prime_factors,
+            primes.primes.len(),
             primes.largest_prime,
             test_n,
             product
