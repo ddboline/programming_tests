@@ -197,10 +197,4 @@ fn main() {
     }
 
     println!("{:?}", scores);
-
-    //     let mut line = String::new();
-    //     while b.read_line(&mut line).unwrap() > 0 {
-    //         println!("{:p} {}", &line, line.trim());
-    //         line.clear()
-    //     }
 }
