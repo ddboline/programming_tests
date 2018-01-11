@@ -1,0 +1,12 @@
+[package]
+name = "python_test"
+version = "0.1.0"
+authors = ["Daniel Boline <ddboline@gmail.com>"]
+
+[lib]
+name="hello"
+crate-type = ["cdylib"]
+
+[dependencies.pyo3]
+version = "*"
+features = ["extension-module"]
