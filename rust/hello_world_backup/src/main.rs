@@ -80,16 +80,16 @@ fn find_largest_divisible(max_int: u64) -> u64 {
     let largest_common_prime = primes.primes.pop().unwrap();
     let mut candidate = largest_common_prime;
 
-    'a: loop {
+    loop {
         let mut is_divisible = true;
-        'b: for i in 1..(max_int + 1) {
+        for i in 1..(max_int + 1) {
             if candidate % i != 0 {
                 is_divisible = false;
-                break 'b;
+                break;
             }
         }
         if is_divisible {
-            break 'a;
+            break;
         }
         candidate += largest_common_prime;
     }
@@ -240,6 +240,7 @@ fn main() {
         find_largest_palindrome(10)
     );
     println!("find_largest_divisible(10) {}", find_largest_divisible(10));
+    println!("find_largest_divisible(20) {}", find_largest_divisible(20));
     println!("find_n_prime(6) {}", find_n_prime(6));
     println!(
         "product_of_adjacent_digits(4) {}",
