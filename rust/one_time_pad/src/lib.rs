@@ -113,7 +113,7 @@ struct PyOneTimePad {
 
 #[py::methods]
 impl PyOneTimePad {
-        #[new]
+    #[new]
     fn __new__(obj: &PyRawObject, keysize: usize, input: String) -> PyResult<()> {
         obj.init(|t| {
             PyOneTimePad {
