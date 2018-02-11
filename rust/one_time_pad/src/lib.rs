@@ -17,10 +17,9 @@ struct OneTimePad {
 }
 
 impl OneTimePad {
-    fn new(input: &str) -> OneTimePad {
-        let valid_chars_ = find_valid_characters(input);
+    fn new(keysize: usize, extra_chars: &str) -> OneTimePad {
+        let valid_chars_ = find_valid_characters(extra_chars);
         let nchar = valid_chars_.len();
-        let keysize = input.len();
         OneTimePad {
             valid_chars: valid_chars_,
             encrypt_key: get_one_time_pad_key(nchar, keysize),
@@ -64,7 +63,7 @@ impl OneTimePad {
     }
 }
 
-fn find_valid_characters(input: &str) -> Vec<char> {
+fn get_upper_lower_chars() -> Vec<char> {
     let (a, b): (Vec<_>, Vec<_>) = (0..26)
         .into_par_iter()
         .map(|val| {
@@ -76,6 +75,12 @@ fn find_valid_characters(input: &str) -> Vec<char> {
         .unzip();
     let mut valid_chars: Vec<_> = a.into_par_iter().chain(b.into_par_iter()).collect();
     valid_chars.sort();
+    valid_chars
+}
+
+fn find_valid_characters(input: &str) -> Vec<char> {
+    let mut valid_chars = get_upper_lower_chars();
+
     for ch in input.chars() {
         match valid_chars.binary_search(&ch) {
             Ok(_) => (),
@@ -109,10 +114,10 @@ struct PyOneTimePad {
 #[py::methods]
 impl PyOneTimePad {
         #[new]
-    fn __new__(obj: &PyRawObject, input: String) -> PyResult<()> {
+    fn __new__(obj: &PyRawObject, keysize: usize, input: String) -> PyResult<()> {
         obj.init(|t| {
             PyOneTimePad {
-                pad: OneTimePad::new(&input),
+                pad: OneTimePad::new(keysize, &input),
                 token: t,
             }
         })
