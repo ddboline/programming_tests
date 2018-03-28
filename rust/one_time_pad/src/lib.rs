@@ -127,7 +127,7 @@ impl PyOneTimePad {
         Ok(self.pad.encrypt_string(&input))
     }
 
-    fn decrypt_string(&self, py: Python, input: String) -> PyResult<String> {
+    fn decrypt_string(&self, _py: Python, input: String) -> PyResult<String> {
         Ok(self.pad.decrypt_string(&input))
     }
 
