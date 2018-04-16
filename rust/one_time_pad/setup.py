@@ -2,17 +2,7 @@ import sys
 
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
-
-try:
-    from setuptools_rust import RustExtension
-except ImportError:
-    import subprocess
-    errno = subprocess.call([sys.executable, '-m', 'pip', 'install', 'setuptools-rust'])
-    if errno:
-        print("Please install setuptools-rust package")
-        raise SystemExit(errno)
-    else:
-        from setuptools_rust import RustExtension
+from setuptools_rust import RustExtension
 
 
 class PyTest(TestCommand):
