@@ -1,0 +1,8 @@
+[package]
+name = "test_subprocess"
+version = "0.1.0"
+authors = ["Daniel Boline <danielb@visibleworld.com>"]
+
+[dependencies]
+subprocess = "*"
+failure = "*"
