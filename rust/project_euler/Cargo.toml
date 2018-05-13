@@ -1,5 +1,5 @@
 [package]
 
-name = "hello_world"
+name = "project_euler"
 version = "0.0.1"
 authors = ["Daniel Boline <ddboline@gmail.com>"]
