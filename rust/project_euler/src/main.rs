@@ -231,24 +231,26 @@ impl LargeSum {
     }
 
     fn from_string(input: String) -> LargeSum {
-        let cap = input.len();
-        let mut v: Vec<_> = (0..cap)
-            .map(|idx| input[(idx)..(idx + 1)].parse::<u8>().unwrap())
-            .collect();
-
-        v.reverse();
-        LargeSum { v: v }
+        LargeSum {
+            v: (0..input.len())
+                .map(|idx| input[(idx)..(idx + 1)].parse::<u8>().unwrap())
+                .rev()
+                .collect(),
+        }
     }
 
     fn get_first_ten_digits(&self) -> String {
-        let mut result: Vec<_> = (if self.v.len() < 10 {
-                                      self.v.iter()
-                                  } else {
-                                      self.v.get(self.v.len() - 10..self.v.len()).unwrap().iter()
-                                  }).map(|x| x.to_string())
-            .collect();
-        result.reverse();
-        result.join("")
+        (if self.v.len() < 10 {
+             self.v.iter()
+         } else {
+             self.v
+                 .get((self.v.len() - 10)..self.v.len())
+                 .unwrap()
+                 .iter()
+         }).map(|x| x.to_string())
+            .rev()
+            .collect::<Vec<_>>()
+            .join("")
     }
 
     fn add(&self, v1: &LargeSum) -> LargeSum {
@@ -292,8 +294,7 @@ fn large_sum() -> String {
     let b = BufReader::new(f);
 
     let sum = b.lines().fold(LargeSum::new(), |s, l| {
-        let tmp = LargeSum::from_string(l.unwrap());
-        s.add(&tmp)
+        s.add(&LargeSum::from_string(l.unwrap()))
     });
     sum.get_first_ten_digits()
 }
@@ -325,21 +326,23 @@ fn test2() {
 }
 
 fn main() {
-    //     println!(
-    //         "find_largest_palindrome(10) {}",
-    //         find_largest_palindrome(10)
-    //     );
-    //     println!("find_largest_divisible(10) {}", find_largest_divisible(10));
-    //     println!("find_largest_divisible(20) {}", find_largest_divisible(20));
-    //     println!("find_n_prime(6) {}", find_n_prime(6));
-    //     println!(
-    //         "product_of_adjacent_digits(4) {}",
-    //         product_of_adjacent_digits(4)
-    //     );
-    //     println!("{}", special_pyth_triplet().unwrap());
-    //         println!("{}", sum_of_primes(10));
-    //         println!("{}", largest_product_in_a_grid());
-    //     println!("{:?}", find_number_factors(28));
-    println!("{}", triangle_with_n_divisors(5));
-    //     println!("large_sum {}", large_sum());
+    println!(
+        "find_largest_palindrome(10) {}",
+        find_largest_palindrome(10)
+    );
+    println!("find_largest_divisible(10) {}", find_largest_divisible(10));
+    println!("find_n_prime(6) {}", find_n_prime(6));
+    println!(
+        "product_of_adjacent_digits(4) {}",
+        product_of_adjacent_digits(4)
+    );
+    println!("special_pyth_triplet {}", special_pyth_triplet().unwrap());
+    println!("sum_of_primes(10) {}", sum_of_primes(10));
+    println!("largest_product_in_a_grid {}", largest_product_in_a_grid());
+    println!("find_number_factors(28) {}", find_number_factors(28));
+    println!(
+        "triangle_with_n_divisors(5) {}",
+        triangle_with_n_divisors(5)
+    );
+    println!("large_sum {}", large_sum());
 }
