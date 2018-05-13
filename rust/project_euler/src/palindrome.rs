@@ -29,6 +29,6 @@ pub fn find_largest_palindrome(limit: u64) -> u64 {
 }
 
 #[test]
-fn test(){
+fn test() {
     assert_eq!(find_largest_palindrome(999), 906609);
 }
