@@ -2,8 +2,6 @@ use std::fs::File;
 use std::io::BufReader;
 use std::io::prelude::*;
 
-const TENDIGIT: u64 = 10000000000;
-
 fn number_is_palindrome(input: u64) -> bool {
     let mut tmp = input;
     let mut digit_list = Vec::new();
@@ -223,7 +221,7 @@ fn triangle_with_n_divisors(input: u64) -> u64 {
 
 #[derive(Debug)]
 struct LargeSum {
-    v: Vec<u64>,
+    v: Vec<u8>,
 }
 
 
@@ -234,61 +232,96 @@ impl LargeSum {
 
     fn from_string(input: String) -> LargeSum {
         let cap = input.len();
-        let v = (0..(cap / 10))
-                .map(|idx| {
-                    input[(idx * 10)..(idx * 10 + 10)].parse::<u64>().unwrap()
-                })
-                .collect(),
-        }
+        let mut v: Vec<_> = (0..cap)
+            .map(|idx| input[(idx)..(idx + 1)].parse::<u8>().unwrap())
+            .collect();
+
         v.reverse();
-        LargeSum{ v: v }
+        LargeSum { v: v }
     }
 
-    fn add(v0: &LargeSum, v1: &LargeSum) -> LargeSum {
+    fn get_first_ten_digits(&self) -> String {
+        let mut result: Vec<_> = (if self.v.len() < 10 {
+                                      self.v.iter()
+                                  } else {
+                                      self.v.get(self.v.len() - 10..self.v.len()).unwrap().iter()
+                                  }).map(|x| x.to_string())
+            .collect();
+        result.reverse();
+        result.join("")
+    }
+
+    fn add(&self, v1: &LargeSum) -> LargeSum {
         let mut v2 = LargeSum::new();
-        idx = 0;
-        loop {
-            
-        }
-        
-        for idx in 0..5 {
-            let jdx = 5 - idx - 1;
-            println!("{} {}", idx, jdx);
-            let tmp = v0.v[jdx] + v1.v[jdx];
-            v2.v[jdx] = tmp % TENDIGIT;
-            if jdx + 1 != 5 {
-                v2.v[jdx + 1] = tmp / TENDIGIT;
+
+        let self_len = self.v.len();
+        let v1_len = v1.v.len();
+
+        let len = if self_len > v1_len { self_len } else { v1_len };
+
+        for idx in 0..len {
+            let mut tmp = 0;
+            if self.v.len() > idx {
+                tmp += self.v[idx]
+            }
+            if v1.v.len() > idx {
+                tmp += v1.v[idx]
+            }
+            if v2.v.len() > idx {
+                tmp += v2.v[idx]
+            }
+
+            while v2.v.len() < idx + 1 {
+                v2.v.push(0)
+            }
+            v2.v[idx] = tmp % 10;
+
+            if tmp >= 10 {
+                while v2.v.len() < idx + 2 {
+                    v2.v.push(0)
+                }
+                v2.v[idx + 1] = tmp / 10;
             }
         }
         v2
     }
 }
 
-fn large_sum() -> u64 {
+fn large_sum() -> String {
     let f = File::open("large_sum.txt").unwrap();
     let b = BufReader::new(f);
 
     let sum = b.lines().fold(LargeSum::new(), |s, l| {
         let tmp = LargeSum::from_string(l.unwrap());
-        println!("{:?}", tmp);
-        LargeSum::add_to_sum(&s, &tmp)
+        s.add(&tmp)
     });
-    sum.v[0]
+    sum.get_first_ten_digits()
 }
 
 #[test]
-fn test() {
+fn test0() {
     assert_eq!(find_largest_palindrome(999), 906609);
     assert_eq!(find_largest_divisible(10), 2520);
     assert_eq!(find_largest_divisible(20), 232792560);
     assert_eq!(find_n_prime(6), 13);
+}
+
+#[test]
+fn test1() {
     assert_eq!(find_n_prime(10001), 104743);
     assert_eq!(product_of_adjacent_digits(4), 5832);
     assert_eq!(product_of_adjacent_digits(13), 23514624000);
     assert_eq!(special_pyth_triplet().unwrap(), 31875000);
-    assert_eq!(sum_of_primes(2000000), 142913828922);
+}
+
+#[test]
+fn test2() {
+    assert_eq!(sum_of_primes(10), 17);
+    //     assert_eq!(sum_of_primes(2000000), 142913828922);
     assert_eq!(largest_product_in_a_grid(), 70600674);
-    assert_eq!(triangle_with_n_divisors(500), 76576500);
+    //     assert_eq!(triangle_with_n_divisors(500), 76576500);
+    assert_eq!(triangle_with_n_divisors(5), 28);
+    assert_eq!(large_sum(), "5537376230");
 }
 
 fn main() {
@@ -304,9 +337,9 @@ fn main() {
     //         product_of_adjacent_digits(4)
     //     );
     //     println!("{}", special_pyth_triplet().unwrap());
-    //     println!("{}", sum_of_primes(10));
-    //     println!("{}", largest_product_in_a_grid());
+    //         println!("{}", sum_of_primes(10));
+    //         println!("{}", largest_product_in_a_grid());
     //     println!("{:?}", find_number_factors(28));
-    //     println!("{}", triangle_with_n_divisors(5));
-    println!("large_sum {}", large_sum());
+    println!("{}", triangle_with_n_divisors(5));
+    //     println!("large_sum {}", large_sum());
 }
