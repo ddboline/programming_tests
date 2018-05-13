@@ -1,6 +1,7 @@
 use std::fs::File;
 use std::io::BufReader;
 use std::io::prelude::*;
+use std::collections::HashSet;
 
 fn number_is_palindrome(input: u64) -> bool {
     let mut tmp = input;
@@ -269,13 +270,12 @@ impl LargeSum {
 
             v2.v[idx] = tmp % 10;
             if tmp >= 10 {
-                if v2.v.len() <= idx + 1 {
+                if v2.v.len() < idx + 2 {
                     v2.v.resize(idx + 2, 0);
                 }
                 v2.v[idx + 1] = tmp / 10;
             }
         }
-        println!("a {:?}\nb {:?}\nc {:?}", self.v, v1.v, v2.v);
         v2
     }
 }
@@ -288,6 +288,41 @@ fn large_sum() -> String {
         s.add(&LargeSum::from_string(l.unwrap()))
     });
     sum.get_first_ten_digits()
+}
+
+fn get_next_collatz_element(n: u64) -> u64 {
+    match n % 2 {
+        0 => {n / 2},
+        1 => {3*n + 1},
+        _ => {panic!("Something bad happened {}", n)}
+    }
+}
+
+fn find_collatz_chain(n: u64) -> Vec<u64> {
+    let mut collatz_chain: Vec<u64> = vec!(n);
+    let mut current_n = n;
+    while current_n != 1 {
+        current_n = get_next_collatz_element(current_n);
+        collatz_chain.push(current_n);
+    }
+    collatz_chain
+}
+
+fn find_longest_chain(largest_n: u64) -> u64 {
+    let mut longest_chain_length = 0;
+    let mut longest_chain_start = 1;
+    let mut visited_nodes = HashSet::new();
+    for n in 1..(largest_n+1) {
+        if visited_nodes.contains(&n) {continue}
+
+        let current_chain = find_collatz_chain(n);
+        if current_chain.len() > longest_chain_length {
+            longest_chain_length = current_chain.len();
+            longest_chain_start = n;
+        }
+        current_chain.iter().map(|&x| {visited_nodes.insert(x.clone())}).collect::<Vec<_>>();
+    }
+    longest_chain_start
 }
 
 #[test]
@@ -316,6 +351,11 @@ fn test2() {
     assert_eq!(large_sum(), "5537376230");
 }
 
+#[test]
+fn test3() {
+    assert_eq!(find_longest_chain(13), 9);
+}
+
 fn main() {
     println!(
         "find_largest_palindrome(10) {}",
@@ -336,4 +376,5 @@ fn main() {
         triangle_with_n_divisors(5)
     );
     println!("large_sum {}", large_sum());
+    println!("{:?}", find_longest_chain(1000000));
 }
