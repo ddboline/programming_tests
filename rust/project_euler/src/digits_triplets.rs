@@ -45,3 +45,10 @@ pub fn special_pyth_triplet() -> Option<usize> {
     }
     None
 }
+
+#[test]
+fn test() {
+    assert_eq!(product_of_adjacent_digits(4), 5832);
+    assert_eq!(product_of_adjacent_digits(13), 23514624000);
+    assert_eq!(special_pyth_triplet().unwrap(), 31875000);
+}

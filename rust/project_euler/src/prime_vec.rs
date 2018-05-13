@@ -82,3 +82,36 @@ pub fn sum_of_primes(input: u64) -> u64 {
     }
     sum_primes
 }
+
+pub fn find_number_factors(input: u64) -> u64 {
+    let mut factors = 0;
+    for i in 0..input {
+        if input % (i + 1) == 0 {
+            factors += 1
+        }
+    }
+    factors
+}
+
+pub fn triangle_with_n_divisors(input: u64) -> u64 {
+    let mut tidx = 1;
+    loop {
+        tidx += 1;
+        let tval = tidx * (tidx + 1) / 2;
+        if find_number_factors(tval) > input {
+            return tval;
+        }
+    }
+}
+
+#[test]
+fn test() {
+    assert_eq!(find_largest_divisible(10), 2520);
+    assert_eq!(find_largest_divisible(20), 232792560);
+    assert_eq!(find_n_prime(6), 13);
+    assert_eq!(find_n_prime(10001), 104743);
+    assert_eq!(sum_of_primes(10), 17);
+    //     assert_eq!(sum_of_primes(2000000), 142913828922);
+    //     assert_eq!(triangle_with_n_divisors(500), 76576500);
+    assert_eq!(triangle_with_n_divisors(5), 28);
+}

@@ -2,7 +2,6 @@ use std::fs::File;
 use std::io::BufReader;
 use std::io::prelude::*;
 
-
 pub fn largest_product_in_a_grid() -> u64 {
     let f = File::open("the_number2.txt").unwrap();
     let b = BufReader::new(f);
@@ -38,4 +37,9 @@ pub fn largest_product_in_a_grid() -> u64 {
         }
     }
     max_product
+}
+
+#[test]
+fn test() {
+    assert_eq!(largest_product_in_a_grid(), 70600674);
 }
