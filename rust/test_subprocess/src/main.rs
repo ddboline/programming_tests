@@ -1,9 +1,7 @@
 extern crate subprocess;
-extern crate failure;
 
 use std::io::{BufReader, BufRead};
 use subprocess::Exec;
-use failure::Error;
 
 fn combine_pids_proc(v: &[String]) -> Vec<String> {
     let mut pids: Vec<String> = v.get(0..3).unwrap().to_vec();
@@ -13,8 +11,8 @@ fn combine_pids_proc(v: &[String]) -> Vec<String> {
 }
 
 
-fn main() -> Result<(), Error> {
-    let stream_obj = Exec::shell("ps -eF").stream_stdout()?;
+fn main() {
+    let stream_obj = Exec::shell("ps -eF").stream_stdout().unwrap();
 
     let mut headers = Vec::new();
     let _ = BufReader::new(stream_obj)
@@ -43,5 +41,4 @@ fn main() -> Result<(), Error> {
             Some(_result.clone())
         })
         .collect::<Vec<_>>();
-    Ok(())
 }
