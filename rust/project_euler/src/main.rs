@@ -261,30 +261,21 @@ impl LargeSum {
 
         let len = if self_len > v1_len { self_len } else { v1_len };
 
+        v2.v.resize(len, 0);
+
         for idx in 0..len {
-            let mut tmp = 0;
-            if self.v.len() > idx {
-                tmp += self.v[idx]
-            }
-            if v1.v.len() > idx {
-                tmp += v1.v[idx]
-            }
-            if v2.v.len() > idx {
-                tmp += v2.v[idx]
-            }
+            let tmp = self.v.get(idx).unwrap_or(&0) + v1.v.get(idx).unwrap_or(&0) +
+                v2.v.get(idx).unwrap_or(&0);
 
-            while v2.v.len() < idx + 1 {
-                v2.v.push(0)
-            }
             v2.v[idx] = tmp % 10;
-
             if tmp >= 10 {
-                while v2.v.len() < idx + 2 {
-                    v2.v.push(0)
+                if v2.v.len() <= idx + 1 {
+                    v2.v.resize(idx + 2, 0);
                 }
                 v2.v[idx + 1] = tmp / 10;
             }
         }
+        println!("a {:?}\nb {:?}\nc {:?}", self.v, v1.v, v2.v);
         v2
     }
 }
