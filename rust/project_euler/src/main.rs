@@ -292,14 +292,14 @@ fn large_sum() -> String {
 
 fn get_next_collatz_element(n: u64) -> u64 {
     match n % 2 {
-        0 => {n / 2},
-        1 => {3*n + 1},
-        _ => {panic!("Something bad happened {}", n)}
+        0 => n / 2,
+        1 => 3 * n + 1,
+        _ => panic!("I don't know how this is possible {}", n),
     }
 }
 
 fn find_collatz_chain(n: u64) -> Vec<u64> {
-    let mut collatz_chain: Vec<u64> = vec!(n);
+    let mut collatz_chain: Vec<u64> = vec![n];
     let mut current_n = n;
     while current_n != 1 {
         current_n = get_next_collatz_element(current_n);
@@ -312,15 +312,20 @@ fn find_longest_chain(largest_n: u64) -> u64 {
     let mut longest_chain_length = 0;
     let mut longest_chain_start = 1;
     let mut visited_nodes = HashSet::new();
-    for n in 1..(largest_n+1) {
-        if visited_nodes.contains(&n) {continue}
+    for n in 1..(largest_n + 1) {
+        if visited_nodes.contains(&n) {
+            continue;
+        }
 
         let current_chain = find_collatz_chain(n);
         if current_chain.len() > longest_chain_length {
             longest_chain_length = current_chain.len();
             longest_chain_start = n;
         }
-        current_chain.iter().map(|&x| {visited_nodes.insert(x.clone())}).collect::<Vec<_>>();
+        current_chain
+            .iter()
+            .map(|&x| visited_nodes.insert(x.clone()))
+            .collect::<Vec<_>>();
     }
     longest_chain_start
 }
