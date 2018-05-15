@@ -32,10 +32,10 @@ pub fn find_longest_chain(largest_n: u64) -> u64 {
             longest_chain_length = current_chain.len();
             longest_chain_start = n;
         }
-        current_chain
+        let _: Vec<_> = current_chain
             .iter()
             .map(|&x| visited_nodes.insert(x.clone()))
-            .collect::<Vec<_>>();
+            .collect();
     }
     longest_chain_start
 }
