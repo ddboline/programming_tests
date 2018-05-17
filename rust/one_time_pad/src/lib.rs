@@ -9,7 +9,7 @@ use rayon::prelude::*;
 use rand::distributions::Range;
 use rand::distributions::Sample;
 use pyo3::prelude::*;
-
+use py::{class, methods, modinit};
 
 struct OneTimePad {
     valid_chars: Vec<char>,
@@ -105,13 +105,13 @@ fn get_string(input: &[char]) -> String {
         .join("")
 }
 
-#[py::class]
+#[class]
 struct PyOneTimePad {
     pad: OneTimePad,
     token: PyToken,
 }
 
-#[py::methods]
+#[methods]
 impl PyOneTimePad {
     #[new]
     fn __new__(obj: &PyRawObject, keysize: usize, input: String) -> PyResult<()> {
@@ -136,7 +136,7 @@ impl PyOneTimePad {
     }
 }
 
-#[py::modinit(_one_time_pad)]
+#[modinit(_one_time_pad)]
 fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<PyOneTimePad>()?;
 
