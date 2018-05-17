@@ -7,6 +7,6 @@ func add(x, y float64) float64 {
 }
 
 func main() {
-        var x, y float32 = 42, 13
+	var x, y float32 = 42, 13
 	fmt.Println(add(float64(x), float64(y)))
 }

@@ -13,5 +13,5 @@ func main() {
 	p = &j         // point to j
 	*p = *p / 37   // divide j through the pointer
 	fmt.Println(j) // see the new value of j
-        fmt.Printf("%p\n", &i)
+	fmt.Printf("%p\n", &i)
 }
