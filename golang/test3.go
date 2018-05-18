@@ -17,7 +17,7 @@ func needFloat(x float64) float64 {
 
 func main() {
 	fmt.Println("x is of type %T\n", Big)
-// 	fmt.Println(needInt(Small))
-// 	fmt.Println(needFloat(Small))
-// 	fmt.Println(needFloat(Big))
+	// 	fmt.Println(needInt(Small))
+	// 	fmt.Println(needFloat(Small))
+	// 	fmt.Println(needFloat(Big))
 }
