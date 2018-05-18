@@ -6,8 +6,11 @@ authors = ["Daniel Boline <ddboline@gmail.com>"]
 [dependencies]
 rayon = "0.8"
 rand = "*"
-pyo3 = "0.2"
 
 [lib]
 name = "one_time_pad"
 crate-type = ["cdylib"]
+
+[dependencies.pyo3]
+version = "0.2"
+features = ["extension-module"]
