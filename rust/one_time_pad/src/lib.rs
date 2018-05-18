@@ -2,14 +2,16 @@
 #![feature(const_fn, const_align_of, const_size_of, const_ptr_null, const_ptr_null_mut)]
 
 extern crate pyo3;
-extern crate rayon;
 extern crate rand;
+extern crate rayon;
 
-use rayon::prelude::*;
+use py::class as pyclass;
+use py::methods as pymethods;
+use py::modinit as pymodinit;
+use pyo3::prelude::*;
 use rand::distributions::Range;
 use rand::distributions::Sample;
-use pyo3::prelude::*;
-use py::{class, methods, modinit};
+use rayon::prelude::*;
 
 struct OneTimePad {
     valid_chars: Vec<char>,
@@ -105,21 +107,19 @@ fn get_string(input: &[char]) -> String {
         .join("")
 }
 
-#[class]
+#[pyclass]
 struct PyOneTimePad {
     pad: OneTimePad,
     token: PyToken,
 }
 
-#[methods]
+#[pymethods]
 impl PyOneTimePad {
     #[new]
     fn __new__(obj: &PyRawObject, keysize: usize, input: String) -> PyResult<()> {
-        obj.init(|t| {
-            PyOneTimePad {
-                pad: OneTimePad::new(keysize, &input),
-                token: t,
-            }
+        obj.init(|t| PyOneTimePad {
+            pad: OneTimePad::new(keysize, &input),
+            token: t,
         })
     }
 
@@ -136,16 +136,38 @@ impl PyOneTimePad {
     }
 }
 
-#[modinit(_one_time_pad)]
+#[pymodinit(one_time_pad)]
 fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<PyOneTimePad>()?;
 
     Ok(())
 }
 
-
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn test_one_time_pad() {
+        let mut otp = ::OneTimePad::new(10, "Hello There");
+        otp.encrypt_key = [17, 21, 0, 7, 39, 35, 36, 50, 27, 30]
+            .into_iter()
+            .map(|&x| x as usize)
+            .collect();
+        let valid_chars = otp.valid_chars
+            .iter()
+            .map(|c| c.to_string())
+            .collect::<Vec<_>>()
+            .join("");
+        assert_eq!(
+            valid_chars,
+            " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+        );
+        assert_eq!(otp.decrypt_string("WHAT UP"), "FnAMNmg");
+        assert_eq!(otp.encrypt_string("FnAMNmg"), "WHAT UP");
+        assert_eq!(otp.encrypt_string("WHAT UP"), "ncAamCz");
+        assert_eq!(otp.decrypt_string("ncAamCz"), "WHAT UP");
+        assert_eq!(otp.get_key_str(), "QU Gmijxad");
+    }
+
     #[test]
     fn it_works() {
         assert_eq!(2 + 2, 4);
