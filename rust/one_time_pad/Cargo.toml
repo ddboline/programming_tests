@@ -12,5 +12,6 @@ name = "one_time_pad"
 crate-type = ["cdylib"]
 
 [dependencies.pyo3]
-version = "0.2"
-features = ["extension-module"]
+version = "*"
+default-features = false
+# features = ["extension-module"]

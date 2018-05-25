@@ -2,7 +2,7 @@ import sys
 
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
-from setuptools_rust import RustExtension
+from setuptools_rust import RustExtension, Binding
 
 
 class PyTest(TestCommand):
@@ -34,7 +34,7 @@ setup(
         'Operating System :: MacOS :: MacOS X',
     ],
     packages=['one_time_pad'],
-    rust_extensions=[RustExtension('one_time_pad._one_time_pad', 'Cargo.toml')],
+    rust_extensions=[RustExtension('one_time_pad._one_time_pad', 'Cargo.toml', binding=Binding.PyO3)],
     install_requires=install_requires,
     tests_require=tests_require,
     setup_requires=setup_requires,

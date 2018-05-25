@@ -136,7 +136,7 @@ impl PyOneTimePad {
     }
 }
 
-#[pymodinit(one_time_pad)]
+#[pymodinit(_one_time_pad)]
 fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<PyOneTimePad>()?;
 
