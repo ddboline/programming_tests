@@ -195,7 +195,7 @@ def dump_csv_to_sql(create_tables=False):
 
     from socket import gethostbyname
     hosts_to_remove = []
-    for host in ('ddbolineathome.mooo.com', 'ddbolineinthecloud.mooo.com'):
+    for host in ('home.ddboline.net', 'cloud.ddboline.net'):
         hosts_to_remove.extend([host, gethostbyname(host)])
 
     for host in hosts_to_remove:
@@ -347,7 +347,7 @@ def analyze_single_file_ssh(infile, logcsv):
     for line in infile:
         dt_, hst, usr = analyze_single_line_ssh(line)
         if hst in ['24.44.92.189', '129.49.56.207', '75.72.228.84',
-                 'ddbolineathome.mooo.com', 'ool-182c5cbd.dyn.optonline.net',
+                 'home.ddboline.net', 'ool-182c5cbd.dyn.optonline.net',
                  'dboline.physics.sunysb.edu']:
             continue
         if dt_ and hst and usr:
@@ -371,7 +371,7 @@ def analyze_single_file_apache(infile, logcsv):
             hst = line.split()[0]
             dt_ = parse_apache_time_str(line.split()[3].replace('[', ''))
             if hst in ['24.44.92.189', '129.49.56.207', '75.72.228.84',
-                     'ddbolineathome.mooo.com',
+                     'home.ddboline.net',
                      'ool-182c5cbd.dyn.optonline.net',
                      'dboline.physics.sunysb.edu']:
                 continue

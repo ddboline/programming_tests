@@ -32,7 +32,7 @@ class OpenPostgreSQLsshTunnel(object):
     def __enter__(self):
         if HOSTNAME != 'dilepton-tower':
             _cmd = 'ssh -N -L localhost:5432:localhost:5432 ' \
-                   + 'ddboline@ddbolineathome.mooo.com'
+                   + 'ddboline@home.ddboline.net'
             args = shlex.split(_cmd)
             self.tunnel_process = Popen(args, shell=False)
             time.sleep(5)
