@@ -4,14 +4,16 @@ version = "0.1.0"
 authors = ["Daniel Boline <ddboline@gmail.com>"]
 
 [dependencies]
-rayon = "0.8"
+rayon = "1.0"
 rand = "*"
+spin="0.4.10"
+pyo3cls = "0.5"
 
 [lib]
 name = "one_time_pad"
 crate-type = ["cdylib"]
 
 [dependencies.pyo3]
-version = "*"
+version = "0.5"
 default-features = false
-# features = ["extension-module"]
+features = ["extension-module"]

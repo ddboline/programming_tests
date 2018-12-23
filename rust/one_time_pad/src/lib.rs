@@ -1,13 +1,13 @@
-#![feature(proc_macro, specialization, const_fn)]
-#![feature(const_fn, const_align_of, const_size_of, const_ptr_null, const_ptr_null_mut)]
+#![feature(specialization, const_fn)]
 
 extern crate pyo3;
+
+#[macro_use]
+extern crate pyo3cls;
+
 extern crate rand;
 extern crate rayon;
 
-use py::class as pyclass;
-use py::methods as pymethods;
-use py::modinit as pymodinit;
 use pyo3::prelude::*;
 use rand::distributions::Range;
 use rand::distributions::Sample;
@@ -136,7 +136,7 @@ impl PyOneTimePad {
     }
 }
 
-#[pymodinit(_one_time_pad)]
+#[mod3init(_one_time_pad)]
 fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<PyOneTimePad>()?;
 
