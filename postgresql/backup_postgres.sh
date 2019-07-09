@@ -8,6 +8,8 @@ mydb
 podcatch
 postgres
 recipes
+rust_auth_server
+security_logs
 ssh_intrusion_logs
 texas_high_value_datasets
 rust_auth_server
