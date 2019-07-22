@@ -18,3 +18,5 @@
 *.lock
 *.log
 .cache
+target/
+config.env
