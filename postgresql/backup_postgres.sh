@@ -1,6 +1,7 @@
 #!/bin/bash
 
 DATABASES="
+bucardo
 florida_doc_inmate_info
 garmin_summary
 movie_queue
@@ -11,9 +12,8 @@ recipes
 rust_auth_server
 security_logs
 ssh_intrusion_logs
-texas_high_value_datasets
-rust_auth_server
 sync_app_cache
+texas_high_value_datasets
 "
 
 for DB in $DATABASES;
