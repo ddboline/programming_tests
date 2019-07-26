@@ -1,16 +1,14 @@
-#![feature(specialization, const_fn)]
+// #![feature(specialization, const_fn)]
 
-extern crate pyo3;
+// extern crate rand;
+// extern crate rayon;
 
 #[macro_use]
 extern crate pyo3cls;
 
-extern crate rand;
-extern crate rayon;
-
-use pyo3::prelude::*;
-use rand::distributions::Range;
-use rand::distributions::Sample;
+use pyo3::{PyRawObject, PyResult, Python};
+use pyo3::types::PyModule;
+use rand::distributions::{Distribution, Uniform};
 use rayon::prelude::*;
 
 struct OneTimePad {
@@ -95,7 +93,7 @@ fn find_valid_characters(input: &str) -> Vec<char> {
 
 fn get_one_time_pad_key(range: usize, keysize: usize) -> Vec<usize> {
     let mut rng = rand::thread_rng();
-    let mut otup = Range::new(0, range);
+    let otup = Uniform::from(0..range);
     (0..keysize).map(|_| otup.sample(&mut rng)).collect()
 }
 
@@ -110,16 +108,14 @@ fn get_string(input: &[char]) -> String {
 #[pyclass]
 struct PyOneTimePad {
     pad: OneTimePad,
-    token: PyToken,
 }
 
 #[pymethods]
 impl PyOneTimePad {
     #[new]
-    fn __new__(obj: &PyRawObject, keysize: usize, input: String) -> PyResult<()> {
-        obj.init(|t| PyOneTimePad {
-            pad: OneTimePad::new(keysize, &input),
-            token: t,
+    fn new(obj: &PyRawObject, input: String) {
+        obj.init(PyOneTimePad {
+            pad: OneTimePad::new(input.len(), &input),
         })
     }
 
@@ -136,8 +132,8 @@ impl PyOneTimePad {
     }
 }
 
-#[mod3init(_one_time_pad)]
-fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
+#[pymodule]
+fn _one_time_pad(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<PyOneTimePad>()?;
 
     Ok(())
@@ -147,7 +143,7 @@ fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 mod tests {
     #[test]
     fn test_one_time_pad() {
-        let mut otp = ::OneTimePad::new(10, "Hello There");
+        let mut otp = crate::OneTimePad::new(10, "Hello There");
         otp.encrypt_key = [17, 21, 0, 7, 39, 35, 36, 50, 27, 30]
             .into_iter()
             .map(|&x| x as usize)
