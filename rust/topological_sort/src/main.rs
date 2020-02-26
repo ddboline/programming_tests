@@ -1,6 +1,7 @@
+use anyhow::{format_err, Error};
 use std::collections::HashSet;
 use std::fmt::Debug;
-use anyhow::{Error, format_err};
+use log::debug;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub struct NodeIndex(usize);
@@ -48,13 +49,12 @@ pub struct GraphVariable<T: Debug> {
 
 impl<T: Debug> Default for GraphVariable<T> {
     fn default() -> Self {
-        Self {nodes: Vec::new()}
+        Self { nodes: Vec::new() }
     }
 }
 
 impl<T: Debug + Eq> GraphVariable<T> {
-    pub fn get_node_by_data(&self, data: &T) -> Option<NodeIndex>
-    {
+    pub fn get_node_by_data(&self, data: &T) -> Option<NodeIndex> {
         for (idx, node) in self.nodes.iter().enumerate() {
             if &node.data == data {
                 return Some(idx.into());
@@ -78,13 +78,10 @@ impl<T: Debug> GraphVariable<T> {
     }
 
     /// Add child to existing node
-    pub fn push<U>(
-        &mut self,
-        parent_index: U,
-        index_or_data: IndexOrData<T>,
-    ) -> Option<NodeIndex>
-    where U: Into<Option<NodeIndex>>
-     {
+    pub fn push<U>(&mut self, parent_index: U, index_or_data: IndexOrData<T>) -> Option<NodeIndex>
+    where
+        U: Into<Option<NodeIndex>>,
+    {
         let parent_index: NodeIndex = match parent_index.into() {
             Some(p) => p,
             None => {
@@ -121,13 +118,17 @@ pub fn kahn_algorithm<T: Debug>(dag: &GraphVariable<T>) -> Result<Vec<NodeIndex>
     let mut inverse_graph: Vec<_> = (0..dag.get_nodes().len()).map(|_| HashSet::new()).collect();
     for (idx, node) in dag.get_nodes().iter().enumerate() {
         for children in node.get_children() {
-            inverse_graph[children.idx()].insert(idx);
+            if let Some(child) = inverse_graph.get_mut(children.idx()) {
+                child.insert(idx);
+            } else {
+                panic!("{} is not a valid index", children.idx());
+            }
         }
     }
     let dataless_graph: Vec<_> = dag
         .get_nodes()
         .iter()
-        .map(|n| n.get_children().to_vec())
+        .map(|n| n.get_children())
         .collect();
 
     let mut sorted_elements = Vec::new();
@@ -140,15 +141,15 @@ pub fn kahn_algorithm<T: Debug>(dag: &GraphVariable<T>) -> Result<Vec<NodeIndex>
 
     while let Some(node_idx) = nodes_without_incoming_edge.pop() {
         sorted_elements.push(node_idx.into());
-        for child in &dataless_graph[node_idx] {
+        for child in dataless_graph[node_idx] {
             inverse_graph[child.idx()].remove(&node_idx);
             if inverse_graph[child.idx()].is_empty() {
                 nodes_without_incoming_edge.push(child.idx());
             }
         }
-        println!("{:?}", sorted_elements);
-        println!("{:?}", nodes_without_incoming_edge);
-        println!("{:?}", inverse_graph);
+        debug!("{:?}", sorted_elements);
+        debug!("{:?}", nodes_without_incoming_edge);
+        debug!("{:?}", inverse_graph);
     }
 
     for node in &inverse_graph {
@@ -192,7 +193,10 @@ fn get_bad_graph() -> GraphVariable<&'static str> {
 fn main() -> Result<(), Error> {
     let graph = get_good_graph();
 
-    let result: Vec<_> = kahn_algorithm(&graph)?.into_iter().map(|i| graph.get_node_by_index(i)).collect();
+    let result: Vec<_> = kahn_algorithm(&graph)?
+        .into_iter()
+        .filter_map(|i| graph.get_node_by_index(i).map(|x| x.data))
+        .collect();
     println!("{:?}", result);
 
     let graph = get_bad_graph();
