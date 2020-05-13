@@ -3,19 +3,21 @@
 DATABASES="
 bucardo
 florida_doc_inmate_info
-garmin_summary
-movie_queue
 mydb
-podcatch
 postgres
 recipes
+texas_high_value_datasets
+
+aws_app_cache
+diary_app_cache
+calendar_app_cache
+garmin_summary
+movie_queue
+podcatch
 rust_auth_server
 security_logs
 ssh_intrusion_logs
 sync_app_cache
-texas_high_value_datasets
-aws_app_cache
-diary_app_cache
 "
 
 for DB in $DATABASES;
