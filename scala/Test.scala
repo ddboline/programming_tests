@@ -10,9 +10,9 @@ object Test {
     def delayed( t: => Long ) = {
         println( "In delayed method" )
         val _t0 = t
-        println( "Param: " + _t0 )
+        println( s"Param: ${_t0}")
         val _t1 = t
-        println( "Param: " + _t1 )
+        println( s"Param: ${_t1}")
         t
     }
 }
