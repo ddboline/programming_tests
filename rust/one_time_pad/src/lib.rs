@@ -1,15 +1,9 @@
-// #![feature(specialization, const_fn)]
-
-// extern crate rand;
-// extern crate rayon;
-
-#[macro_use]
-extern crate pyo3cls;
-
-use pyo3::{PyRawObject, PyResult, Python};
+use pyo3cls::{pymethods, pyclass, pymodule};
 use pyo3::types::PyModule;
+use pyo3::{PyResult, Python, PyObject};
 use rand::distributions::{Distribution, Uniform};
-use rayon::prelude::*;
+use rayon::iter::{ParallelIterator, IntoParallelRefIterator, IntoParallelIterator};
+// use rayon::prelude::*;
 
 struct OneTimePad {
     valid_chars: Vec<char>,
@@ -56,10 +50,13 @@ impl OneTimePad {
     }
 
     fn get_key_str(&self) -> String {
-        get_string(&self.encrypt_key
-            .par_iter()
-            .map(|&k| self.valid_chars[k as usize])
-            .collect::<Vec<char>>())
+        get_string(
+            &self
+                .encrypt_key
+                .par_iter()
+                .map(|&k| self.valid_chars[k as usize])
+                .collect::<Vec<char>>(),
+        )
     }
 }
 
@@ -113,10 +110,10 @@ struct PyOneTimePad {
 #[pymethods]
 impl PyOneTimePad {
     #[new]
-    fn new(obj: &PyRawObject, input: String) {
-        obj.init(PyOneTimePad {
+    fn new(input: String) -> Self {
+        Self {
             pad: OneTimePad::new(input.len(), &input),
-        })
+        }
     }
 
     fn encrypt_string(&self, input: String) -> PyResult<String> {
@@ -133,7 +130,7 @@ impl PyOneTimePad {
 }
 
 #[pymodule]
-fn _one_time_pad(_py: Python, m: &PyModule) -> PyResult<()> {
+fn one_time_pad(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<PyOneTimePad>()?;
 
     Ok(())
@@ -145,10 +142,11 @@ mod tests {
     fn test_one_time_pad() {
         let mut otp = crate::OneTimePad::new(10, "Hello There");
         otp.encrypt_key = [17, 21, 0, 7, 39, 35, 36, 50, 27, 30]
-            .into_iter()
+            .iter()
             .map(|&x| x as usize)
             .collect();
-        let valid_chars = otp.valid_chars
+        let valid_chars = otp
+            .valid_chars
             .iter()
             .map(|c| c.to_string())
             .collect::<Vec<_>>()
