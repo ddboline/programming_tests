@@ -1,3 +1,4 @@
+use auto_complete::trie::Trie;
 use std::collections::BTreeMap;
 use std::sync::Arc;
 

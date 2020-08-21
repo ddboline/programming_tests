@@ -1,15 +1,18 @@
+use std::collections::BTreeMap;
+use std::sync::Arc;
+
 #[derive(Default)]
-struct Trie<T> {
+pub struct Trie<T> {
     size: usize,
     root: Node<T>,
 }
 
 impl<T> Trie<T> {
-    fn len(&self) -> usize {
+    pub fn len(&self) -> usize {
         self.size
     }
 
-    fn insert<U: AsRef<[u8]>>(&mut self, key: U, value: T) {
+    pub fn insert<U: AsRef<[u8]>>(&mut self, key: U, value: T) {
         let mut node = &mut self.root;
         for c in key.as_ref() {
             node = node.children.entry(*c).or_default();
@@ -18,7 +21,7 @@ impl<T> Trie<T> {
         self.size += 1;
     }
 
-    fn delete<U: AsRef<[u8]>>(&mut self, key: U) -> (bool, Option<Arc<T>>) {
+    pub fn delete<U: AsRef<[u8]>>(&mut self, key: U) -> (bool, Option<Arc<T>>) {
         fn _delete<T, U: AsRef<[u8]>>(
             node: &mut Node<T>,
             key: U,
@@ -50,7 +53,7 @@ impl<T> Trie<T> {
         (is_empty, value)
     }
 
-    fn find_node<U: AsRef<[u8]>>(&self, key: U) -> Option<&Node<T>> {
+    pub fn find_node<U: AsRef<[u8]>>(&self, key: U) -> Option<&Node<T>> {
         let mut node = &self.root;
         for c in key.as_ref() {
             match node.children.get(c) {
@@ -63,7 +66,7 @@ impl<T> Trie<T> {
         Some(node)
     }
 
-    fn find_node_mut<U: AsRef<[u8]>>(&mut self, key: U) -> Option<&mut Node<T>> {
+    pub fn find_node_mut<U: AsRef<[u8]>>(&mut self, key: U) -> Option<&mut Node<T>> {
         let mut node = &mut self.root;
         for c in key.as_ref() {
             match node.children.get_mut(c) {
@@ -76,15 +79,15 @@ impl<T> Trie<T> {
         Some(node)
     }
 
-    fn find<U: AsRef<[u8]>>(&self, key: U) -> Option<Arc<T>> {
+    pub fn find<U: AsRef<[u8]>>(&self, key: U) -> Option<Arc<T>> {
         self.find_node(key).and_then(|node| node.value.clone())
     }
 
-    fn find_mut<U: AsRef<[u8]>>(&mut self, key: U) -> Option<Arc<T>> {
+    pub fn find_mut<U: AsRef<[u8]>>(&mut self, key: U) -> Option<Arc<T>> {
         self.find_node_mut(key).and_then(|node| node.value.clone())
     }
 
-    fn keys_with_prefix<U: AsRef<[u8]>>(&mut self, prefix: &U) -> Vec<Vec<u8>> {
+    pub fn keys_with_prefix<U: AsRef<[u8]>>(&mut self, prefix: &U) -> Vec<Vec<u8>> {
         let mut results = Vec::new();
         if let Some(node) = self.find_node(prefix) {
             node.collect(&mut prefix.as_ref().to_vec(), &mut |prefix, _| {
@@ -94,7 +97,7 @@ impl<T> Trie<T> {
         results
     }
 
-    fn values_with_prefix<U: AsRef<[u8]>>(&mut self, prefix: &U) -> Vec<Arc<T>> {
+    pub fn values_with_prefix<U: AsRef<[u8]>>(&mut self, prefix: &U) -> Vec<Arc<T>> {
         let mut results = Vec::new();
         if let Some(node) = self.find_node(prefix) {
             node.collect(&mut prefix.as_ref().to_vec(), &mut |_, value| {
@@ -104,7 +107,7 @@ impl<T> Trie<T> {
         results
     }
 
-    fn items_with_prefix<U: AsRef<[u8]>>(&mut self, prefix: &U) -> Vec<(Vec<u8>, Arc<T>)> {
+    pub fn items_with_prefix<U: AsRef<[u8]>>(&mut self, prefix: &U) -> Vec<(Vec<u8>, Arc<T>)> {
         let mut results = Vec::new();
         if let Some(node) = self.find_node(prefix) {
             node.collect(&mut prefix.as_ref().to_vec(), &mut |prefix, value| {
@@ -115,7 +118,7 @@ impl<T> Trie<T> {
     }
 }
 
-struct Node<T> {
+pub struct Node<T> {
     children: BTreeMap<u8, Node<T>>,
     value: Option<Arc<T>>,
 }
