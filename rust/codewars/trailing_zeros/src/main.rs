@@ -11,7 +11,7 @@ fn main() {
 fn zeros(n: u64) -> u64 {
     let mut num_zeros = 0;
     let mut denom = 5;
-    while n > denom {
+    while n >= denom {
         num_zeros += n / denom;
         denom *= 5;
     }
