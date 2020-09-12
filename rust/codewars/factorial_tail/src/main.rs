@@ -1,8 +1,8 @@
-use std::collections::BTreeMap;
 use lazy_static::lazy_static;
+use std::collections::BTreeMap;
 
 lazy_static! {
-    static ref LIST_OF_PRIMES: Vec<usize> = get_primes();
+    static ref LIST_OF_PRIMES: Vec<usize> = get_primes(256);
 }
 
 // fixme
@@ -23,8 +23,10 @@ fn zeroes(base: i32, number: i32) -> i32 {
     lowest_v.unwrap_or(0) as i32
 }
 
-fn get_primes() -> Vec<usize> {
-    let mut array = [true; 256];
+const MAXIMUM_PRIME: usize = 256;
+
+fn get_primes_old() -> Vec<usize> {
+    let mut array = [true; MAXIMUM_PRIME];
     array[0] = false;
     array[1] = false;
     for i in 2..=128 {
@@ -37,6 +39,16 @@ fn get_primes() -> Vec<usize> {
     (0..256)
         .filter_map(|i| if array[i] { Some(i as usize) } else { None })
         .collect()
+}
+
+fn get_primes(max_number: usize) -> Vec<usize> {
+    let mut primes = vec![2];
+    for candidate in 2..=max_number {
+        if !primes.iter().any(|prime| candidate % prime == 0) {
+            primes.push(candidate);
+        }
+    }
+    primes
 }
 
 fn find_prime_factors(base: usize, list_of_primes: &[usize]) -> Vec<usize> {
@@ -58,10 +70,12 @@ fn find_prime_factors(base: usize, list_of_primes: &[usize]) -> Vec<usize> {
 fn prime_frequency(base: i32, list_of_primes: &[usize]) -> BTreeMap<usize, usize> {
     let prime_factors = find_prime_factors(base as usize, list_of_primes);
 
-    prime_factors.into_iter().fold(BTreeMap::new(), |mut bmap, p| {
-        *bmap.entry(p).or_default() += 1;
-        bmap
-    })
+    prime_factors
+        .into_iter()
+        .fold(BTreeMap::new(), |mut bmap, p| {
+            *bmap.entry(p).or_default() += 1;
+            bmap
+        })
 }
 
 fn legendres_formula(p: usize, n: usize) -> usize {
@@ -79,4 +93,10 @@ fn main() {
     assert_eq!(zeroes(16, 16), 3);
     assert_eq!(zeroes(21, 3158), 525);
     assert_eq!(zeroes(2, 524288), 524287);
+
+    let primes0 = get_primes_old();
+    let primes1 = get_primes(256);
+
+    println!("{:?}", primes0);
+    println!("{:?}", primes1);
 }
