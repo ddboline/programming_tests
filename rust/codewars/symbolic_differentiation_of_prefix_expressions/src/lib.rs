@@ -3,15 +3,23 @@
 /// 2. differentiate Expr to new Expr
 /// 3. simplify Expr
 /// 4. print Expr
-
 use std::fmt;
 use std::str::FromStr;
 
 fn diff(expr: &str) -> String {
-    expr.to_string()
+    let e = Expr::parse(expr);
+    println!("expr {:?}", e);
+    let d = e.diff();
+    println!("diff {:?}", d);
+    d.simplify().to_string()
 }
 
-#[derive(Clone)]
+fn repr(expr: &str) -> String {
+    let s = Expr::parse(expr);
+    s.to_string()
+}
+
+#[derive(Clone, Debug)]
 enum Expr {
     Arg(Arg),
     Func {
@@ -25,19 +33,108 @@ enum Expr {
     },
 }
 
+impl fmt::Display for Expr {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Arg(a) => write!(f, "{}", a),
+            Self::Func { func, arg } => write!(f, "({} {})", func, arg),
+            Self::Op { op, arg1, arg2 } => write!(f, "({} {} {})", op, arg1, arg2),
+        }
+    }
+}
+
 impl Expr {
     fn parse(s: &str) -> Self {
-        let begin = s.find('(');
-        let end = s.find(')');
+        let mut iter = s.split_whitespace();
+        Self::parse_internal(&mut iter).unwrap()
+    }
 
-        Self::Arg(Arg::Int(0))
+    fn parse_internal<'a, T: Iterator<Item = &'a str>>(iter: &mut T) -> Option<Self> {
+        if let Some(s) = iter.next() {
+            if s.starts_with("(") {
+                if let Ok(func) = s[1..].parse::<Func>() {
+                    Some(Self::Func {
+                        func,
+                        arg: Box::new(Self::parse_internal(iter).unwrap()),
+                    })
+                } else if let Ok(op) = s[1..].parse::<Op>() {
+                    Some(Self::Op {
+                        op,
+                        arg1: Box::new(Self::parse_internal(iter).unwrap()),
+                        arg2: Box::new(Self::parse_internal(iter).unwrap()),
+                    })
+                } else {
+                    panic!("This shouldn't happen...")
+                }
+            } else if s.ends_with(")") {
+                let end = s.find(')').unwrap();
+                Some(Self::Arg(s[..end].parse::<Arg>().unwrap()))
+            } else {
+                Some(Self::Arg(s.parse::<Arg>().unwrap()))
+            }
+        } else {
+            None
+        }
+    }
+
+    fn simplify(&self) -> Self {
+        match self {
+            Self::Arg(a) => Self::Arg(*a),
+            Self::Func { func, arg } => Self::Func {
+                func: *func,
+                arg: Box::new(arg.simplify()),
+            },
+            Self::Op { op, arg1, arg2 } => {
+                if !arg1.contains_variable() && !arg2.contains_variable() {
+                    let val1 = match arg1.simplify() {
+                        Self::Arg(Arg::Int(i)) => i as f64,
+                        Self::Arg(Arg::Float(f)) => f,
+                        _ => unreachable!(),
+                    };
+                    let val2 = match arg2.simplify() {
+                        Self::Arg(Arg::Int(i)) => i as f64,
+                        Self::Arg(Arg::Float(f)) => f,
+                        _ => unreachable!(),
+                    };
+                    let val = match op {
+                        Op::Add => val1 + val2,
+                        Op::Sub => val1 - val2,
+                        Op::Mul => val1 * val2,
+                        Op::Div => val1 / val2,
+                        Op::Pow => val1.powf(val2),
+                    };
+                    Self::Arg(Arg::Float(val))
+                } else {
+                    Self::Op {
+                        op: *op,
+                        arg1: Box::new(arg1.simplify()),
+                        arg2: Box::new(arg2.simplify()),
+                    }
+                }
+            }
+        }
+    }
+
+    fn contains_variable(&self) -> bool {
+        match self {
+            Self::Arg(Arg::Int(_)) | Self::Arg(Arg::Float(_)) => return false,
+            Self::Arg(Arg::Variable) => true,
+            Self::Func { func: _, arg } => arg.contains_variable(),
+            Self::Op { op: _, arg1, arg2 } => {
+                if arg1.contains_variable() || arg2.contains_variable() {
+                    true
+                } else {
+                    false
+                }
+            }
+        }
     }
 
     fn diff(&self) -> Self {
+        println!("self {:?}", self);
         match self {
-            Self::Arg(Arg::Int(_)) => Self::Arg(Arg::Int(0)),
-            Self::Arg(Arg::Float(_)) => Self::Arg(Arg::Int(0)),
-            Self::Arg(Arg::Symbol(s)) => Self::Arg(Arg::Int(1)),
+            Self::Arg(Arg::Int(_)) | Self::Arg(Arg::Float(_)) => Self::Arg(Arg::Int(0)),
+            Self::Arg(Arg::Variable) => Self::Arg(Arg::Int(1)),
             Self::Func { func, arg } => {
                 match func {
                     Func::Cos => Self::Op {
@@ -96,78 +193,103 @@ impl Expr {
                 };
                 Self::Arg(Arg::Int(0))
             }
-            Self::Op { op, arg1, arg2 } => {
-                match op {
-                    Op::Add => Self::Op {
-                        op: Op::Add,
+            Self::Op { op, arg1, arg2 } => match op {
+                Op::Add => Self::Op {
+                    op: Op::Add,
+                    arg1: Box::new(arg1.diff()),
+                    arg2: Box::new(arg2.diff()),
+                },
+                Op::Sub => Self::Op {
+                    op: Op::Sub,
+                    arg1: Box::new(arg1.diff()),
+                    arg2: Box::new(arg2.diff()),
+                },
+                Op::Mul => Self::Op {
+                    op: Op::Add,
+                    arg1: Box::new(Self::Op {
+                        op: Op::Mul,
                         arg1: Box::new(arg1.diff()),
-                        arg2: Box::new(arg2.diff()),
-                    },
-                    Op::Sub => Self::Op {
-                        op: Op::Sub,
-                        arg1: Box::new(arg1.diff()),
-                        arg2: Box::new(arg2.diff()),
-                    },
-                    Op::Mul => Self::Op {
-                        op: Op::Add,
-                        arg1: Box::new(
-                            Self::Op {
-                                op: Op::Mul,
-                                arg1: Box::new(arg1.diff()),
-                                arg2: arg2.clone(),
-                            }
-                        ),
-                        arg2: Box::new(
-                            Self::Op {
-                                op: Op::Mul,
-                                arg1: arg1.clone(),
-                                arg2: Box::new(arg2.diff()),
-                            }
-                        )
-                    },
-                    Op::Div => Self::Op {
+                        arg2: arg2.clone(),
+                    }),
+                    arg2: Box::new(Self::Op {
                         op: Op::Mul,
                         arg1: arg1.clone(),
-                        arg2: Box::new(
-                            Self::Op {
-                                op: Op::Pow,
-                                arg1: arg2.clone(),
-                                arg2: Box::new(Self::Arg(Arg::Int(-1))),
-                            }
-                        )
-                    }.diff(),
-                    Op::Pow => Self::Op {
-                        op: Op::Mul,
-                        arg1: Box::new(
+                        arg2: Box::new(arg2.diff()),
+                    }),
+                },
+                Op::Div => Self::Op {
+                    op: Op::Mul,
+                    arg1: arg1.clone(),
+                    arg2: Box::new(Self::Op {
+                        op: Op::Pow,
+                        arg1: arg2.clone(),
+                        arg2: Box::new(Self::Arg(Arg::Int(-1))),
+                    }),
+                }
+                .diff(),
+                Op::Pow => {
+                    if arg1.contains_variable() {
+                        if arg2.contains_variable() {
+                            panic!("Thar be dragons")
+                        } else {
                             Self::Op {
                                 op: Op::Mul,
-                                arg1: Box::new(arg1.diff()),
-                                arg2: arg2.clone(),
+                                arg1: Box::new(Self::Op {
+                                    op: Op::Mul,
+                                    arg1: Box::new(arg1.diff()),
+                                    arg2: arg2.clone(),
+                                }),
+                                arg2: Box::new(Self::Op {
+                                    op: Op::Add,
+                                    arg1: arg2.clone(),
+                                    arg2: Box::new(Self::Arg(Arg::Int(-1))),
+                                }),
                             }
-                        ),
-                        arg2: Box::new(
-                            Self::Op {
-                                op: Op::Add,
-                                arg1: arg2.clone(),
-                                arg2: Box::new(Self::Arg(Arg::Int(-1))),
-                            }
-                        ),
-                    },
+                        }
+                    } else {
+                        Self::Arg(Arg::Int(0))
+                    }
                 }
-            }
-        };
-        Expr::Arg(Arg::Int(0))
+            },
+        }
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Copy, Debug)]
 enum Arg {
-    Symbol(String),
+    Variable,
     Int(i64),
     Float(f64),
 }
 
-#[derive(Clone, Copy)]
+impl fmt::Display for Arg {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Arg::Variable => write!(f, "x"),
+            Arg::Int(x) => write!(f, "{}", x),
+            Arg::Float(x) => write!(f, "{}", x),
+        }
+    }
+}
+
+impl FromStr for Arg {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        if s.contains(" ") || s.contains("(") || s.contains(")") {
+            Err(())
+        } else if let Ok(i) = s.parse::<i64>() {
+            Ok(Arg::Int(i))
+        } else if let Ok(f) = s.parse::<f64>() {
+            Ok(Arg::Float(f))
+        } else if s == "x" {
+            Ok(Arg::Variable)
+        } else {
+            Err(())
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug)]
 enum Func {
     Cos,
     Sin,
@@ -176,7 +298,7 @@ enum Func {
     Ln,
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 enum Op {
     Add,
     Sub,
@@ -254,6 +376,21 @@ impl fmt::Display for Func {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_parser() {
+        for x in &[
+            "5",
+            "x",
+            "(+ x x)",
+            "(* x 2)",
+            "(cos x)",
+            "(cos (+ x 1))",
+            "(* 2 (+ 1 (^ (tan (* 2 (cos (+ x 1)))) 2)))",
+        ] {
+            assert_eq!(&repr(x), x);
+        }
+    }
 
     #[test]
     fn test_fixed() {
