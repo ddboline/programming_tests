@@ -1,5 +1,8 @@
 /// Steps:
-/// 
+/// 1. parse from string to Expr
+/// 2. differentiate Expr to new Expr
+/// 3. simplify Expr
+/// 4. print Expr
 
 use std::fmt;
 use std::str::FromStr;
@@ -23,6 +26,13 @@ enum Expr {
 }
 
 impl Expr {
+    fn parse(s: &str) -> Self {
+        let begin = s.find('(');
+        let end = s.find(')');
+
+        Self::Arg(Arg::Int(0))
+    }
+
     fn diff(&self) -> Self {
         match self {
             Self::Arg(Arg::Int(_)) => Self::Arg(Arg::Int(0)),
@@ -38,7 +48,7 @@ impl Expr {
                             arg1: Box::new(Self::Arg(Arg::Int(-1))),
                             arg2: Box::new(Self::Func {
                                 func: Func::Sin,
-                                arg: *arg,
+                                arg: arg.clone(),
                             }),
                         }),
                     },
@@ -47,7 +57,7 @@ impl Expr {
                         arg1: Box::new(arg.diff()),
                         arg2: Box::new(Self::Func {
                             func: Func::Cos,
-                            arg: *arg,
+                            arg: arg.clone(),
                         }),
                     },
                     Func::Tan => Self::Op {
@@ -60,7 +70,7 @@ impl Expr {
                                 op: Op::Pow,
                                 arg1: Box::new(Self::Func {
                                     func: Func::Cos,
-                                    arg: *arg,
+                                    arg: arg.clone(),
                                 }),
                                 arg2: Box::new(Self::Arg(Arg::Int(2))),
                             }),
@@ -71,7 +81,7 @@ impl Expr {
                         arg1: Box::new(arg.diff()),
                         arg2: Box::new(Self::Func {
                             func: Func::Exp,
-                            arg: *arg,
+                            arg: arg.clone(),
                         }),
                     },
                     Func::Ln => Self::Op {
@@ -80,7 +90,7 @@ impl Expr {
                         arg2: Box::new(Self::Op {
                             op: Op::Div,
                             arg1: Box::new(Self::Arg(Arg::Int(1))),
-                            arg2: *arg,
+                            arg2: arg.clone(),
                         }),
                     },
                 };
@@ -104,27 +114,45 @@ impl Expr {
                             Self::Op {
                                 op: Op::Mul,
                                 arg1: Box::new(arg1.diff()),
-                                arg2: Box::new(*arg2.clone()),
+                                arg2: arg2.clone(),
                             }
                         ),
                         arg2: Box::new(
                             Self::Op {
                                 op: Op::Mul,
-                                arg1: Box::new(*arg1.clone()),
+                                arg1: arg1.clone(),
                                 arg2: Box::new(arg2.diff()),
                             }
                         )
                     },
                     Op::Div => Self::Op {
-                        op: Op::Add,
+                        op: Op::Mul,
+                        arg1: arg1.clone(),
+                        arg2: Box::new(
+                            Self::Op {
+                                op: Op::Pow,
+                                arg1: arg2.clone(),
+                                arg2: Box::new(Self::Arg(Arg::Int(-1))),
+                            }
+                        )
+                    }.diff(),
+                    Op::Pow => Self::Op {
+                        op: Op::Mul,
                         arg1: Box::new(
                             Self::Op {
                                 op: Op::Mul,
-                                arg1: Box::new(arg1.)
+                                arg1: Box::new(arg1.diff()),
+                                arg2: arg2.clone(),
                             }
-                        )
+                        ),
+                        arg2: Box::new(
+                            Self::Op {
+                                op: Op::Add,
+                                arg1: arg2.clone(),
+                                arg2: Box::new(Self::Arg(Arg::Int(-1))),
+                            }
+                        ),
                     },
-                    Op::Pow => {},
                 }
             }
         };
