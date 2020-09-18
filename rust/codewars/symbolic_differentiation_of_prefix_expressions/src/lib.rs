@@ -6,21 +6,18 @@
 use std::fmt;
 use std::str::FromStr;
 
-fn diff(expr: &str) -> String {
+pub fn diff(expr: &str) -> String {
     let e = Expr::parse(expr);
-    println!("expr {:?} {}", e, e.contains_variable());
+    println!("expr {:?} {}", e.to_string(), e.contains_variable());
+    let e = e.simplify();
+    println!("simp0 {:?} {}", e.to_string(), e.contains_variable());
     let d = e.diff();
-    println!("diff {:?} {}", d, d.contains_variable());
+    println!("diff {:?} {}", d.to_string(), d.contains_variable());
     let d = d.simplify();
-    println!("simp0 {:?} {}", d, d.contains_variable());
+    println!("simp1 {:?} {}", d.to_string(), d.contains_variable());
     let d = d.simplify();
-    println!("simp1 {:?} {}", d, d.contains_variable());
+    println!("simp2 {:?} {}", d.to_string(), d.contains_variable());
     d.to_string()
-}
-
-fn repr(expr: &str) -> String {
-    let s = Expr::parse(expr);
-    s.to_string()
 }
 
 #[derive(Clone, Debug)]
@@ -50,43 +47,73 @@ impl fmt::Display for Expr {
 impl Expr {
     fn parse(s: &str) -> Self {
         let mut iter = s.split_whitespace();
-        Self::parse_internal(&mut iter).unwrap()
+        Self::parse_internal(&mut iter)
     }
 
-    fn parse_internal<'a, T: Iterator<Item = &'a str>>(iter: &mut T) -> Option<Self> {
-        if let Some(s) = iter.next() {
-            if s.starts_with("(") {
-                if let Ok(func) = s[1..].parse::<Func>() {
-                    Some(Self::Func {
-                        func,
-                        arg: Self::parse_internal(iter).unwrap().into(),
-                    })
-                } else if let Ok(op) = s[1..].parse::<Op>() {
-                    Some(Self::Op {
-                        op,
-                        arg1: Self::parse_internal(iter).unwrap().into(),
-                        arg2: Self::parse_internal(iter).unwrap().into(),
-                    })
-                } else {
-                    panic!("This shouldn't happen...")
+    fn parse_internal<'a, T: Iterator<Item = &'a str>>(iter: &mut T) -> Self {
+        let s = iter.next().unwrap();
+        if s.starts_with("(") {
+            if let Ok(func) = s[1..].parse::<Func>() {
+                Self::Func {
+                    func,
+                    arg: Self::parse_internal(iter).into(),
                 }
-            } else if s.ends_with(")") {
-                let end = s.find(')').unwrap();
-                Some(Self::Arg(s[..end].parse::<Arg>().unwrap()))
+            } else if let Ok(op) = s[1..].parse::<Op>() {
+                Self::Op {
+                    op,
+                    arg1: Self::parse_internal(iter).into(),
+                    arg2: Self::parse_internal(iter).into(),
+                }
             } else {
-                Some(Self::Arg(s.parse::<Arg>().unwrap()))
+                panic!("Parsing error {:?}", s);
             }
+        } else if s.ends_with(")") {
+            let end = s.find(')').unwrap();
+            Self::Arg(s[..end].parse::<Arg>().unwrap())
         } else {
-            None
+            Self::Arg(s.parse::<Arg>().unwrap())
         }
     }
 
-    fn simplify(self) -> Self {
+    fn contains_variable(&self) -> bool {
         match self {
-            Self::Arg(a) => Self::Arg(a),
-            Self::Func { func, arg } => Self::Func {
-                func,
-                arg: arg.simplify().into(),
+            Self::Arg(Arg::Int(_)) | Self::Arg(Arg::Float(_)) => false,
+            Self::Arg(Arg::Variable) => true,
+            Self::Func { func: _, arg } => arg.contains_variable(),
+            Self::Op { op: _, arg1, arg2 } => {
+                if arg1.contains_variable() || arg2.contains_variable() {
+                    true
+                } else {
+                    false
+                }
+            }
+        }
+    }
+
+    fn simplify(&self) -> Self {
+        match self {
+            Self::Arg(_) => self.clone(),
+            Self::Func { func, arg } => {
+                if arg.contains_variable() {
+                    Self::Func {
+                        func: *func,
+                        arg: arg.simplify().into(),
+                    }
+                } else {
+                    let val = match arg.simplify() {
+                        Self::Arg(Arg::Int(i)) => i as f64,
+                        Self::Arg(Arg::Float(f)) => f,
+                        x => panic!("arg contains a variable... {:?}", x),
+                    };
+                    let val = match func {
+                        Func::Cos => val.cos(),
+                        Func::Sin => val.sin(),
+                        Func::Tan => val.tan(),
+                        Func::Exp => val.exp(),
+                        Func::Ln => val.ln(),
+                    };
+                    Self::Arg(Arg::Float(val))
+                }
             },
             Self::Op { op, arg1, arg2 } => {
                 if !arg1.contains_variable() && !arg2.contains_variable() {
@@ -127,14 +154,14 @@ impl Expr {
                             Op::Mul | Op::Div => arg1,
                             Op::Pow => arg1,
                             _ => Self::Op {
-                                op,
+                                op: *op,
                                 arg1: arg1.into(),
                                 arg2: Self::Arg(Arg::Int(1)).into(),
                             },
                         }
                     } else {
                         Self::Op {
-                            op,
+                            op: *op,
                             arg1: arg1.into(),
                             arg2: Self::Arg(Arg::Float(val2)).into(),
                         }
@@ -149,7 +176,11 @@ impl Expr {
                     if val1 == 0.0 {
                         match op {
                             Op::Add => arg2,
-                            Op::Sub => Self::Op {op: Op::Mul, arg1: Self::Arg(Arg::Int(-1)).into(), arg2: arg2.into()},
+                            Op::Sub => Self::Op {
+                                op: Op::Mul,
+                                arg1: Self::Arg(Arg::Int(-1)).into(),
+                                arg2: arg2.into(),
+                            },
                             Op::Mul => Self::Arg(Arg::Int(0)),
                             Op::Div => Self::Arg(Arg::Int(0)),
                             Op::Pow => Self::Arg(Arg::Int(0)),
@@ -159,21 +190,21 @@ impl Expr {
                             Op::Mul => arg2,
                             Op::Pow => Self::Arg(Arg::Int(1)),
                             _ => Self::Op {
-                                op,
+                                op: *op,
                                 arg1: Self::Arg(Arg::Float(val1)).into(),
                                 arg2: arg2.into(),
                             },
                         }
                     } else {
                         Self::Op {
-                            op,
+                            op: *op,
                             arg1: Self::Arg(Arg::Float(val1)).into(),
                             arg2: arg2.into(),
                         }
                     }
                 } else {
                     Self::Op {
-                        op,
+                        op: *op,
                         arg1: arg1.simplify().into(),
                         arg2: arg2.simplify().into(),
                     }
@@ -182,76 +213,73 @@ impl Expr {
         }
     }
 
-    fn contains_variable(&self) -> bool {
-        match self {
-            Self::Arg(Arg::Int(_)) | Self::Arg(Arg::Float(_)) => false,
-            Self::Arg(Arg::Variable) => true,
-            Self::Func { func: _, arg } => arg.contains_variable(),
-            Self::Op { op: _, arg1, arg2 } => {
-                if arg1.contains_variable() || arg2.contains_variable() {
-                    true
-                } else {
-                    false
-                }
-            }
-        }
-    }
-
-    fn diff(&self) -> Self {
+    fn diff(self) -> Self {
         match self {
             Self::Arg(Arg::Int(_)) | Self::Arg(Arg::Float(_)) => Self::Arg(Arg::Int(0)),
             Self::Arg(Arg::Variable) => Self::Arg(Arg::Int(1)),
             Self::Func { func, arg } => match func {
                 Func::Cos => Self::Op {
                     op: Op::Mul,
-                    arg1: arg.diff().into(),
+                    arg1: arg.clone().diff().into(),
                     arg2: Self::Op {
                         op: Op::Mul,
                         arg1: Self::Arg(Arg::Int(-1)).into(),
                         arg2: {
                             Self::Func {
                                 func: Func::Sin,
-                                arg: arg.clone(),
-                            }.into()
+                                arg,
+                            }
+                            .into()
                         },
-                    }.into(),
+                    }
+                    .into(),
                 },
                 Func::Sin => Self::Op {
                     op: Op::Mul,
-                    arg1: arg.diff().into(),
+                    arg1: arg.clone().diff().into(),
                     arg2: Self::Func {
                         func: Func::Cos,
-                        arg: arg.clone(),
-                    }.into(),
+                        arg: arg,
+                    }
+                    .into(),
                 },
                 Func::Tan => Self::Op {
                     op: Op::Mul,
-                    arg1: arg.diff().into(),
+                    arg1: arg.clone().diff().into(),
                     arg2: Self::Op {
-                        op: Op::Pow,
-                        arg1: Self::Func {
-                            func: Func::Cos,
-                            arg: arg.clone(),
-                        }.into(),
-                        arg2: Self::Arg(Arg::Int(-2)).into(),
-                    }.into(),
+                        op: Op::Add,
+                        arg1: Self::Arg(Arg::Int(1)).into(),
+                        arg2: Self::Op {
+                            op: Op::Pow,
+                            arg1: Self::Func {
+                                func: Func::Tan,
+                                arg: arg.clone(),
+                            }
+                            .into(),
+                            arg2: Self::Arg(Arg::Int(2)).into(),
+                        }
+                        .into(),
+                    }
+                    .into(),
                 },
                 Func::Exp => Self::Op {
                     op: Op::Mul,
-                    arg1: arg.diff().into(),
+                    arg1: arg.clone().diff().into(),
                     arg2: Self::Func {
                         func: Func::Exp,
-                        arg: arg.clone(),
-                    }.into(),
+                        arg: arg,
+                    }
+                    .into(),
                 },
                 Func::Ln => Self::Op {
                     op: Op::Mul,
-                    arg1: arg.diff().into(),
+                    arg1: arg.clone().diff().into(),
                     arg2: Self::Op {
                         op: Op::Div,
                         arg1: Self::Arg(Arg::Int(1)).into(),
-                        arg2: arg.clone(),
-                    }.into(),
+                        arg2: arg,
+                    }
+                    .into(),
                 },
             },
             Self::Op { op, arg1, arg2 } => match op {
@@ -269,25 +297,42 @@ impl Expr {
                     op: Op::Add,
                     arg1: Self::Op {
                         op: Op::Mul,
-                        arg1: arg1.diff().into(),
+                        arg1: arg1.clone().diff().into(),
                         arg2: arg2.clone(),
-                    }.into(),
+                    }
+                    .into(),
                     arg2: Self::Op {
                         op: Op::Mul,
-                        arg1: arg1.clone(),
+                        arg1: arg1,
                         arg2: arg2.diff().into(),
-                    }.into(),
+                    }
+                    .into(),
                 },
                 Op::Div => Self::Op {
-                    op: Op::Mul,
-                    arg1: arg1.clone(),
+                    op: Op::Div,
+                    arg1: Self::Op {
+                        op: Op::Sub,
+                        arg1: Self::Op {
+                            op: Op::Mul,
+                            arg1: arg1.clone().diff().into(),
+                            arg2: arg2.clone(),
+                        }
+                        .into(),
+                        arg2: Self::Op {
+                            op: Op::Mul,
+                            arg1: arg1.clone(),
+                            arg2: arg2.clone().diff().into(),
+                        }
+                        .into(),
+                    }
+                    .into(),
                     arg2: Self::Op {
                         op: Op::Pow,
                         arg1: arg2.clone(),
-                        arg2: Self::Arg(Arg::Int(-1)).into(),
-                    }.into(),
-                }
-                .diff(),
+                        arg2: Self::Arg(Arg::Int(2)).into(),
+                    }
+                    .into(),
+                },
                 Op::Pow => {
                     if arg1.contains_variable() {
                         if arg2.contains_variable() {
@@ -295,20 +340,23 @@ impl Expr {
                         } else {
                             Self::Op {
                                 op: Op::Mul,
-                                arg1: arg1.diff().into(),
+                                arg1: arg1.clone().diff().into(),
                                 arg2: Self::Op {
                                     op: Op::Mul,
                                     arg1: arg2.clone(),
                                     arg2: Self::Op {
                                         op: Op::Pow,
-                                        arg1: arg1.clone(),
+                                        arg1: arg1,
                                         arg2: Self::Op {
                                             op: Op::Sub,
                                             arg1: arg2.clone(),
                                             arg2: Self::Arg(Arg::Int(1)).into(),
-                                        }.into(),
-                                    }.into(),
-                                }.into(),
+                                        }
+                                        .into(),
+                                    }
+                                    .into(),
+                                }
+                                .into(),
                             }
                         }
                     } else {
@@ -363,15 +411,6 @@ enum Func {
     Ln,
 }
 
-#[derive(Clone, Copy, Debug)]
-enum Op {
-    Add,
-    Sub,
-    Mul,
-    Div,
-    Pow,
-}
-
 impl FromStr for Func {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -386,6 +425,34 @@ impl FromStr for Func {
     }
 }
 
+impl From<&Func> for &'static str {
+    fn from(item: &Func) -> Self {
+        match item {
+            Func::Cos => "cos",
+            Func::Sin => "sin",
+            Func::Tan => "tan",
+            Func::Exp => "exp",
+            Func::Ln => "ln",
+        }
+    }
+}
+
+impl fmt::Display for Func {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let s: &'static str = self.into();
+        write!(f, "{}", s)
+    }
+}
+
+#[derive(Clone, Copy, Debug)]
+enum Op {
+    Add,
+    Sub,
+    Mul,
+    Div,
+    Pow,
+}
+
 impl FromStr for Op {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -396,18 +463,6 @@ impl FromStr for Op {
             "/" => Ok(Self::Div),
             "^" => Ok(Self::Pow),
             _ => Err(()),
-        }
-    }
-}
-
-impl From<&Func> for &'static str {
-    fn from(item: &Func) -> Self {
-        match item {
-            Func::Cos => "cos",
-            Func::Sin => "sin",
-            Func::Tan => "tan",
-            Func::Exp => "exp",
-            Func::Ln => "ln",
         }
     }
 }
@@ -431,11 +486,9 @@ impl fmt::Display for Op {
     }
 }
 
-impl fmt::Display for Func {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let s: &'static str = self.into();
-        write!(f, "{}", s)
-    }
+pub fn repr(expr: &str) -> String {
+    let s = Expr::parse(expr);
+    s.to_string()
 }
 
 #[cfg(test)]
@@ -469,7 +522,7 @@ mod tests {
         assert_eq!(diff("(^ x 2)"), "(* 2 x)");
         assert_eq!(diff("(cos x)"), "(* -1 (sin x))");
         assert_eq!(diff("(sin x)"), "(cos x)");
-        assert_eq!(diff("(tan x)"), "(^ (cos x) -2)");
+        assert_eq!(diff("(tan x)"), "(+ 1 (^ (tan x) 2))");
         assert_eq!(diff("(exp x)"), "(exp x)");
         assert_eq!(diff("(ln x)"), "(/ 1 x)");
         assert_eq!(diff("(+ x (+ x x))"), "3");
@@ -494,5 +547,6 @@ mod tests {
 
         let result = diff(&diff("(^ x 3)"));
         assert!(result == "(* 3 (* 2 x))" || result == "(* 6 x)");
+        assert_eq!(diff("(exp (* 0 x))"), "0");
     }
 }
