@@ -8,13 +8,13 @@ use std::str::FromStr;
 
 fn diff(expr: &str) -> String {
     let e = Expr::parse(expr);
-    println!("expr {:?}", e);
+    println!("expr {:?} {}", e, e.contains_variable());
     let d = e.diff();
-    println!("diff {:?}", d);
+    println!("diff {:?} {}", d, d.contains_variable());
     let d = d.simplify();
-    println!("simp0 {:?}", d);
+    println!("simp0 {:?} {}", d, d.contains_variable());
     let d = d.simplify();
-    println!("simp1 {:?}", d);
+    println!("simp1 {:?} {}", d, d.contains_variable());
     d.to_string()
 }
 
@@ -59,13 +59,13 @@ impl Expr {
                 if let Ok(func) = s[1..].parse::<Func>() {
                     Some(Self::Func {
                         func,
-                        arg: Box::new(Self::parse_internal(iter).unwrap()),
+                        arg: Self::parse_internal(iter).unwrap().into(),
                     })
                 } else if let Ok(op) = s[1..].parse::<Op>() {
                     Some(Self::Op {
                         op,
-                        arg1: Box::new(Self::parse_internal(iter).unwrap()),
-                        arg2: Box::new(Self::parse_internal(iter).unwrap()),
+                        arg1: Self::parse_internal(iter).unwrap().into(),
+                        arg2: Self::parse_internal(iter).unwrap().into(),
                     })
                 } else {
                     panic!("This shouldn't happen...")
@@ -86,19 +86,19 @@ impl Expr {
             Self::Arg(a) => Self::Arg(a),
             Self::Func { func, arg } => Self::Func {
                 func,
-                arg: Box::new(arg.simplify()),
+                arg: arg.simplify().into(),
             },
             Self::Op { op, arg1, arg2 } => {
                 if !arg1.contains_variable() && !arg2.contains_variable() {
                     let val1 = match arg1.simplify() {
                         Self::Arg(Arg::Int(i)) => i as f64,
                         Self::Arg(Arg::Float(f)) => f,
-                        _ => unreachable!(),
+                        x => panic!("arg1 contains a variable... {:?}", x),
                     };
-                    let val2 = match arg2.clone().simplify() {
+                    let val2 = match arg2.simplify() {
                         Self::Arg(Arg::Int(i)) => i as f64,
                         Self::Arg(Arg::Float(f)) => f,
-                        _ => unreachable!(),
+                        x => panic!("arg1 contains a variable... {:?}", x),
                     };
                     let val = match op {
                         Op::Add => val1 + val2,
@@ -108,71 +108,74 @@ impl Expr {
                         Op::Pow => val1.powf(val2),
                     };
                     Self::Arg(Arg::Float(val))
-                } else if arg1.contains_variable() {
+                } else if arg1.contains_variable() && !arg2.contains_variable() {
+                    let arg1 = arg1.simplify();
                     let val2 = match arg2.simplify() {
                         Self::Arg(Arg::Int(i)) => i as f64,
                         Self::Arg(Arg::Float(f)) => f,
-                        _ => unreachable!(),
+                        x => panic!("arg2 contains a variable... {:?}", x),
                     };
                     if val2 == 0.0 {
                         match op {
-                            Op::Add | Op::Sub => arg1.simplify(),
+                            Op::Add | Op::Sub => arg1,
                             Op::Mul => Self::Arg(Arg::Int(0)),
-                            Op::Div => unreachable!(),
+                            Op::Div => panic!("Divide by zero"),
                             Op::Pow => Self::Arg(Arg::Int(1)),
                         }
                     } else if val2 == 1.0 {
                         match op {
-                            Op::Mul | Op::Div => arg1.simplify(),
-                            Op::Pow => arg1.simplify(),
+                            Op::Mul | Op::Div => arg1,
+                            Op::Pow => arg1,
                             _ => Self::Op {
                                 op,
-                                arg1: Box::new(arg1.simplify()),
-                                arg2: Box::new(Self::Arg(Arg::Float(val2))),
+                                arg1: arg1.into(),
+                                arg2: Self::Arg(Arg::Int(1)).into(),
                             },
                         }
                     } else {
                         Self::Op {
                             op,
-                            arg1: Box::new(arg1.simplify()),
-                            arg2: Box::new(Self::Arg(Arg::Float(val2))),
+                            arg1: arg1.into(),
+                            arg2: Self::Arg(Arg::Float(val2)).into(),
                         }
                     }
-                } else if arg2.contains_variable() {
+                } else if !arg1.contains_variable() && arg2.contains_variable() {
+                    let arg2 = arg2.simplify();
                     let val1 = match arg1.simplify() {
                         Self::Arg(Arg::Int(i)) => i as f64,
                         Self::Arg(Arg::Float(f)) => f,
-                        _ => unreachable!(),
+                        x => panic!("arg1 contains a variable... {:?}", x),
                     };
                     if val1 == 0.0 {
                         match op {
-                            Op::Add | Op::Sub => arg2.simplify(),
+                            Op::Add => arg2,
+                            Op::Sub => Self::Op {op: Op::Mul, arg1: Self::Arg(Arg::Int(-1)).into(), arg2: arg2.into()},
                             Op::Mul => Self::Arg(Arg::Int(0)),
-                            Op::Div => unreachable!(),
-                            Op::Pow => Self::Arg(Arg::Int(1)),
+                            Op::Div => Self::Arg(Arg::Int(0)),
+                            Op::Pow => Self::Arg(Arg::Int(0)),
                         }
                     } else if val1 == 1.0 {
                         match op {
-                            Op::Mul | Op::Div => arg2.simplify(),
-                            Op::Pow => arg2.simplify(),
+                            Op::Mul => arg2,
+                            Op::Pow => Self::Arg(Arg::Int(1)),
                             _ => Self::Op {
                                 op,
-                                arg1: Box::new(Self::Arg(Arg::Float(val1))),
-                                arg2: Box::new(arg2.simplify()),
+                                arg1: Self::Arg(Arg::Float(val1)).into(),
+                                arg2: arg2.into(),
                             },
                         }
                     } else {
                         Self::Op {
                             op,
-                            arg1: Box::new(Self::Arg(Arg::Float(val1))),
-                            arg2: Box::new(arg2.simplify()),
+                            arg1: Self::Arg(Arg::Float(val1)).into(),
+                            arg2: arg2.into(),
                         }
                     }
                 } else {
                     Self::Op {
                         op,
-                        arg1: Box::new(arg1.simplify()),
-                        arg2: Box::new(arg2.simplify()),
+                        arg1: arg1.simplify().into(),
+                        arg2: arg2.simplify().into(),
                     }
                 }
             }
@@ -181,7 +184,7 @@ impl Expr {
 
     fn contains_variable(&self) -> bool {
         match self {
-            Self::Arg(Arg::Int(_)) | Self::Arg(Arg::Float(_)) => return false,
+            Self::Arg(Arg::Int(_)) | Self::Arg(Arg::Float(_)) => false,
             Self::Arg(Arg::Variable) => true,
             Self::Func { func: _, arg } => arg.contains_variable(),
             Self::Op { op: _, arg1, arg2 } => {
@@ -201,92 +204,88 @@ impl Expr {
             Self::Func { func, arg } => match func {
                 Func::Cos => Self::Op {
                     op: Op::Mul,
-                    arg1: Box::new(arg.diff()),
-                    arg2: Box::new(Self::Op {
+                    arg1: arg.diff().into(),
+                    arg2: Self::Op {
                         op: Op::Mul,
-                        arg1: Box::new(Self::Arg(Arg::Int(-1))),
+                        arg1: Self::Arg(Arg::Int(-1)).into(),
                         arg2: {
-                            Box::new(Self::Func {
+                            Self::Func {
                                 func: Func::Sin,
                                 arg: arg.clone(),
-                            })
+                            }.into()
                         },
-                    }),
+                    }.into(),
                 },
                 Func::Sin => Self::Op {
                     op: Op::Mul,
-                    arg1: Box::new(arg.diff()),
-                    arg2: Box::new(Self::Func {
+                    arg1: arg.diff().into(),
+                    arg2: Self::Func {
                         func: Func::Cos,
                         arg: arg.clone(),
-                    }),
+                    }.into(),
                 },
                 Func::Tan => Self::Op {
                     op: Op::Mul,
-                    arg1: Box::new(arg.diff()),
-                    arg2: Box::new(Self::Op {
-                        op: Op::Div,
-                        arg1: Box::new(Self::Arg(Arg::Int(1))),
-                        arg2: Box::new(Self::Op {
-                            op: Op::Pow,
-                            arg1: Box::new(Self::Func {
-                                func: Func::Cos,
-                                arg: arg.clone(),
-                            }),
-                            arg2: Box::new(Self::Arg(Arg::Int(2))),
-                        }),
-                    }),
+                    arg1: arg.diff().into(),
+                    arg2: Self::Op {
+                        op: Op::Pow,
+                        arg1: Self::Func {
+                            func: Func::Cos,
+                            arg: arg.clone(),
+                        }.into(),
+                        arg2: Self::Arg(Arg::Int(-2)).into(),
+                    }.into(),
                 },
                 Func::Exp => Self::Op {
                     op: Op::Mul,
-                    arg1: Box::new(arg.diff()),
-                    arg2: Box::new(Self::Func {
+                    arg1: arg.diff().into(),
+                    arg2: Self::Func {
                         func: Func::Exp,
                         arg: arg.clone(),
-                    }),
+                    }.into(),
                 },
                 Func::Ln => Self::Op {
                     op: Op::Mul,
-                    arg1: Box::new(arg.diff()),
-                    arg2: Box::new(Self::Op {
+                    arg1: arg.diff().into(),
+                    arg2: Self::Op {
                         op: Op::Div,
-                        arg1: Box::new(Self::Arg(Arg::Int(1))),
+                        arg1: Self::Arg(Arg::Int(1)).into(),
                         arg2: arg.clone(),
-                    }),
+                    }.into(),
                 },
             },
             Self::Op { op, arg1, arg2 } => match op {
                 Op::Add => Self::Op {
                     op: Op::Add,
-                    arg1: Box::new(arg1.diff()),
-                    arg2: Box::new(arg2.diff()),
+                    arg1: arg1.diff().into(),
+                    arg2: arg2.diff().into(),
                 },
                 Op::Sub => Self::Op {
                     op: Op::Sub,
-                    arg1: Box::new(arg1.diff()),
-                    arg2: Box::new(arg2.diff()),
+                    arg1: arg1.diff().into(),
+                    arg2: arg2.diff().into(),
                 },
                 Op::Mul => Self::Op {
                     op: Op::Add,
-                    arg1: Box::new(Self::Op {
+                    arg1: Self::Op {
                         op: Op::Mul,
-                        arg1: Box::new(arg1.diff()),
+                        arg1: arg1.diff().into(),
                         arg2: arg2.clone(),
-                    }),
-                    arg2: Box::new(Self::Op {
+                    }.into(),
+                    arg2: Self::Op {
                         op: Op::Mul,
                         arg1: arg1.clone(),
-                        arg2: Box::new(arg2.diff()),
-                    }),
+                        arg2: arg2.diff().into(),
+                    }.into(),
                 },
                 Op::Div => Self::Op {
                     op: Op::Mul,
                     arg1: arg1.clone(),
-                    arg2: Box::new(Self::Op {
+                    arg2: Self::Op {
                         op: Op::Pow,
                         arg1: arg2.clone(),
-                        arg2: Box::new(Self::Arg(Arg::Int(-1))),
-                    }),
+                        arg2: Self::Arg(Arg::Int(-1)).into(),
+                    }.into(),
                 }
                 .diff(),
                 Op::Pow => {
@@ -296,20 +295,20 @@ impl Expr {
                         } else {
                             Self::Op {
                                 op: Op::Mul,
-                                arg1: Box::new(arg1.diff()),
-                                arg2: Box::new(Self::Op {
+                                arg1: arg1.diff().into(),
+                                arg2: Self::Op {
                                     op: Op::Mul,
                                     arg1: arg2.clone(),
-                                    arg2: Box::new(Self::Op {
+                                    arg2: Self::Op {
                                         op: Op::Pow,
                                         arg1: arg1.clone(),
-                                        arg2: Box::new(Self::Op {
+                                        arg2: Self::Op {
                                             op: Op::Sub,
                                             arg1: arg2.clone(),
-                                            arg2: Box::new(Self::Arg(Arg::Int(1))),
-                                        }),
-                                    }),
-                                }),
+                                            arg2: Self::Arg(Arg::Int(1)).into(),
+                                        }.into(),
+                                    }.into(),
+                                }.into(),
                             }
                         }
                     } else {
@@ -470,7 +469,7 @@ mod tests {
         assert_eq!(diff("(^ x 2)"), "(* 2 x)");
         assert_eq!(diff("(cos x)"), "(* -1 (sin x))");
         assert_eq!(diff("(sin x)"), "(cos x)");
-        assert_eq!(diff("(tan x)"), "(/ 1 (^ (cos x) 2))");
+        assert_eq!(diff("(tan x)"), "(^ (cos x) -2)");
         assert_eq!(diff("(exp x)"), "(exp x)");
         assert_eq!(diff("(ln x)"), "(/ 1 x)");
         assert_eq!(diff("(+ x (+ x x))"), "3");
