@@ -50,7 +50,7 @@ impl Expr {
         Self::parse_internal(&mut iter)
     }
 
-    fn parse_internal<'a, T: Iterator<Item = &'a str>>(iter: &mut T) -> Self {
+    fn parse_internal<'a>(iter: &mut impl Iterator<Item = &'a str>) -> Self {
         let s = iter.next().unwrap();
         if s.starts_with("(") {
             if let Ok(func) = s[1..].parse::<Func>() {
