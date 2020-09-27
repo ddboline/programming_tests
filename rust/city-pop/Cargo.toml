@@ -2,12 +2,14 @@
 name = "city-pop"
 version = "0.1.0"
 authors = ["Daniel Boline <ddboline@gmail.com>"]
+edition = "2018"
 
 [[bin]]
 name = "city-pop"
 
 [dependencies]
-csv = "0.*"
-rustc-serialize = "0.*"
-getopts = "0.*"
-flate2 = "0.*"
+csv = "1.1"
+flate2 = "1.0"
+serde = {version = "1.0", features=["derive"]}
+structopt = "0.3"
+anyhow = "1.0"

@@ -1,18 +1,13 @@
-extern crate getopts;
-extern crate rustc_serialize;
-extern crate flate2;
-extern crate csv;
-
-use getopts::Options;
-use std::env;
+use anyhow::Error;
+use flate2::bufread::GzDecoder;
+use serde::Deserialize;
 use std::fs::File;
-use std::path::Path;
 use std::io;
-// use std::thread;
-// use std::error::Error;
-// use flate2::read::GzDecoder;
+use std::io::{BufRead, BufReader};
+use std::path::{Path, PathBuf};
+use structopt::StructOpt;
 
-#[derive(Debug, RustcDecodable)]
+#[derive(Debug, Deserialize)]
 struct Row {
     country: String,
     city: String,
@@ -27,64 +22,57 @@ struct Row {
     longitude: Option<f64>,
 }
 
-fn print_usage(program: &str, opts: Options) {
-    println!(
-        "{}",
-        opts.usage(&format!("Usage: {} [options] <city>", program))
-    );
-}
+fn search<P: AsRef<Path>>(file_path: P, city: &str) -> Result<(), Error> {
+    let f = BufReader::new(File::open(file_path)?);
 
-fn search<P: AsRef<Path>>(file_path: &Option<P>, city: &str) {
-    let input: Box<io::Read> = match *file_path {
-        None => Box::new(io::stdin()),
-        Some(ref file_path) => Box::new(File::open(file_path).unwrap()),
-    };
+    let gz = GzDecoder::new(f);
+    let mut reader = BufReader::new(gz);
+    let mut buf = Vec::new();
 
-    //     let file = File::open(file_path).unwrap();
-    //     let d = GzDecoder::new(&file).unwrap();
-    let mut rdr = csv::Reader::from_reader(input);
-    let mut sum = 0;
-
-    let total = rdr.decode::<Row>()
-        .filter(|r| r.is_ok())
-        .map(|r| r.unwrap())
-        .filter(|r| r.population.is_some())
-        .filter(|r| r.city.contains(city))
-        .map(|r| {
-            let pop = r.population.unwrap();
-            println!("{}, {}: {}", r.city, r.country, pop);
-            sum += pop;
-            r
-        })
-        .count();
-
-    println!("{} {}", total, sum);
-}
-
-fn main() {
-    let args: Vec<String> = env::args().collect();
-    let program = &args[0];
-
-    let mut opts = Options::new();
-    opts.optopt("f", "file", "Input file", "NAME");
-    opts.optflag("h", "help", "Show this usage message.");
-
-    let matches = match opts.parse(&args[1..]) {
-        Ok(m) => m,
-        Err(e) => panic!(e.to_string()),
-    };
-    if matches.opt_present("h") {
-        print_usage(&program, opts);
-        return;
+    let mut count = 0;
+    while let Ok(n) = reader.read_until(b'\n', &mut buf) {
+        if n == 0 {
+            break;
+        }
+        if count % 100000 == 0 {
+            println!("{}", count);
+        }
+        count += 1;
+        buf.clear();
     }
-    let data_path = matches.opt_str("f");
 
-    let city = if !matches.free.is_empty() {
-        &matches.free[0]
-    } else {
-        print_usage(&program, opts);
-        return;
-    };
+    // let mut rdr = csv::Reader::from_reader(input);
+    // let mut sum = 0;
 
-    search(&data_path, city);
+    // let total = rdr
+    //     .deserialize::<Row>()
+    //     .filter(|r| r.is_ok())
+    //     .map(|r| r.unwrap())
+    //     .filter(|r| r.population.is_some())
+    //     .filter(|r| r.city.contains(city))
+    //     .map(|r| {
+    //         let pop = r.population.unwrap();
+    //         println!("{}, {}: {}", r.city, r.country, pop);
+    //         sum += pop;
+    //         r
+    //     })
+    //     .count();
+
+    // println!("{} {}", total, sum);
+    Ok(())
+}
+
+fn main() -> Result<(), Error> {
+    let opts = Options::from_args();
+    println!("city {}", opts.city);
+    search(&opts.file, &opts.city)
+}
+
+#[derive(StructOpt)]
+struct Options {
+    #[structopt(name = "CITY")]
+    city: String,
+    #[structopt(short, long)]
+    /// Input file
+    file: PathBuf,
 }
