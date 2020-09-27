@@ -6,8 +6,10 @@ use std::io;
 use std::io::{BufRead, BufReader};
 use std::path::{Path, PathBuf};
 use structopt::StructOpt;
+use std::mem;
 
 #[derive(Debug, Deserialize)]
+#[serde(rename_all="PascalCase")]
 struct Row {
     country: String,
     city: String,
@@ -24,41 +26,43 @@ struct Row {
 
 fn search<P: AsRef<Path>>(file_path: P, city: &str) -> Result<(), Error> {
     let f = BufReader::new(File::open(file_path)?);
-
     let gz = GzDecoder::new(f);
     let mut reader = BufReader::new(gz);
-    let mut buf = Vec::new();
-
-    let mut count = 0;
-    while let Ok(n) = reader.read_until(b'\n', &mut buf) {
+    let mut buf = String::new();
+    let mut body = String::new();
+    while let Ok(n) = reader.read_line(&mut buf) {
         if n == 0 {
             break;
         }
-        if count % 100000 == 0 {
-            println!("{}", count);
+        if body.is_empty() {
+            mem::swap(&mut body, &mut buf);
+            continue;
         }
-        count += 1;
+        if buf.contains(city) {
+            body.push_str(&buf);
+        }
         buf.clear();
     }
 
-    // let mut rdr = csv::Reader::from_reader(input);
-    // let mut sum = 0;
+    let input = io::Cursor::new(body);
 
-    // let total = rdr
-    //     .deserialize::<Row>()
-    //     .filter(|r| r.is_ok())
-    //     .map(|r| r.unwrap())
-    //     .filter(|r| r.population.is_some())
-    //     .filter(|r| r.city.contains(city))
-    //     .map(|r| {
-    //         let pop = r.population.unwrap();
-    //         println!("{}, {}: {}", r.city, r.country, pop);
-    //         sum += pop;
-    //         r
-    //     })
-    //     .count();
+    let mut rdr = csv::Reader::from_reader(input);
+    let mut sum = 0;
 
-    // println!("{} {}", total, sum);
+    let total = rdr
+        .deserialize::<Row>()
+        .filter(|r| r.is_ok())
+        .map(|r| r.unwrap())
+        .filter(|r| r.population.is_some())
+        .filter(|r| r.city.contains(city))
+        .map(|r| {
+            let pop = r.population.unwrap();
+            sum += pop;
+            r
+        })
+        .count();
+
+    println!("{} {}", total, sum);
     Ok(())
 }
 
