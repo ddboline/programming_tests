@@ -1,22 +1,17 @@
 #!/bin/bash
 
 DATABASES="
-bucardo
-florida_doc_inmate_info
-mydb
-postgres
-recipes
-texas_high_value_datasets
-
+auth_server_rust
 aws_app_cache
-diary_app_cache
 calendar_app_cache
+diary_app_cache
 garmin_summary
 movie_queue
 podcatch
+postgres
+recipes
 rust_auth_server
 security_logs
-ssh_intrusion_logs
 sync_app_cache
 "
 
