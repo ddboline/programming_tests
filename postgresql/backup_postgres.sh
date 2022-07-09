@@ -9,8 +9,6 @@ garmin_summary
 movie_queue
 podcatch
 postgres
-recipes
-rust_auth_server
 security_logs
 sync_app_cache
 "
