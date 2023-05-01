@@ -11,6 +11,7 @@ podcatch
 postgres
 security_logs
 sync_app_cache
+weather_data_cache
 "
 
 for DB in $DATABASES;
