@@ -6,7 +6,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
 use tokio::task::{spawn, yield_now, JoinError, JoinHandle};
-use tokio::time::delay_for;
+use tokio::time::sleep;
 
 #[derive(PartialEq, Eq)]
 pub enum PollStatus {
@@ -92,7 +92,8 @@ where
             Ok(PollStatus::Finished)
         } else if self
             .finished
-            .compare_and_swap(true, false, Ordering::SeqCst)
+            .compare_exchange_weak(true, false, Ordering::SeqCst, Ordering::SeqCst)
+            .unwrap()
         {
             if let Some(handle) = self.handle.take() {
                 self.data.replace(handle.await?);
@@ -112,7 +113,7 @@ pub struct TaskNode<'a, T>
 where
     T: Send + 'static,
 {
-    task: Option<Box<&'a mut dyn TaskTrait<Output = T>>>,
+    task: Option<&'a mut dyn TaskTrait<Output = T>>,
     index: Option<usize>,
     children: BTreeSet<usize>,
     parents: BTreeSet<usize>,
@@ -141,11 +142,12 @@ where
         F: FnOnce() -> Pin<Box<dyn Future<Output = T> + Send>> + Send + 'static,
     {
         Self {
-            task: Some(Box::new(task)),
+            task: Some(task),
             ..Self::default()
         }
     }
 
+    #[must_use]
     pub fn get_data(&self) -> Option<&T> {
         self.task.as_ref().and_then(|task| task.get_data())
     }
@@ -181,10 +183,12 @@ impl<'a, T> TaskGraph<'a, T>
 where
     T: Send + 'static,
 {
+    #[must_use]
     pub fn new() -> Self {
         Self::default()
     }
 
+    #[must_use]
     pub fn get_node_by_index(&self, idx: usize) -> Option<&TaskNode<'a, T>> {
         self.tasks.get(idx)
     }
@@ -197,6 +201,8 @@ where
         index
     }
 
+    /// # Panics
+    /// It does
     pub fn attach_child_to_parent(&mut self, parent_index: usize, child_index: usize) -> bool {
         if parent_index < self.tasks.len() && child_index < self.tasks.len() {
             let parent = self.tasks.get_mut(parent_index).unwrap();
@@ -233,7 +239,7 @@ where
             .tasks
             .iter()
             .filter_map(|task| {
-                if task.parents.len() == 0 {
+                if task.parents.is_empty() {
                     task.index
                 } else {
                     None
@@ -244,6 +250,10 @@ where
         self.completed.clear();
     }
 
+    /// # Panics
+    /// It could
+    /// # Errors
+    /// Yes
     pub async fn next(&mut self) -> Result<(), JoinError> {
         while let Some(idx) = self.orphans.pop() {
             self.tasks
@@ -285,8 +295,8 @@ where
                 }
             }
         }
-        if self.running.len() > 0 {
-            delay_for(Duration::from_millis(1)).await;
+        if !self.running.is_empty() {
+            sleep(Duration::from_millis(1)).await;
         }
         Ok(())
     }
@@ -383,7 +393,7 @@ mod tests {
             .push_node(Some(n1), TaskNode::from_task(&mut t4))
             .unwrap();
         graph.attach_child_to_parent(n2, n4);
-        let n5 = graph
+        let _n5 = graph
             .push_node(Some(n3), TaskNode::from_task(&mut t5))
             .unwrap();
         let n6 = graph
@@ -413,16 +423,16 @@ mod tests {
 
     #[tokio::test]
     async fn oneshot_test() -> Result<(), Error> {
-        let (mut s01, mut r01) = channel(1);
-        let (mut s02, mut r02) = channel(1);
-        let (mut s03, mut r03) = channel(1);
-        let (mut s14, mut r14) = channel(1);
-        let (mut s16, mut r16) = channel(1);
-        let (mut s24, mut r24) = channel(1);
-        let (mut s36, mut r36) = channel(1);
-        let (mut s35, mut r35) = channel(1);
-        let (mut s46, mut r46) = channel(1);
-        let (mut s67, mut r67) = channel(1);
+        let (s01, mut r01) = channel(1);
+        let (s02, mut r02) = channel(1);
+        let (s03, mut r03) = channel(1);
+        let (s14, mut r14) = channel(1);
+        let (s16, mut r16) = channel(1);
+        let (s24, mut r24) = channel(1);
+        let (s36, mut r36) = channel(1);
+        let (s35, mut r35) = channel(1);
+        let (s46, mut r46) = channel(1);
+        let (s67, mut r67) = channel(1);
 
         let n0 = spawn(async move {
             let val = rand::random::<u64>() % 1000;
