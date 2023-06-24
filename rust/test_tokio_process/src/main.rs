@@ -21,7 +21,7 @@ async fn main() -> Result<(), Error> {
     // }
 
     let mut p = Command::new("grep")
-        .args(&["hello"])
+        .args(["hello"])
         .kill_on_drop(true)
         .stdout(Stdio::piped())
         .stdin(Stdio::piped())
@@ -37,7 +37,7 @@ async fn main() -> Result<(), Error> {
         let mut buf = String::new();
         while let Ok(bytes) = reader.read_line(&mut buf).await {
             if bytes > 0 {
-                println!("{}", buf);
+                println!("{buf}");
                 if buf.starts_with("hello") {
                     p.kill().await?;
                     break;
