@@ -1,9 +1,7 @@
 use anyhow::Error;
-use futures::stream::StreamExt;
 use std::process::Stdio;
-use tokio::io::{AsyncBufRead, AsyncBufReadExt, AsyncRead, AsyncReadExt, AsyncWriteExt, BufReader};
+use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::process::Command;
-use tokio::task::spawn;
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
@@ -41,7 +39,7 @@ async fn main() -> Result<(), Error> {
             if bytes > 0 {
                 println!("{}", buf);
                 if buf.starts_with("hello") {
-                    p.kill()?;
+                    p.kill().await?;
                     break;
                 }
                 buf.clear();
