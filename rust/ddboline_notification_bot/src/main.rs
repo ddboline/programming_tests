@@ -1,21 +1,18 @@
+use anyhow::Error;
+use futures::StreamExt;
 use std::env;
+use telegram_bot::{Api, CanReplySendMessage, MessageKind, UpdateKind};
 
-use futures::Stream;
-use telegram_bot::{Api, MessageKind, UpdateKind, CanReplySendMessage};
-use tokio_core::reactor::Core;
-
-fn main() {
+#[tokio::main]
+async fn main() -> Result<(), Error> {
     dotenv::from_filename("config.env").ok();
 
-    let mut core = Core::new().unwrap();
-
     let token = env::var("TELEGRAM_BOT_TOKEN").unwrap();
-    let api = Api::configure(token).build(core.handle()).unwrap();
+    let api = Api::new(token);
 
-    // Fetch new updates via long poll method
-    let future = api.stream().for_each(|update| {
-        // If the received update contains a new message...
-        if let UpdateKind::Message(message) = update.kind {
+    let mut stream = api.stream();
+    while let Some(update) = stream.next().await {
+        if let UpdateKind::Message(message) = update?.kind {
             if let MessageKind::Text { ref data, .. } = message.kind {
                 // Print received text message to stdout.
                 println!("{:?}", message);
@@ -28,9 +25,6 @@ fn main() {
                 )));
             }
         }
-
-        Ok(())
-    });
-
-    core.run(future).unwrap();
+    }
+    Ok(())
 }
