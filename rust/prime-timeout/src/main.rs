@@ -1,9 +1,6 @@
-extern crate futures;
-extern crate futures_cpupool;
-
-use futures::Future;
-use futures_cpupool::CpuPool;
 use std::env;
+
+use futures::future::select_all;
 
 // checks whether a number is prime, slowly
 fn is_prime(num: u64) -> (u64, i64) {
@@ -15,27 +12,22 @@ fn is_prime(num: u64) -> (u64, i64) {
     (num, -1)
 }
 
-fn main() {
+#[tokio::main]
+async fn main() {
     let vals: Vec<String> = env::args().collect();
     //     let vals = vec![15485867, 1235123123, 5123434123, 3, 177];
-
-    // set up a thread pool
-    let pool = CpuPool::new_num_cpus();
 
     let mut futures = Vec::new();
 
     for val in vals {
-        match String::from(val.clone()).trim().parse::<u64>() {
-            Ok(x) => {
-                futures.push(pool.spawn_fn(move || {
-                    let prime = is_prime(x);
-                    let res: Result<(u64, i64), ()> = Ok(prime);
-                    res
-                }))
-            }
+        match val.clone().trim().parse::<u64>() {
+            Ok(x) => futures.push(tokio::spawn(async move {
+                let prime = is_prime(x);
+                let res: Result<(u64, i64), ()> = Ok(prime);
+                res
+            })),
             Err(e) => {
-                println!("Error {} {}", val, e.to_string());
-                ()
+                println!("Error {val} {e}");
             }
         }
     }
@@ -43,8 +35,8 @@ fn main() {
     println!("Created the future");
     // unwrap here since we know the result is Ok
     loop {
-        let (f, _, next_futures) = futures::future::select_all(futures).wait().unwrap();
-        match f {
+        let (f, _, next_futures) = select_all(futures).await;
+        match f.unwrap().unwrap() {
             (num, -1) => println!("{} Is Prime", num),
             (num, x) => println!("{} Is Divisible by {}", num, x),
         }
